@@ -1,0 +1,20 @@
+{
+	"configurations": [
+		{
+			"name": "CMake",
+			"compileCommands": "${config:cmake.buildDirectory}/compile_commands.json",
+			"configurationProvider": "ms-vscode.cmake-tools",
+			"includePath": [
+				"${default}",
+				"${workspaceFolder}/src/inknit/inc",
+				"${workspaceFolder}/src/inknit_cxx/inc"
+			],
+			"cStandard": "c17",
+			"cppStandard": "c++23",
+			"defines": [
+				"INKNIT_ENABLE_BENCHMARKS"
+			]
+		}
+	],
+	"version": 4
+}

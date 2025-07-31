@@ -1,0 +1,17 @@
+{
+	"remote.autoForwardPorts": false,
+	"remote.restoreForwardedPorts": false,
+	"remote.portsAttributes": {
+		"3333": {
+			"label": "Application",
+			"onAutoForward": "ignore"
+		}
+	},
+	"search.exclude": {
+		".git/": true,
+		"build/": true,
+	},
+	"workbench.editor.customLabels.patterns": {
+		"*/{benchmarks,src,sources,tests}/**/*": "[${dirname(-2)}] ${filename}.${extname}"
+	}
+}

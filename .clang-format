@@ -1,0 +1,77 @@
+BasedOnStyle: LLVM
+IndentWidth: 4
+TabWidth: 4
+UseTab: ForContinuationAndIndentation
+
+Language: Cpp
+Standard: Latest
+AccessModifierOffset: -4
+AlignAfterOpenBracket: BlockIndent
+AlignArrayOfStructures: Left
+AlignConsecutiveAssignments: AcrossComments
+AlignConsecutiveBitFields: AcrossComments
+AlignConsecutiveDeclarations: AcrossComments
+AlignConsecutiveMacros: AcrossComments
+AlignConsecutiveShortCaseStatements:
+  Enabled: true
+  AcrossEmptyLines: true
+  AcrossComments: true
+  AlignCaseArrows: true
+  AlignCaseColons: false
+AlignEscapedNewlines: LeftWithLastLine
+AlignOperands: AlignAfterOperator
+AllowAllArgumentsOnNextLine: true
+AllowAllConstructorInitializersOnNextLine: true
+AllowAllParametersOfDeclarationOnNextLine: true
+AllowShortBlocksOnASingleLine: Empty
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: WithoutElse
+AllowShortLambdasOnASingleLine: None
+AllowShortNamespacesOnASingleLine: true
+AlwaysBreakBeforeMultilineStrings: true
+BinPackArguments: false
+BinPackParameters: OnePerLine
+BitFieldColonSpacing: Both
+BreakBeforeBinaryOperators: All
+BreakBeforeBraces: Attach
+BreakBeforeTemplateCloser: true
+BreakBinaryOperations: RespectPrecedence
+BreakConstructorInitializers: BeforeComma
+BreakInheritanceList: BeforeComma
+BreakTemplateDeclarations: Yes
+ColumnLimit: 100
+CompactNamespaces: true
+ConstructorInitializerIndentWidth: 4
+Cpp11BracedListStyle: true
+IndentGotoLabels: false
+InsertNewlineAtEOF: true
+#InsertTrailingCommas: Wrapped
+IntegerLiteralSeparator:
+  Binary: 4
+  BinaryMinDigits: 5
+  Decimal: 3
+  DecimalMinDigits: 7
+  Hex: 4
+  HexMinDigits: 9
+LineEnding: LF
+MaxEmptyLinesToKeep: 2
+NamespaceIndentation: Inner
+PackConstructorInitializers: BinPack
+PointerAlignment: Right
+QualifierAlignment: Custom
+QualifierOrder: ['static', 'inline', 'constexpr', 'volatile', 'type', 'const']
+ReferenceAlignment: Left
+ReflowComments: IndentOnly
+RemoveEmptyLinesInUnwrappedLines: true
+RemoveParentheses: MultipleParentheses
+RemoveSemicolon: true
+ShortNamespaceLines: 3
+SortIncludes: false
+SpaceAfterTemplateKeyword: false
+SpaceBeforeCpp11BracedList: true
+SpaceBeforeCtorInitializerColon: false
+SpaceBeforeInheritanceColon: false
+SpacesBeforeTrailingComments: 2
+SpacesInLineCommentPrefix:
+  Minimum: 0
+WrapNamespaceBodyWithEmptyLines: Always

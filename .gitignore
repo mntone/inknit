@@ -1,0 +1,39 @@
+# environment
+.env
+
+# production
+/build
+
+# prerequisites
+*.d
+
+# compiled object files
+*.o
+*.obj
+
+# precompiled headers
+*.gch
+*.pch
+
+# linker files
+*.ilk
+
+# debugger Files
+*.pdb
+
+# compiled dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# compiled static libraries
+*.a
+*.lib
+
+# executables
+*.exe
+*.out
+*.app
+
+# debug information files
+*.dwo

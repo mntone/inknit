@@ -1,0 +1,89 @@
+/*
+ * inknit <https://github.com/mntone/inknit>
+ *
+ * Copyright (C) 2025 mntone <901816+mntone@users.noreply.github.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+#ifdef __INTELLISENSE__
+#include "../../x1lsb/base.h"
+#include "../base.h.in"
+#else
+#include "${LAYOUT_NAME}/base.h"
+#include "../base.h"
+#endif
+
+void PUBLIC_FUNCNAME(draw_rect)(
+	struct inknit_image *image,
+	inknit_uint_t        x,
+	inknit_uint_t        y,
+	inknit_uint_t        width,
+	inknit_uint_t        height,
+	inknit_color_t       color
+) {
+	INKNIT_ASSUME(image != NULL, MSG_IMAGE_IS_NULL);
+	INKNIT_ASSUME(image->pixel_layout == TARGET_LAYOUT, MSG_IMAGE_IS_INVALID_LAYOUT);
+	INKNIT_ASSUME(image->alignment >= TARGET_ALIGNMENT, MSG_IMAGE_IS_INVALID_ALIGN);
+
+	INKNIT_ASSUME(x <= INKNIT_X_MAX, MSG_X_GREATER_THAN_MAX_VALUE);
+	INKNIT_ASSUME(y <= INKNIT_Y_MAX, MSG_Y_GREATER_THAN_MAX_VALUE);
+
+	INKNIT_ASSUME(color <= POW2_BITS_PER_PIXEL_NEG1, MSG_COLOR_GREATER_THAN_MAX_VALUE);
+
+	const inknit_uint_t right = x + width - 1;
+	PUBLIC_FUNCNAME(draw_hline)(image, x, right, y, color);
+
+	if (height != 1) {
+		const inknit_uint_t bottom = y + height - 1;
+		PUBLIC_FUNCNAME(draw_hline)(image, x, right, bottom, color);
+
+		if (height > 2) {
+			PUBLIC_FUNCNAME(draw_vline)(image, x, y + 1, bottom - 1, color);
+			PUBLIC_FUNCNAME(draw_vline)(image, right, y + 1, bottom - 1, color);
+		}
+	}
+}
+
+void PUBLIC_FUNCNAME(draw_rectp)(
+	struct inknit_image *image,
+	inknit_uint_t        x1,
+	inknit_uint_t        y1,
+	inknit_uint_t        x2,
+	inknit_uint_t        y2,
+	inknit_color_t       color
+) {
+	INKNIT_ASSUME(image != NULL, MSG_IMAGE_IS_NULL);
+	INKNIT_ASSUME(image->pixel_layout == TARGET_LAYOUT, MSG_IMAGE_IS_INVALID_LAYOUT);
+	INKNIT_ASSUME(image->alignment >= TARGET_ALIGNMENT, MSG_IMAGE_IS_INVALID_ALIGN);
+
+	INKNIT_ASSUME(x1 <= x2, MSG_X1_GREATER_THAN_X2);
+	INKNIT_ASSUME(x2 <= INKNIT_X_MAX, MSG_X2_GREATER_THAN_MAX_VALUE);
+	INKNIT_ASSUME(y1 <= y2, MSG_Y1_GREATER_THAN_Y2);
+	INKNIT_ASSUME(y2 <= INKNIT_Y_MAX, MSG_Y2_GREATER_THAN_MAX_VALUE);
+
+	INKNIT_ASSUME(color <= POW2_BITS_PER_PIXEL_NEG1, MSG_COLOR_GREATER_THAN_MAX_VALUE);
+
+	PUBLIC_FUNCNAME(draw_hline)(image, x1, x2, y1, color);
+
+	if (y1 != y2) {
+		PUBLIC_FUNCNAME(draw_hline)(image, x1, x2, y2, color);
+
+		const inknit_uint_t height = y2 - y1 + 1;
+		if (height > 2) {
+			PUBLIC_FUNCNAME(draw_vline)(image, x1, y1 + 1, y2 - 1, color);
+			PUBLIC_FUNCNAME(draw_vline)(image, x2, y1 + 1, y2 - 1, color);
+		}
+	}
+}

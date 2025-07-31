@@ -1,0 +1,338 @@
+/*
+ * inknit <https://github.com/mntone/inknit>
+ *
+ * Copyright (C) 2025 mntone <901816+mntone@users.noreply.github.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+#ifdef __INTELLISENSE__
+#include "../x1lsb/base.h"
+#include "base.h.in"
+#else
+#include "${LAYOUT_NAME}/base.h"
+#include "base.h"
+#endif
+
+#ifdef INKNIT_ENABLE_BENCHMARKS
+INKNIT_BMPREFIX
+INKNIT_DEFPROTO_BLIT(INTERNAL_FUNCNAME(blit_pixel_old)) {
+	uint32_t *INKNIT_RESTRICT const       dst_data = (inknit_color_t *)dst->data;
+	const uint32_t *INKNIT_RESTRICT const src_data = (const inknit_color_t *)src->data;
+
+	for (uint32_t y = 0; y < height; ++y) {
+		const uint32_t dst_start_pixel = bytes_to_pixels(dst->stride) * (dy + y) + dx;
+		const uint32_t src_start_pixel = bytes_to_pixels(src->stride) * (sy + y) + sx;
+
+		for (uint32_t x = 0; x < width; ++x) {
+			const uint32_t dst_pixel = dst_start_pixel + x;
+			const uint32_t src_pixel = src_start_pixel + x;
+
+			const uint32_t dst_wordidx = pixels_to_wordidx(dst_pixel);
+			const uint32_t src_wordidx = pixels_to_wordidx(src_pixel);
+
+			const uint32_t dst_wordval = swap_if_required(dst_data[dst_wordidx]);
+			const uint32_t src_wordval = swap_if_required(src_data[src_wordidx]);
+
+			const int32_t dst_bitpos = pixels_to_bitpos(dst_pixel);
+			const int32_t src_bitpos = pixels_to_bitpos(src_pixel);
+
+			// const uint32_t writeValue = src_wordval << dst_bitpos;
+			// const uint32_t mask       = write_mask(dst_bitpos);
+			// dst_data[dst_words]    = (dst_wordval & ~mask) | writeValue;
+			const uint32_t value         = get_pixel(src_wordval, src_bitpos);
+			const uint32_t write_wordval = build_pixel32(dst_wordval, dst_bitpos, value);
+			dst_data[dst_wordidx]        = swap_if_required(write_wordval);
+		}
+	}
+}
+#endif
+
+#ifdef INKNIT_ENABLE_BENCHMARKS
+INKNIT_BMPREFIX
+INKNIT_DEFPROTO_BLIT(INTERNAL_FUNCNAME(blit_pixel)) {
+	uint32_t *INKNIT_RESTRICT const       dst_data = (uint32_t *)dst->data;
+	const uint32_t *INKNIT_RESTRICT const src_data = (const uint32_t *)src->data;
+
+	const uint32_t dst_width = bytes_to_pixels(dst->stride);
+	const uint32_t src_width = bytes_to_pixels(src->stride);
+
+	const uint32_t dst_padding = dst_width - width;
+	const uint32_t src_padding = src_width - width;
+
+	uint32_t dst_pixel = dst_width * dy + dx;
+	uint32_t src_pixel = src_width * sy + sx;
+	for (uint32_t y = 0; y < height; ++y) {
+		for (uint32_t x = 0; x < width; ++x) {
+			const uint32_t dst_wordidx = pixels_to_wordidx(dst_pixel);
+			const uint32_t src_wordidx = pixels_to_wordidx(src_pixel);
+
+			const uint32_t dst_wordval = swap_if_required(dst_data[dst_wordidx]);
+			const uint32_t src_wordval = swap_if_required(src_data[src_wordidx]);
+
+			const int32_t dst_bitpos = pixels_to_bitpos(dst_pixel);
+			const int32_t src_bitpos = pixels_to_bitpos(src_pixel);
+
+			const uint32_t value      = get_pixel(src_wordval, src_bitpos);
+			const uint32_t write_word = build_pixel32(dst_wordval, dst_bitpos, value);
+			dst_data[dst_wordidx]     = swap_if_required(write_word);
+
+			++dst_pixel;
+			++src_pixel;
+		}
+
+		dst_pixel += dst_padding;
+		src_pixel += src_padding;
+	}
+}
+#endif
+
+#ifdef INKNIT_ENABLE_BENCHMARKS
+INKNIT_BMPREFIX
+INKNIT_DEFPROTO_BLIT(INTERNAL_FUNCNAME(blit_unaligned)) {
+	uint32_t *INKNIT_RESTRICT const       dst_data = (uint32_t *)dst->data;
+	const uint32_t *INKNIT_RESTRICT const src_data = (const uint32_t *)src->data;
+
+	const uint32_t dst_stride = bytes_to_pixels(dst->stride);
+	const uint32_t src_stride = bytes_to_pixels(src->stride);
+
+	uint32_t dst_pixel = dst_stride * dy + dx;
+	uint32_t src_pixel = src_stride * sy + sx;
+	for (uint32_t y = 0; y < height; ++y) {
+		uint32_t dst_wordidx = pixels_to_wordidx(dst_pixel);
+		uint32_t src_wordidx = pixels_to_wordidx(src_pixel);
+
+		uint32_t dst_wordval = swap_if_required(dst_data[dst_wordidx]);
+		uint32_t src_wordval = swap_if_required(src_data[src_wordidx]);
+
+		int32_t dst_bitpos = pixels_to_bitpos(dst_pixel);
+		int32_t src_bitpos = pixels_to_bitpos(src_pixel);
+
+		for (uint32_t x = 0; x < width; ++x) {
+			const uint32_t pixel = get_pixel(src_wordval, src_bitpos);
+			dst_wordval          = build_pixel32(dst_wordval, dst_bitpos, pixel);
+
+			advance_wordpos(dst_bitpos);
+			if (is_wordpos_last(dst_bitpos)) {
+				dst_data[dst_wordidx] = swap_if_required(dst_wordval);
+
+				dst_bitpos = FIRST_WORDPOS;
+				dst_wordidx += 1;
+				dst_wordval = swap_if_required(dst_data[dst_wordidx]);
+			}
+
+			advance_wordpos(src_bitpos);
+			if (is_wordpos_last(src_bitpos)) {
+				src_bitpos = FIRST_WORDPOS;
+				src_wordidx += 1;
+				src_wordval = swap_if_required(src_data[src_wordidx]);
+			}
+		}
+
+		if (!is_wordpos_first(dst_bitpos)) {
+			dst_data[dst_wordidx] = swap_if_required(dst_wordval);
+		}
+
+		dst_pixel += dst_stride;
+		src_pixel += src_stride;
+	}
+}
+#endif
+
+static INKNIT_ALWAYS_INLINE uint32_t INTERNAL_FUNCNAME(extract_aligned_bits)(
+	const uint32_t *data, uint32_t wordidx, uint32_t bitoffs, uint32_t bitsize_to_read
+) {
+#if IS_LITTLE
+	const uint32_t wordval = swap_if_required(data[wordidx]);
+	uint32_t       value   = wordval >> bitoffs;
+	if (bitoffs + bitsize_to_read > BITS_PER_WORD) {
+		const uint32_t next_wordval = swap_if_required(data[wordidx + 1]);
+		value |= (next_wordval << (BITS_PER_WORD - bitoffs));
+	}
+	value &= ((1u << bitsize_to_read) - 1u);
+	return value;
+#else
+	const uint32_t wordval = swap_if_required(data[wordidx]);
+	uint32_t       value   = wordval << bitoffs;
+	if (bitoffs + bitsize_to_read > BITS_PER_WORD) {
+		const uint32_t next_wordval = swap_if_required(data[wordidx + 1]);
+		value |= (next_wordval >> (BITS_PER_WORD - bitoffs));
+	}
+	value &= (~0u) << (BITS_PER_WORD - bitsize_to_read);
+	return value;
+#endif
+}
+
+INKNIT_BMPREFIX
+INKNIT_DEFPROTO_BLIT(INTERNAL_FUNCNAME(blit_mask)) {
+	uint32_t *INKNIT_RESTRICT const       dst_data = (uint32_t *)dst->data;
+	const uint32_t *INKNIT_RESTRICT const src_data = (const uint32_t *)src->data;
+
+	const uint32_t dst_stride = bytes_to_pixels(dst->stride);
+	const uint32_t src_stride = bytes_to_pixels(src->stride);
+
+	uint32_t dst_pixel = dst_stride * dy + dx;
+	uint32_t src_pixel = src_stride * sy + sx;
+	for (uint32_t y = 0; y < height; ++y) {
+		uint32_t dst_wordidx = pixels_to_wordidx(dst_pixel);
+		uint32_t src_wordidx = pixels_to_wordidx(src_pixel);
+
+		uint32_t dst_bitoffs = pixels_to_bitoffs(dst_pixel);
+		uint32_t src_bitoffs = pixels_to_bitoffs(src_pixel);
+
+		uint32_t copy_bitsize = width * BITS_PER_PIXEL;
+
+		// Head (if starting bit offset is not 0)
+		if (dst_bitoffs != 0) {
+			uint32_t head_bitsize = BITS_PER_WORD - dst_bitoffs;
+			if (head_bitsize > copy_bitsize) {
+				head_bitsize = copy_bitsize;
+			}
+
+#if IS_LITTLE
+			const uint32_t src_wordval = INTERNAL_FUNCNAME(extract_aligned_bits)(
+											 src_data, src_wordidx, src_bitoffs, head_bitsize
+										 )
+									  << dst_bitoffs;
+#else
+			const uint32_t src_wordval = INTERNAL_FUNCNAME(extract_aligned_bits)(
+											 src_data, src_wordidx, src_bitoffs, head_bitsize
+										 )
+									  >> dst_bitoffs;
+#endif
+
+			const uint32_t dst_wordval   = swap_if_required(dst_data[dst_wordidx]);
+			const uint32_t mask          = build_shifted_mask(head_bitsize, dst_bitoffs);
+			const uint32_t write_wordval = (dst_wordval & ~mask) | (src_wordval & mask);
+			dst_data[dst_wordidx]        = swap_if_required(write_wordval);
+
+			copy_bitsize -= head_bitsize;
+			if (dst_bitoffs + head_bitsize >= BITS_PER_WORD) {
+				++dst_wordidx;
+				dst_bitoffs = 0;
+			}
+			if (src_bitoffs + head_bitsize >= BITS_PER_WORD) {
+				++src_wordidx;
+				src_bitoffs = (src_bitoffs + head_bitsize) & PIXELS_PER_WORD_NEG1;
+			}
+		}
+
+		// Middle (full words)
+		if (src_bitoffs == 0) {
+			while (copy_bitsize >= BITS_PER_WORD) {
+				dst_data[dst_wordidx++] = src_data[src_wordidx++];
+
+				copy_bitsize -= BITS_PER_WORD;
+			}
+		} else {
+			// Unaligned src bits (need to stitch)
+			uint32_t src_wordval1 = swap_if_required(src_data[src_wordidx]);
+			while (copy_bitsize >= BITS_PER_WORD) {
+				const uint32_t src_wordval2 = swap_if_required(src_data[++src_wordidx]);
+#if IS_LITTLE
+				const uint32_t write_wordval = (src_wordval1 >> src_bitoffs)
+											 | (src_wordval2 << (BITS_PER_WORD - src_bitoffs));
+#else
+				const uint32_t write_wordval = (src_wordval1 << src_bitoffs)
+											 | (src_wordval2 >> (BITS_PER_WORD - src_bitoffs));
+#endif
+				dst_data[dst_wordidx++] = swap_if_required(write_wordval);
+
+				src_wordval1 = src_wordval2;
+				copy_bitsize -= BITS_PER_WORD;
+			}
+		}
+
+		// Tail (remaining bits)
+		if (copy_bitsize > 0) {
+			const uint32_t src_wordval = INTERNAL_FUNCNAME(extract_aligned_bits)(
+				src_data, src_wordidx, src_bitoffs, copy_bitsize
+			);
+
+			const uint32_t dst_wordval   = swap_if_required(dst_data[dst_wordidx]);
+			const uint32_t mask          = build_mask(copy_bitsize);
+			const uint32_t write_wordval = (dst_wordval & ~mask) | (src_wordval & mask);
+			dst_data[dst_wordidx]        = swap_if_required(write_wordval);
+		}
+
+		dst_pixel += dst_stride;
+		src_pixel += src_stride;
+	}
+}
+
+INKNIT_BMPREFIX
+INKNIT_DEFPROTO_BLIT(INTERNAL_FUNCNAME(blit_aligned)) {
+	INKNIT_ASSUME(((sx | dx | width) & PIXELS_PER_WORD_NEG1) == 0, "Fast path only");
+
+	uint32_t *const       dst_data = (uint32_t *)dst->data;
+	const uint32_t *const src_data = (const uint32_t *)src->data;
+
+#ifdef INKNIT_USE_MEMORY_H
+	const size_t width_bytes = (size_t)pixels_to_bytes(width);
+
+	const uint32_t dst_stride_wordidx = bytes_to_wordidx(dst->stride);
+	const uint32_t src_stride_wordidx = bytes_to_wordidx(src->stride);
+
+	uint32_t dst_wordidx = dst_stride_wordidx * dy + pixels_to_wordidx(dx);
+	uint32_t src_wordidx = src_stride_wordidx * sy + pixels_to_wordidx(sx);
+	for (uint32_t y = 0; y < height; ++y) {
+		memcpy(&dst_data[dst_wordidx], &src_data[src_wordidx], width_bytes);
+
+		dst_wordidx += dst_stride_wordidx;
+		src_wordidx += src_stride_wordidx;
+	}
+#else
+	const uint32_t width_wordidx = pixels_to_wordidx(width);
+
+	const uint32_t dst_stride_wordidx = bytes_to_wordidx(dst->stride);
+	const uint32_t src_stride_wordidx = bytes_to_wordidx(src->stride);
+
+	const uint32_t dst_padding_wordidx = dst_stride_wordidx - width_wordidx;
+	const uint32_t src_padding_wordidx = src_stride_wordidx - width_wordidx;
+
+	uint32_t dst_wordidx = dst_stride_wordidx * dy + pixels_to_wordidx(dx);
+	uint32_t src_wordidx = src_stride_wordidx * sy + pixels_to_wordidx(sx);
+	for (uint32_t y = 0; y < height; ++y) {
+		for (uint32_t w = 0; w < width_wordidx; ++w) {
+			dst_data[dst_wordidx++] = src_data[src_wordidx++];
+		}
+
+		dst_wordidx += dst_padding_wordidx;
+		src_wordidx += src_padding_wordidx;
+	}
+#endif
+}
+
+INKNIT_DEFPROTO_BLIT(PUBLIC_FUNCNAME(blit)) {
+	INKNIT_ASSUME(dst != NULL, MSG_DST_IS_NULL);
+	INKNIT_ASSUME(dst->pixel_layout == TARGET_LAYOUT, MSG_DST_IS_INVALID_LAYOUT);
+	INKNIT_ASSUME(dst->alignment >= TARGET_ALIGNMENT, MSG_DST_IS_INVALID_ALIGN);
+
+	INKNIT_ASSUME(sx <= INKNIT_X_MAX, MSG_SX_GREATER_THAN_MAX_VALUE);
+	INKNIT_ASSUME(sy <= INKNIT_Y_MAX, MSG_SY_GREATER_THAN_MAX_VALUE);
+
+	INKNIT_ASSUME(src != NULL, MSG_SRC_IS_NULL);
+	INKNIT_ASSUME(src->pixel_layout == TARGET_LAYOUT, MSG_SRC_IS_INVALID_LAYOUT);
+	INKNIT_ASSUME(src->alignment >= TARGET_ALIGNMENT, MSG_SRC_IS_INVALID_ALIGN);
+
+	INKNIT_ASSUME(dx <= INKNIT_X_MAX, MSG_DX_GREATER_THAN_MAX_VALUE);
+	INKNIT_ASSUME(dy <= INKNIT_Y_MAX, MSG_DY_GREATER_THAN_MAX_VALUE);
+
+	const bool fast_path = ((sx | dx | width) & PIXELS_PER_WORD_NEG1) == 0;
+	if (fast_path) {
+		INTERNAL_FUNCNAME(blit_aligned)(dst, dx, dy, src, sx, sy, width, height);
+	} else {
+		INTERNAL_FUNCNAME(blit_mask)(dst, dx, dy, src, sx, sy, width, height);
+	}
+}

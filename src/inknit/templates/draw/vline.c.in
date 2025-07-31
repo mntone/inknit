@@ -1,0 +1,160 @@
+/*
+ * inknit <https://github.com/mntone/inknit>
+ *
+ * Copyright (C) 2025 mntone <901816+mntone@users.noreply.github.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+#ifdef __INTELLISENSE__
+#include "../../x1lsb/base.h"
+#include "../base.h.in"
+#else
+#include "${LAYOUT_NAME}/base.h"
+#include "../base.h"
+#endif
+
+INKNIT_BMPREFIX
+INKNIT_DEFPROTO_DRAW_VLINE(INTERNAL_FUNCNAME(draw_vline_pointer)) {
+	const uint32_t stride  = (uint32_t)image->stride;
+	uint8_t       *row     = (uint8_t *)image->data + (uint32_t)y1 * stride;
+	const uint8_t *end_row = row + (uint32_t)(y2 - y1) * stride;
+
+	const uint32_t byteoffs    = pixels_to_bytes(x);
+	const int32_t  bitoffs     = pixels_to_bitpos_byte(x);
+	const uint8_t  clear_mask  = (uint8_t)clear_mask(bitoffs);
+	const uint8_t  pixel_value = (uint8_t)(pixel_value(color, bitoffs) & 0xFF);
+
+	while (row <= end_row) {
+		uint8_t *byte = row + byteoffs;
+
+		INTERNAL_FUNCNAME(set_value8)(byte, clear_mask, pixel_value);
+
+		row += stride;
+	}
+}
+
+#ifdef INKNIT_ENABLE_BENCHMARKS
+/*
+ * A Note on the Loop Unrolling Optimization (`PointerUnroll` version)
+ *
+ * This note summarizes the performance trade-offs of using loop unrolling for
+ * the vline function, based on extensive benchmarks. The effectiveness of this
+ * technique is highly dependent on the CPU architecture.
+ *
+ * - On modern, out-of-order (OoO) CPUs (e.g., AMD Ryzen 9 5900X),
+ * loop unrolling is extremely effective. The powerful CPU core can execute
+ * the multiple independent instructions in the unrolled loop in parallel.
+ * The performance benefit outweighs the setup cost almost immediately, making
+ * this version the winner for lines of 2 pixels or longer.
+ *
+ * - On simple, in-order CPUs (e.g., ARM Cortex-M0+ in the RP2040),
+ * the trade-off is much more sensitive. The `PointerUnroll` version has a
+ * higher setup cost due to remainder-handling logic. This cost is only
+ * recovered on longer lines. Our benchmarks show that the break-even point
+ * where this version becomes the fastest is at a line length of 10 pixels.
+ *
+ *
+ * ## Benchmark Summary ##
+ *
+ * The benchmarks below were run on a PC (AMD Ryzen 9 5900X) and a Raspberry
+ * Pi Pico (RP2040). The values shown are the mean time per single draw
+ * operation, calculated from a set of 1000 draws per measurement.
+ *
+ * Lower values are faster.
+ *
+ *
+ * ### AMD Ryzen 9 5900X (Time per draw in nanoseconds) ###
+ *
+ * | Line Length |  Pointer | PointerUnroll | Winner            |
+ * |:------------|---------:|--------------:|:------------------|
+ * | 1px         |     3.35 |          3.34 | **PointerUnroll** |
+ * | 2px         |     3.62 |          3.33 | **PointerUnroll** |
+ * | 8px         |     5.70 |          4.32 | **PointerUnroll** |
+ * | 16px        |     8.92 |          5.65 | **PointerUnroll** |
+ * | 32px        |    14.07 |          9.15 | **PointerUnroll** |
+ *
+ *
+ * ### Raspberry Pi Pico (RP2040) (Time per draw in nanoseconds) ###
+ *
+ * | Line Length |  Pointer | PointerUnroll | Winner            |
+ * |:------------|---------:|--------------:|:------------------|
+ * | 1px         |      614 |           811 | **Pointer**       |
+ * | 8px         |     1342 |          1387 | **Pointer**       |
+ * | 9px         |     1446 |          1467 | **Pointer**       |
+ * | 10px        |     1550 |          1491 | **PointerUnroll** |
+ * | 16px        |     2174 |          2043 | **PointerUnroll** |
+ * | 32px        |     3838 |          3355 | **PointerUnroll** |
+ *
+ */
+#define SETVAL8(byteptr) INTERNAL_FUNCNAME(set_value8)((byteptr), clear_mask, pixel_value);
+
+INKNIT_BMPREFIX
+INKNIT_DEFPROTO_DRAW_VLINE(INTERNAL_FUNCNAME(draw_vline_pointer_unroll)) {
+	const uint32_t stride = (uint32_t)image->stride;
+	const uint32_t length = (uint32_t)y1 * stride;
+	uint8_t       *row    = (uint8_t *)image->data + length;
+
+	const uint32_t byteoffs    = pixels_to_bytes(x);
+	const int32_t  bitoffs     = pixels_to_bitpos_byte(x);
+	const uint8_t  clear_mask  = (uint8_t)clear_mask(bitoffs);
+	const uint8_t  pixel_value = (uint8_t)(pixel_value(color, bitoffs) & 0xFF);
+
+	uint8_t *ptr = row + byteoffs;
+
+	uint32_t       height    = (uint32_t)(y2 - y1 + 1);
+	const uint32_t remainder = height % 4;
+	switch (remainder) {
+	case 3:
+		SETVAL8(ptr);
+		ptr += stride;
+		INKNIT_FALLTHROUGH;
+	case 2:
+		SETVAL8(ptr);
+		ptr += stride;
+		INKNIT_FALLTHROUGH;
+	case 1:
+		SETVAL8(ptr);
+		ptr += stride;
+		break;
+	}
+
+	height >>= 2;
+	while (height-- > 0) {
+		SETVAL8(ptr);
+		SETVAL8(ptr + stride);
+		SETVAL8(ptr + stride * 2);
+		SETVAL8(ptr + stride * 3);
+		ptr += stride * 4;
+	}
+}
+#endif
+
+INKNIT_DEFPROTO_DRAW_VLINE(PUBLIC_FUNCNAME(draw_vline)) {
+	INKNIT_ASSUME(image != NULL, MSG_IMAGE_IS_NULL);
+	INKNIT_ASSUME(image->pixel_layout == TARGET_LAYOUT, MSG_IMAGE_IS_INVALID_LAYOUT);
+	INKNIT_ASSUME(image->alignment >= TARGET_ALIGNMENT, MSG_IMAGE_IS_INVALID_ALIGN);
+
+	INKNIT_ASSUME(x <= INKNIT_X_MAX, MSG_X_GREATER_THAN_MAX_VALUE);
+	INKNIT_ASSUME(y1 <= y2, MSG_Y1_GREATER_THAN_Y2);
+	INKNIT_ASSUME(y2 <= INKNIT_Y_MAX, MSG_Y2_GREATER_THAN_MAX_VALUE);
+
+	INKNIT_ASSUME(color <= POW2_BITS_PER_PIXEL_NEG1, MSG_COLOR_GREATER_THAN_MAX_VALUE);
+
+	if (y1 == y2) {
+		INTERNAL_FUNCNAME(set)(image, x, y1, color);
+	} else {
+		INTERNAL_FUNCNAME(draw_vline_pointer)(image, x, y1, y2, color);
+	}
+}

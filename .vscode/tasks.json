@@ -1,0 +1,70 @@
+{
+	// See https://go.microsoft.com/fwlink/?LinkId=733558
+	// for the documentation about the tasks.json format
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "CMake: build",
+			"type": "cmake",
+			"command": "build",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"problemMatcher": [
+				"$gcc"
+			]
+		},
+		{
+			"label": "CMake: clean",
+			"type": "cmake",
+			"command": "clean"
+		},
+		{
+			"type": "cmake",
+			"label": "CMake: rebuild",
+			"command": "cleanRebuild",
+			"group": "build"
+		},
+		{
+			"label": "Shell Script: debug",
+			"type": "shell",
+			"command": "${workspaceFolder}/scripts/debug_linux.sh",
+			"hide": true,
+			"problemMatcher": {
+				"pattern": [
+					{
+						"regexp": ".",
+						"file": 1,
+						"location": 2,
+						"message": 3
+					}
+				],
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": "^\\[\\*\\] Detected binary architecture:",
+					"endsPattern": "^\\[\\*\\] Launching"
+				}
+			},
+			"args": [
+				"${command:cmake.launchTargetPath}"
+			],
+			"dependsOn": [
+				"CMake: build"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "Shell Script: exec",
+			"type": "shell",
+			"command": "${workspaceFolder}/scripts/exec_linux.sh",
+			"problemMatcher": [],
+			"args": [
+				"${command:cmake.launchTargetPath}"
+			],
+			"dependsOn": [
+				"CMake: build"
+			]
+		}
+	]
+}

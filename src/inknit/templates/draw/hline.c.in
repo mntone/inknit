@@ -1,0 +1,303 @@
+/*
+ * inknit <https://github.com/mntone/inknit>
+ *
+ * Copyright (C) 2025 mntone <901816+mntone@users.noreply.github.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+#ifdef __INTELLISENSE__
+#include "../../x1lsb/base.h"
+#include "../base.h.in"
+#else
+#include "${LAYOUT_NAME}/base.h"
+#include "../base.h"
+#endif
+
+#if defined(INKNIT_ENABLE_BENCHMARKS) || defined(INKNIT_DISABLE_LUT)
+INKNIT_BMPREFIX
+INKNIT_DEFPROTO_DRAW_HLINE(INTERNAL_FUNCNAME(draw_hline_arith)) {
+	const uint32_t y_pixel     = bytes_to_pixels(image->stride) * y;
+	const uint32_t start_pixel = y_pixel + x1;
+	const uint32_t end_pixel   = y_pixel + x2;
+
+	const uint32_t start_wordidx = pixels_to_wordidx(start_pixel);
+	const uint32_t end_wordidx   = pixels_to_wordidx(end_pixel);
+
+	const uint32_t start_bitoffs = pixels_to_bitoffs(start_pixel);
+	const uint32_t end_bitoffs   = pixels_to_bitoffs(end_pixel);
+
+	const uint32_t pattern = INTERNAL_FUNCNAME(fillWordWithColor)(color);
+
+	uint32_t *data = (uint32_t *)image->data;
+	if (start_wordidx == end_wordidx) {
+		// Single-word line
+		const uint32_t total_bits = (end_bitoffs + BITS_PER_PIXEL) - start_bitoffs;
+#if IS_LITTLE
+		const uint32_t mask = total_bits == 32u
+								? (~0u)
+								: swap_if_required(((1u << total_bits) - 1u) << start_bitoffs);
+#else
+		const uint32_t mask = total_bits == 0u
+								? (~0u)
+								: swap_if_required(((~0u) << (32u - total_bits)) >> start_bitoffs);
+#endif
+
+		const uint32_t read_word  = data[start_wordidx];
+		const uint32_t write_word = (read_word & ~mask) | (pattern & mask);
+		data[start_wordidx]       = write_word;
+	} else {
+		// Head word
+		{
+#if IS_LITTLE
+			const uint32_t mask = swap_if_required((~0u) << start_bitoffs);
+#else
+			const uint32_t mask
+				= start_bitoffs == 0u ? (~0u) : swap_if_required((1u << (32 - start_bitoffs)) - 1u);
+#endif
+
+			const uint32_t read_word  = data[start_wordidx];
+			const uint32_t write_word = (read_word & ~mask) | (pattern & mask);
+			data[start_wordidx]       = write_word;
+		}
+
+		// Middle words
+		for (uint32_t i = start_wordidx + 1; i < end_wordidx; ++i) {
+			data[i] = pattern;
+		}
+
+		// Tail word
+		{
+			const uint32_t bit_length = end_bitoffs + BITS_PER_PIXEL;
+#if IS_LITTLE
+			const uint32_t mask
+				= bit_length >= 32u ? (~0u) : swap_if_required((1u << bit_length) - 1u);
+#else
+			const uint32_t mask = swap_if_required((~0u) << (32u - bit_length));
+#endif
+
+			const uint32_t read_word  = data[end_wordidx];
+			const uint32_t write_word = (read_word & ~mask) | (pattern & mask);
+			data[end_wordidx]         = write_word;
+		}
+	}
+}
+#endif
+
+
+#if defined(INKNIT_ENABLE_BENCHMARKS) || !defined(INKNIT_DISABLE_LUT)
+#template_switch LAYOUT_NAME
+#template_case "x1"
+static const uint32_t INKNIT_ARRAY_IN_RAM(INTERNAL_VARNAME(masks_head), 32) = {
+#ifdef INKNIT_BYTEORDER_BIG
+	0xFFFFFFFF, 0x7FFFFFFF, 0x3FFFFFFF, 0x1FFFFFFF, 0x0FFFFFFF, 0x07FFFFFF, 0x03FFFFFF, 0x01FFFFFF,
+	0x00FFFFFF, 0x007FFFFF, 0x003FFFFF, 0x001FFFFF, 0x000FFFFF, 0x0007FFFF, 0x0003FFFF, 0x0001FFFF,
+	0x0000FFFF, 0x00007FFF, 0x00003FFF, 0x00001FFF, 0x00000FFF, 0x000007FF, 0x000003FF, 0x000001FF,
+	0x000000FF, 0x0000007F, 0x0000003F, 0x0000001F, 0x0000000F, 0x00000007, 0x00000003, 0x00000001,
+#else
+	0xFFFFFFFF, 0xFFFFFF7F, 0xFFFFFF3F, 0xFFFFFF1F, 0xFFFFFF0F, 0xFFFFFF07, 0xFFFFFF03, 0xFFFFFF01,
+	0xFFFFFF00, 0xFFFF7F00, 0xFFFF3F00, 0xFFFF1F00, 0xFFFF0F00, 0xFFFF0700, 0xFFFF0300, 0xFFFF0100,
+	0xFFFF0000, 0xFF7F0000, 0xFF3F0000, 0xFF1F0000, 0xFF0F0000, 0xFF070000, 0xFF030000, 0xFF010000,
+	0xFF000000, 0x7F000000, 0x3F000000, 0x1F000000, 0x0F000000, 0x07000000, 0x03000000, 0x01000000,
+#endif
+};
+// static const uint32_t INKNIT_ARRAY_IN_RAM(INTERNAL_VARNAME(masks_tail), 32) = {
+// #ifdef INKNIT_BYTEORDER_LITTLE
+// 	0x00000080, 0x000000C0, 0x000000E0, 0x000000F0, 0x000000F8, 0x000000FC, 0x000000FE, 0x000000FF,
+// 	0x000080FF, 0x0000C0FF, 0x0000E0FF, 0x0000F0FF, 0x0000F8FF, 0x0000FCFF, 0x0000FEFF, 0x0000FFFF,
+// 	0x0080FFFF, 0x00C0FFFF, 0x00E0FFFF, 0x00F0FFFF, 0x00F8FFFF, 0x00FCFFFF, 0x00FEFFFF, 0x00FFFFFF,
+// 	0x80FFFFFF, 0xC0FFFFFF, 0xE0FFFFFF, 0xF0FFFFFF, 0xF8FFFFFF, 0xFCFFFFFF, 0xFEFFFFFF, 0xFFFFFFFF,
+// #else
+// 	0x80000000, 0xC0000000, 0xE0000000, 0xF0000000, 0xF8000000, 0xFC000000, 0xFE000000, 0xFF000000,
+// 	0xFF800000, 0xFFC00000, 0xFFE00000, 0xFFF00000, 0xFFF80000, 0xFFFC0000, 0xFFFE0000, 0xFFFF0000,
+// 	0xFFFF8000, 0xFFFFC000, 0xFFFFE000, 0xFFFFF000, 0xFFFFF800, 0xFFFFFC00, 0xFFFFFE00, 0xFFFFFF00,
+// 	0xFFFFFF80, 0xFFFFFFC0, 0xFFFFFFE0, 0xFFFFFFF0, 0xFFFFFFF8, 0xFFFFFFFC, 0xFFFFFFFE, 0xFFFFFFFF,
+// #endif
+// };
+#template_case "x1lsb"
+static const uint32_t INKNIT_ARRAY_IN_RAM(INTERNAL_VARNAME(masks_tail), 32) = {
+#ifdef INKNIT_BYTEORDER_BIG
+	0x01000000, 0x03000000, 0x07000000, 0x0F000000, 0x1F000000, 0x3F000000, 0x7F000000, 0xFF000000,
+	0xFF010000, 0xFF030000, 0xFF070000, 0xFF0F0000, 0xFF1F0000, 0xFF3F0000, 0xFF7F0000, 0xFFFF0000,
+	0xFFFF0100, 0xFFFF0300, 0xFFFF0700, 0xFFFF0F00, 0xFFFF1F00, 0xFFFF3F00, 0xFFFF7F00, 0xFFFFFF00,
+	0xFFFFFF01, 0xFFFFFF03, 0xFFFFFF07, 0xFFFFFF0F, 0xFFFFFF1F, 0xFFFFFF3F, 0xFFFFFF7F, 0xFFFFFFFF,
+#else
+	0x00000001, 0x00000003, 0x00000007, 0x0000000F, 0x0000001F, 0x0000003F, 0x0000007F, 0x000000FF,
+	0x000001FF, 0x000003FF, 0x000007FF, 0x00000FFF, 0x00001FFF, 0x00003FFF, 0x00007FFF, 0x0000FFFF,
+	0x0001FFFF, 0x0003FFFF, 0x0007FFFF, 0x000FFFFF, 0x001FFFFF, 0x003FFFFF, 0x007FFFFF, 0x00FFFFFF,
+	0x01FFFFFF, 0x03FFFFFF, 0x07FFFFFF, 0x0FFFFFFF, 0x1FFFFFFF, 0x3FFFFFFF, 0x7FFFFFFF, 0xFFFFFFFF,
+#endif
+};
+#template_case "x2"
+// clang-format off
+static const uint32_t INKNIT_ARRAY_IN_RAM(INTERNAL_VARNAME(masks_head), 16) = {
+#ifdef INKNIT_BYTEORDER_BIG
+	// start_wordoffs = 0, 2, 4, ...
+	0xFFFFFFFF, 0x3FFFFFFF, 0x0FFFFFFF, 0x03FFFFFF,
+	0x00FFFFFF, 0x003FFFFF, 0x000FFFFF, 0x0003FFFF,
+	0x0000FFFF, 0x00003FFF, 0x00000FFF, 0x000003FF,
+	0x000000FF, 0x0000003F, 0x0000000F, 0x00000003,
+#else
+	// start_wordoffs = 0, 2, 4, ... (swapped for LE CPU)
+	0xFFFFFFFF, 0xFFFFFF3F, 0xFFFFFF0F, 0xFFFFFF03,
+	0xFFFFFF00, 0xFFFF3F00, 0xFFFF0F00, 0xFFFF0300,
+	0xFFFF0000, 0xFF3F0000, 0xFF0F0000, 0xFF030000,
+	0xFF000000, 0x3F000000, 0x0F000000, 0x03000000,
+#endif
+};
+// clang-format on
+#template_case "x2lsb"
+// clang-format off
+static const uint32_t INKNIT_ARRAY_IN_RAM(INTERNAL_VARNAME(masks_tail), 16) = {
+#ifdef INKNIT_BYTEORDER_BIG
+	// end_wordoffs = 0, 2, 4, ... (swapped for BE CPU)
+	0x03000000, 0x0F000000, 0x3F000000, 0xFF000000,
+	0xFF030000, 0xFF0F0000, 0xFF3F0000, 0xFFFF0000,
+	0xFFFF0300, 0xFFFF0F00, 0xFFFF3F00, 0xFFFFFF00,
+	0xFFFFFF03, 0xFFFFFF0F, 0xFFFFFF3F, 0xFFFFFFFF,
+#else
+	// end_wordoffs = 0, 2, 4, ...
+	0x00000003, 0x0000000F, 0x0000003F, 0x000000FF,
+	0x000003FF, 0x00000FFF, 0x00003FFF, 0x0000FFFF,
+	0x0003FFFF, 0x000FFFFF, 0x003FFFFF, 0x00FFFFFF,
+	0x03FFFFFF, 0x0FFFFFFF, 0x3FFFFFFF, 0xFFFFFFFF,
+#endif
+};
+// clang-format on
+#template_case "x4"
+// clang-format off
+static const uint32_t INKNIT_ARRAY_IN_RAM(INTERNAL_VARNAME(masks_head), 8) = {
+#ifdef INKNIT_BYTEORDER_BIG
+	// start_wordoffs = 0, 4, 8, ...
+	0xFFFFFFFF, 0x0FFFFFFF, 0x00FFFFFF, 0x000FFFFF,
+	0x0000FFFF, 0x00000FFF, 0x000000FF, 0x0000000F,
+#else
+	// start_wordoffs = 0, 4, 8, ... (swapped for LE CPU)
+	0xFFFFFFFF, 0xFFFFFF0F, 0xFFFFFF00, 0xFFFF0F00,
+	0xFFFF0000, 0xFF0F0000, 0xFF000000, 0x0F000000,
+#endif
+};
+// clang-format on
+#template_case "x4lsb"
+// clang-format off
+static const uint32_t INKNIT_ARRAY_IN_RAM(INTERNAL_VARNAME(masks_tail), 8) = {
+#ifdef INKNIT_BYTEORDER_BIG
+	// end_wordoffs = 0, 4, 8, ... (swapped for BE CPU)
+	0x0F000000, 0xFF000000, 0xFF0F0000, 0xFFFF0000,
+	0xFFFFFF0F, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+#else
+	// end_wordoffs = 0, 4, 8, ...
+	0x0000000F, 0x000000FF, 0x00000FFF, 0x0000FFFF,
+	0x000FFFFF, 0x00FFFFFF, 0x0FFFFFFF, 0xFFFFFFFF,
+#endif
+};
+// clang-format on
+#template_endswitch
+
+INKNIT_BMPREFIX
+INKNIT_DEFPROTO_DRAW_HLINE(INTERNAL_FUNCNAME(draw_hline_lut)) {
+	const uint32_t y_pixel     = bytes_to_pixels(image->stride) * y;
+	const uint32_t start_pixel = y_pixel + x1;
+	const uint32_t end_pixel   = y_pixel + x2;
+
+	const uint32_t start_wordidx = pixels_to_wordidx(start_pixel);
+	const uint32_t end_wordidx   = pixels_to_wordidx(end_pixel);
+
+	const uint32_t start_pixoffs = pixels_to_pixoffs(start_pixel);
+	const uint32_t end_pixoffs   = pixels_to_pixoffs(end_pixel);
+
+	const uint32_t pattern = INTERNAL_FUNCNAME(fillWordWithColor)(color);
+
+	uint32_t *data = (uint32_t *)image->data;
+	if (start_wordidx == end_wordidx) {
+		// Single-word line
+		const uint32_t start_bitoffs = pixoffs_to_bitoffs(start_pixoffs);
+		const uint32_t total_bits
+			= (pixoffs_to_bitoffs(end_pixoffs) + BITS_PER_PIXEL) - start_bitoffs;
+#if IS_LITTLE
+		const uint32_t mask = total_bits == 32u
+								? (~0u)
+								: swap_if_required(((1u << total_bits) - 1u) << start_bitoffs);
+#else
+		const uint32_t mask = total_bits == 0u
+								? (~0u)
+								: swap_if_required(((~0u) << (32u - total_bits)) >> start_bitoffs);
+#endif
+
+		const uint32_t read_word  = data[start_wordidx];
+		const uint32_t write_word = (read_word & ~mask) | (pattern & mask);
+		data[start_wordidx]       = write_word;
+	} else {
+		// Head word
+		{
+#if IS_LITTLE
+			const uint32_t mask = swap_if_required((~0u) << pixoffs_to_bitoffs(start_pixoffs));
+#else
+			const uint32_t mask = INTERNAL_VARNAME(masks_head)[start_pixoffs];
+#endif
+
+			const uint32_t read_word  = data[start_wordidx];
+			const uint32_t write_word = (read_word & ~mask) | (pattern & mask);
+			data[start_wordidx]       = write_word;
+		}
+
+		// Middle words
+		for (uint32_t i = start_wordidx + 1; i < end_wordidx; ++i) {
+			data[i] = pattern;
+		}
+
+		// Tail word
+		{
+#if IS_LITTLE
+			const uint32_t mask = INTERNAL_VARNAME(masks_tail)[end_pixoffs];
+#else
+			const uint32_t bit_length = pixoffs_to_bitoffs(end_pixoffs) + BITS_PER_PIXEL;
+			const uint32_t mask       = swap_if_required((~0u) << (32u - bit_length));
+#endif
+
+			const uint32_t read_word  = data[end_wordidx];
+			const uint32_t write_word = (read_word & ~mask) | (pattern & mask);
+			data[end_wordidx]         = write_word;
+		}
+	}
+}
+#endif
+
+void PUBLIC_FUNCNAME(draw_hline)(
+	struct inknit_image *image,
+	inknit_uint_t        x1,
+	inknit_uint_t        x2,
+	inknit_uint_t        y,
+	inknit_color_t       color
+) {
+	INKNIT_ASSUME(image != NULL, MSG_IMAGE_IS_NULL);
+	INKNIT_ASSUME(image->pixel_layout == TARGET_LAYOUT, MSG_IMAGE_IS_INVALID_LAYOUT);
+	INKNIT_ASSUME(image->alignment >= TARGET_ALIGNMENT, MSG_IMAGE_IS_INVALID_ALIGN);
+
+	INKNIT_ASSUME(x1 <= x2, MSG_X1_GREATER_THAN_X2);
+	INKNIT_ASSUME(x2 <= INKNIT_X_MAX, MSG_X2_GREATER_THAN_MAX_VALUE);
+	INKNIT_ASSUME(y <= INKNIT_Y_MAX, MSG_Y_GREATER_THAN_MAX_VALUE);
+
+	INKNIT_ASSUME(color <= POW2_BITS_PER_PIXEL_NEG1, MSG_COLOR_GREATER_THAN_MAX_VALUE);
+
+	if (x1 == x2) {
+		INTERNAL_FUNCNAME(set)(image, x1, y, color);
+	} else {
+#ifdef INKNIT_DISABLE_LUT
+		INTERNAL_FUNCNAME(draw_hline_arith)(image, x1, x2, y, color);
+#else
+		INTERNAL_FUNCNAME(draw_hline_lut)(image, x1, x2, y, color);
+#endif
+	}
+}

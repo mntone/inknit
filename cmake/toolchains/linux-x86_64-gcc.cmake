@@ -1,0 +1,9 @@
+set(CMAKE_SYSTEM_NAME Linux)
+set(CMAKE_SYSTEM_PROCESSOR x86_64)
+set(INKNIT_TOOLCHAIN_PREFIX "x86_64-linux-gnu" CACHE INTERNAL "")
+
+set(INKNIT_GCC_CPU_FLAGS "-march=x86-64-v3")
+
+include(${CMAKE_CURRENT_LIST_DIR}/common-gcc.cmake)
+
+unset(INKNIT_GCC_CPU_FLAGS)

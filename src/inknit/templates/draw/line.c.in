@@ -1,0 +1,152 @@
+/*
+ * inknit <https://github.com/mntone/inknit>
+ *
+ * Copyright (C) 2025 mntone <901816+mntone@users.noreply.github.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+#ifdef __INTELLISENSE__
+#include "../../x1lsb/base.h"
+#include "../base.h.in"
+#else
+#include "${LAYOUT_NAME}/base.h"
+#include "../base.h"
+#endif
+
+#ifdef INKNIT_ENABLE_BENCHMARKS
+void INTERNAL_FUNCNAME(draw_line_2loop)(
+	struct inknit_image *image,
+	inknit_uint_t        x1,
+	inknit_uint_t        y1,
+	inknit_uint_t        x2,
+	inknit_uint_t        y2,
+	inknit_color_t       color
+) {
+	int32_t x = (int32_t)x1;
+	int32_t y = (int32_t)y1;
+
+	int32_t dx = (int32_t)x2 - x;
+	int32_t dy = (int32_t)y2 - y;
+
+	const int32_t sx = dx > 0 ? 1 : dx < 0 ? -1 : 0;
+	const int32_t sy = dy > 0 ? 1 : dy < 0 ? -1 : 0;
+
+	dx = dx < 0 ? -dx : dx;
+	dy = dy < 0 ? -dy : dy;
+
+	if (dx > dy) {
+		int32_t err = dx >> 1;
+		while (1) {
+			INTERNAL_FUNCNAME(set)(image, (uint32_t)x, (uint32_t)y, color);
+
+			if (x == x2) {
+				break;
+			}
+
+			x += sx;
+			err -= dy;
+			if (err <= 0) {
+				y += sy;
+				err += dx;
+			}
+		}
+	} else {
+		int32_t err = dy >> 1;
+		while (1) {
+			INTERNAL_FUNCNAME(set)(image, (uint32_t)x, (uint32_t)y, color);
+
+			if (y == y2) {
+				break;
+			}
+
+			y += sy;
+			err -= dx;
+			if (err <= 0) {
+				x += sx;
+				err += dy;
+			}
+		}
+	}
+}
+#endif
+
+void INTERNAL_FUNCNAME(draw_line_1loop)(
+	struct inknit_image *image,
+	inknit_uint_t        x1,
+	inknit_uint_t        y1,
+	inknit_uint_t        x2,
+	inknit_uint_t        y2,
+	inknit_color_t       color
+) {
+	int32_t x = (int32_t)x1;
+	int32_t y = (int32_t)y1;
+
+	int32_t dx = (int32_t)x2 - x;
+	int32_t dy = (int32_t)y2 - y;
+
+	const int32_t sx = dx > 0 ? 1 : -1;
+	const int32_t sy = dy > 0 ? 1 : -1;
+
+	dx = dx < 0 ? -dx : dx;
+	dy = dy < 0 ? dy : -dy;
+
+	int32_t err = dx + dy;
+	while (1) {
+		INTERNAL_FUNCNAME(set)(image, (uint32_t)x, (uint32_t)y, color);
+
+		if (x == (int32_t)x2 && y == (int32_t)y2) {
+			break;
+		}
+
+		const int32_t e2 = err << 1;
+		if (e2 >= dy) {
+			err += dy;
+			x += sx;
+		}
+		if (e2 <= dx) {
+			err += dx;
+			y += sy;
+		}
+	}
+}
+
+void PUBLIC_FUNCNAME(draw_line)(
+	struct inknit_image *image,
+	inknit_uint_t        x1,
+	inknit_uint_t        y1,
+	inknit_uint_t        x2,
+	inknit_uint_t        y2,
+	inknit_color_t       color
+) {
+	INKNIT_ASSUME(image != NULL, MSG_IMAGE_IS_NULL);
+	INKNIT_ASSUME(image->pixel_layout == TARGET_LAYOUT, MSG_IMAGE_IS_INVALID_LAYOUT);
+	INKNIT_ASSUME(image->alignment >= TARGET_ALIGNMENT, MSG_IMAGE_IS_INVALID_ALIGN);
+
+	INKNIT_ASSUME(x1 <= x2 || y1 <= y2, "ERROR: x1 > x2 or y1 > y2");
+
+	INKNIT_ASSUME(color <= POW2_BITS_PER_PIXEL_NEG1, MSG_COLOR_GREATER_THAN_MAX_VALUE);
+
+	if (x1 == x2) {
+		PUBLIC_FUNCNAME(draw_vline)(image, x1, y1, y2, color);
+		return;
+	}
+
+	if (y1 == y2) {
+		PUBLIC_FUNCNAME(draw_hline)(image, x1, x2, y1, color);
+		return;
+	}
+
+	INTERNAL_FUNCNAME(draw_line_1loop)(image, x1, y1, x2, y2, color);
+}

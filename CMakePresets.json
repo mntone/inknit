@@ -1,0 +1,419 @@
+{
+	"version": 3,
+	"cmakeMinimumRequired": {
+		"major": 3,
+		"minor": 21,
+		"patch": 0
+	},
+	"configurePresets": [
+		{
+			"name": "default",
+			"displayName": "Default",
+			"generator": "Ninja",
+			"binaryDir": "${sourceDir}/build/.${presetName}",
+			"cacheVariables": {
+				"INKNIT_ENABLE_BENCHMARKS": {
+					"type": "BOOL",
+					"value": true
+				},
+				"INKNIT_ENABLE_EXPORTS": {
+					"type": "BOOL",
+					"value": false
+				},
+				"INKNIT_ENABLE_OBJDUMP": {
+					"type": "BOOL",
+					"value": false
+				},
+				"INKNIT_BUILD_SHARED_LIBS": {
+					"type": "BOOL",
+					"value": true
+				},
+				"INKNIT_USE_MEMORY_H": {
+					"type": "BOOL",
+					"value": true
+				}
+			}
+		},
+		{
+			"name": "debug",
+			"hidden": true,
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "Debug",
+				"INKNIT_ENABLE_EXPORTS": true
+			}
+		},
+		{
+			"name": "debug-optimize",
+			"hidden": true,
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "RelWithDebInfo",
+				"INKNIT_ENABLE_OBJDUMP": true
+			}
+		},
+		{
+			"name": "release",
+			"hidden": true,
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "Release",
+				"INKNIT_ENABLE_OBJDUMP": true
+			}
+		},
+		{
+			"name": "win32-common-gcc",
+			"hidden": true,
+			"inherits": [
+				"default"
+			],
+			"condition": {
+				"type": "equals",
+				"lhs": "${hostSystemName}",
+				"rhs": "Linux"
+			}
+		},
+		{
+			"name": "win32-x86-gcc",
+			"hidden": true,
+			"inherits": [
+				"win32-common-gcc"
+			],
+			"cacheVariables": {
+				"CMAKE_TOOLCHAIN_FILE": "cmake/toolchains/win32-x86-gcc.cmake"
+			}
+		},
+		{
+			"name": "win32-x86-gcc-debug",
+			"displayName": "Windows x86 [Debug]",
+			"inherits": [
+				"debug",
+				"win32-x86-gcc"
+			]
+		},
+		{
+			"name": "win32-x86-gcc-release",
+			"displayName": "Windows x86 [Release]",
+			"inherits": [
+				"release",
+				"win32-x86-gcc"
+			]
+		},
+		{
+			"name": "win32-x86_64-gcc",
+			"hidden": true,
+			"inherits": [
+				"win32-common-gcc"
+			],
+			"cacheVariables": {
+				"CMAKE_TOOLCHAIN_FILE": "cmake/toolchains/win32-x86_64-gcc.cmake"
+			}
+		},
+		{
+			"name": "win32-x86_64-gcc-debug",
+			"displayName": "Windows x86_64 [Debug]",
+			"inherits": [
+				"debug",
+				"win32-x86_64-gcc"
+			]
+		},
+		{
+			"name": "win32-x86_64-gcc-release",
+			"displayName": "Windows x86_64 [Release]",
+			"inherits": [
+				"release",
+				"win32-x86_64-gcc"
+			]
+		},
+		{
+			"name": "linux-common",
+			"hidden": true,
+			"inherits": [
+				"default"
+			],
+			"cacheVariables": {
+				"CMAKE_INSTALL_PREFIX": "/usr"
+			},
+			"condition": {
+				"type": "equals",
+				"lhs": "${hostSystemName}",
+				"rhs": "Linux"
+			},
+			"vendor": {
+				"microsoft.com/VisualStudioSettings/CMake/1.0": {
+					"hostOS": [
+						"Linux"
+					]
+				},
+				"microsoft.com/VisualStudioRemoteSettings/CMake/1.0": {
+					"sourceDir": "$env{HOME}/.vs/$ms{projectDirName}"
+				}
+			}
+		},
+		{
+			"name": "linux-x86-gcc",
+			"hidden": true,
+			"inherits": [
+				"linux-common"
+			],
+			"cacheVariables": {
+				"CMAKE_INSTALL_LIBDIR": "lib/i686-linux-gnu",
+				"CMAKE_TOOLCHAIN_FILE": "cmake/toolchains/linux-x86-gcc.cmake"
+			}
+		},
+		{
+			"name": "linux-x86-gcc-debug",
+			"displayName": "Linux x86 (gcc) [Debug]",
+			"inherits": [
+				"debug",
+				"linux-x86-gcc"
+			]
+		},
+		{
+			"name": "linux-x86-gcc-release",
+			"displayName": "Linux x86 (gcc) [Release]",
+			"inherits": [
+				"release",
+				"linux-x86-gcc"
+			]
+		},
+		{
+			"name": "linux-x86-clang",
+			"hidden": true,
+			"inherits": [
+				"linux-common"
+			],
+			"cacheVariables": {
+				"CMAKE_INSTALL_LIBDIR": "lib/i686-linux-gnu",
+				"CMAKE_TOOLCHAIN_FILE": "cmake/toolchains/linux-x86-clang.cmake"
+			}
+		},
+		{
+			"name": "linux-x86-clang-debug",
+			"displayName": "Linux x86 (clang) [Debug]",
+			"inherits": [
+				"debug",
+				"linux-x86-clang"
+			]
+		},
+		{
+			"name": "linux-x86-clang-release",
+			"displayName": "Linux x86 (clang) [Release]",
+			"inherits": [
+				"release",
+				"linux-x86-clang"
+			]
+		},
+		{
+			"name": "linux-x86_64-gcc",
+			"hidden": true,
+			"inherits": [
+				"linux-common"
+			],
+			"cacheVariables": {
+				"CMAKE_INSTALL_LIBDIR": "lib/x86_64-linux-gnu",
+				"CMAKE_TOOLCHAIN_FILE": "cmake/toolchains/linux-x86_64-gcc.cmake"
+			}
+		},
+		{
+			"name": "linux-x86_64-gcc-debug",
+			"displayName": "Linux x86_64 (gcc) [Debug]",
+			"inherits": [
+				"debug",
+				"linux-x86_64-gcc"
+			]
+		},
+		{
+			"name": "linux-x86_64-gcc-release",
+			"displayName": "Linux x86_64 (gcc) [Release]",
+			"inherits": [
+				"release",
+				"linux-x86_64-gcc"
+			]
+		},
+		{
+			"name": "linux-x86_64-clang",
+			"hidden": true,
+			"inherits": [
+				"linux-common"
+			],
+			"cacheVariables": {
+				"CMAKE_INSTALL_LIBDIR": "lib/x86_64-linux-gnu",
+				"CMAKE_TOOLCHAIN_FILE": "cmake/toolchains/linux-x86_64-clang.cmake"
+			}
+		},
+		{
+			"name": "linux-x86_64-clang-debug",
+			"displayName": "Linux x86_64 (clang) [Debug]",
+			"inherits": [
+				"debug",
+				"linux-x86_64-clang"
+			]
+		},
+		{
+			"name": "linux-x86_64-clang-release",
+			"displayName": "Linux x86_64 (clang) [Release]",
+			"inherits": [
+				"release",
+				"linux-x86_64-clang"
+			]
+		},
+		{
+			"name": "linux-aarch64-gcc",
+			"hidden": true,
+			"inherits": [
+				"linux-common"
+			],
+			"cacheVariables": {
+				"CMAKE_INSTALL_LIBDIR": "lib/aarch64-linux-gnu",
+				"CMAKE_TOOLCHAIN_FILE": "cmake/toolchains/linux-aarch64-gcc.cmake"
+			}
+		},
+		{
+			"name": "linux-aarch64-gcc-debug",
+			"displayName": "Linux ARM64 (gcc) [Debug]",
+			"inherits": [
+				"debug",
+				"linux-aarch64-gcc"
+			]
+		},
+		{
+			"name": "linux-aarch64-gcc-release",
+			"displayName": "Linux ARM64 (gcc) [Release]",
+			"inherits": [
+				"release",
+				"linux-aarch64-gcc"
+			]
+		},
+		{
+			"name": "linux-aarch64-clang",
+			"hidden": true,
+			"inherits": [
+				"linux-common"
+			],
+			"cacheVariables": {
+				"CMAKE_INSTALL_LIBDIR": "lib/aarch64-linux-gnu",
+				"CMAKE_TOOLCHAIN_FILE": "cmake/toolchains/linux-aarch64-clang.cmake"
+			}
+		},
+		{
+			"name": "linux-aarch64-clang-debug",
+			"displayName": "Linux ARM64 (clang) [Debug]",
+			"inherits": [
+				"debug",
+				"linux-aarch64-clang"
+			]
+		},
+		{
+			"name": "linux-aarch64-clang-release",
+			"displayName": "Linux ARM64 (clang) [Release]",
+			"inherits": [
+				"release",
+				"linux-aarch64-clang"
+			]
+		},
+		{
+			"name": "pico-rp2040-gcc",
+			"hidden": true,
+			"inherits": [
+				"default"
+			],
+			"cacheVariables": {
+				"CMAKE_TOOLCHAIN_FILE": "cmake/toolchains/pico-rp2040-gcc.cmake",
+				"INKNIT_BUILD_LIB_ONLY": true,
+				"INKNIT_TARGET": "pico"
+			}
+		},
+		{
+			"name": "pico-rp2040-gcc-debug",
+			"displayName": "RP2040 (Cortex-M0+) [Debug]",
+			"inherits": [
+				"debug",
+				"pico-rp2040-gcc"
+			]
+		},
+		{
+			"name": "pico-rp2040-gcc-release",
+			"displayName": "RP2040 (Cortex-M0+) [Release]",
+			"inherits": [
+				"release",
+				"pico-rp2040-gcc"
+			]
+		},
+		{
+			"name": "pico-rp2350-gcc",
+			"hidden": true,
+			"inherits": [
+				"default"
+			],
+			"cacheVariables": {
+				"CMAKE_TOOLCHAIN_FILE": "cmake/toolchains/pico-rp2350-gcc.cmake",
+				"INKNIT_BUILD_LIB_ONLY": true,
+				"INKNIT_TARGET": "pico"
+			}
+		},
+		{
+			"name": "pico-rp2350-gcc-debug",
+			"displayName": "RP2350 (Cortex-M33) [Debug]",
+			"inherits": [
+				"debug",
+				"pico-rp2350-gcc"
+			]
+		},
+		{
+			"name": "pico-rp2350-gcc-release",
+			"displayName": "RP2350 (Cortex-M33) [Release]",
+			"inherits": [
+				"release",
+				"pico-rp2350-gcc"
+			]
+		}
+	],
+	"buildPresets": [
+		{
+			"name": "win32-x86-gcc-release",
+			"configurePreset": "win32-x86-gcc-release",
+			"displayName": "Release",
+			"cleanFirst": true
+		},
+		{
+			"name": "win32-x86_64-gcc-release",
+			"configurePreset": "win32-x86_64-gcc-release",
+			"displayName": "Release",
+			"cleanFirst": true
+		},
+		{
+			"name": "linux-x86-gcc-release",
+			"configurePreset": "linux-x86-gcc-release",
+			"displayName": "Release",
+			"cleanFirst": true
+		},
+		{
+			"name": "linux-x86_64-gcc-release",
+			"configurePreset": "linux-x86_64-gcc-release",
+			"displayName": "Release",
+			"cleanFirst": true
+		},
+		{
+			"name": "linux-x86_64-clang-release",
+			"configurePreset": "linux-x86_64-clang-release",
+			"displayName": "Release",
+			"cleanFirst": true
+		},
+		{
+			"name": "linux-aarch64-gcc-release",
+			"configurePreset": "linux-aarch64-gcc-release",
+			"displayName": "Release",
+			"cleanFirst": true
+		},
+		{
+			"name": "pico-rp2040-gcc-release",
+			"configurePreset": "pico-rp2040-gcc-release",
+			"displayName": "Release",
+			"cleanFirst": true
+		},
+		{
+			"name": "pico-rp2350-gcc-release",
+			"configurePreset": "pico-rp2350-gcc-release",
+			"displayName": "Release",
+			"cleanFirst": true
+		}
+	]
+}

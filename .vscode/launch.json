@@ -1,0 +1,52 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Flexible Debug",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "${command:cmake.launchTargetPath}",
+			"cwd": "${command:cmake.launchTargetDirectory}",
+			"stopAtEntry": false,
+			"MIMode": "gdb",
+			"miDebuggerPath": "gdb-multiarch",
+			"miDebuggerServerAddress": "localhost:3333",
+			"useExtendedRemote": true,
+			"setupCommands": [
+				{
+					"description": "Enable pretty-printing for gdb",
+					"text": "-enable-pretty-printing",
+					"ignoreFailures": true
+				},
+				{
+					"description": "Set Disassembly Flavor to Intel",
+					"text": "-gdb-set disassembly-flavor intel",
+					"ignoreFailures": true
+				}
+			],
+			"preLaunchTask": "Shell Script: debug"
+		},
+		{
+			"name": "Native Debug",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "${command:cmake.launchTargetPath}",
+			"cwd": "${command:cmake.launchTargetDirectory}",
+			"stopAtEntry": false,
+			"externalConsole": false,
+			"setupCommands": [
+				{
+					"description": "Enable pretty-printing for gdb",
+					"text": "-enable-pretty-printing",
+					"ignoreFailures": true
+				},
+				{
+					"description": "Set Disassembly Flavor to Intel",
+					"text": "-gdb-set disassembly-flavor intel",
+					"ignoreFailures": true
+				}
+			],
+			"preLaunchTask": "CMake: build"
+		}
+	]
+}

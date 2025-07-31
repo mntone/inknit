@@ -1,0 +1,50 @@
+BasedOnStyle: LLVM
+IndentWidth: 4
+TabWidth: 4
+UseTab: ForContinuationAndIndentation
+
+AlignAfterOpenBracket: BlockIndent
+AlignArrayOfStructures: Left
+AlignConsecutiveAssignments: AcrossComments
+AlignConsecutiveBitFields: AcrossComments
+AlignConsecutiveDeclarations: AcrossComments
+AlignConsecutiveMacros: AcrossComments
+AlignConsecutiveShortCaseStatements:
+  Enabled: true
+  AcrossEmptyLines: true
+  AcrossComments: true
+  AlignCaseArrows: true
+  AlignCaseColons: false
+AlignEscapedNewlines: LeftWithLastLine
+AlignOperands: AlignAfterOperator
+AllowAllArgumentsOnNextLine: true
+AllowAllConstructorInitializersOnNextLine: true
+AllowAllParametersOfDeclarationOnNextLine: true
+AllowShortBlocksOnASingleLine: Empty
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: WithoutElse
+AlwaysBreakBeforeMultilineStrings: true
+BinPackArguments: false
+BinPackParameters: OnePerLine
+BitFieldColonSpacing: Both
+BreakBeforeBinaryOperators: All
+BreakBeforeBraces: Attach
+BreakBinaryOperations: RespectPrecedence
+ColumnLimit: 100
+IndentGotoLabels: false
+InsertNewlineAtEOF: true
+#InsertTrailingCommas: Wrapped
+LineEnding: LF
+MaxEmptyLinesToKeep: 2
+PackConstructorInitializers: BinPack
+PointerAlignment: Right
+QualifierAlignment: Custom
+QualifierOrder: ['static', 'inline', 'const', 'volatile', 'type']
+ReflowComments: IndentOnly
+RemoveEmptyLinesInUnwrappedLines: true
+RemoveParentheses: MultipleParentheses
+RemoveSemicolon: true
+SortIncludes: false
+SpacesBeforeTrailingComments: 2
+SpacesInLineCommentPrefix:
+  Minimum: 0

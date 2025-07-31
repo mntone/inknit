@@ -1,0 +1,142 @@
+/*
+ * inknit <https://github.com/mntone/inknit>
+ *
+ * Copyright (C) 2025 mntone <901816+mntone@users.noreply.github.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+#pragma once
+
+#define BITS_PER_WORD       32
+#define BYTES_PER_WORD      4  // BITS_PER_WORD / 8
+#define LOG2_BYTES_PER_WORD 2  // log2(BYTES_PER_WORD)
+#define TARGET_ALIGNMENT    INKNIT_ALIGN32
+
+#define bytes_to_pixels(bytes)  ((uint32_t)(bytes) << LOG2_PIXELS_PER_BYTE)
+#define bytes_to_wordidx(bytes) ((uint32_t)(bytes) >> LOG2_BYTES_PER_WORD)
+
+#define pixels_to_bytes(pixels)   ((uint32_t)(pixels) >> LOG2_PIXELS_PER_BYTE)
+#define pixels_to_wordidx(pixels) ((uint32_t)(pixels) >> LOG2_PIXELS_PER_WORD)
+#define pixels_to_pixoffs(pixels) ((uint32_t)(pixels) & PIXELS_PER_WORD_NEG1)
+#define pixels_to_bitoffs(pixels) (pixels_to_pixoffs(pixels) << LOG2_BITS_PER_PIXEL)
+
+#define pixels_to_pixoffs_byte(pixels) ((uint32_t)(pixels) & PIXELS_PER_BYTE_NEG1)
+#define pixels_to_bitoffs_byte(pixels) (pixels_to_pixoffs_byte(pixels) << LOG2_BITS_PER_PIXEL)
+
+#define pixoffs_to_bitoffs(pixoffs) ((pixoffs) << LOG2_BITS_PER_PIXEL)
+
+#if IS_LITTLE
+#define pixels_to_bitpos(pixels)      ((int32_t)pixels_to_bitoffs(pixels))
+#define pixels_to_bitpos_byte(pixels) ((int32_t)pixels_to_bitoffs_byte(pixels))
+
+#define advance_wordpos(wordpos)        (wordpos) += BITS_PER_PIXEL
+#define build_mask(size)                ((1u << (size)) - 1u)
+#define build_shifted_mask(size, shift) (build_mask(size) << (shift))
+
+#define FIRST_WORDPOS             (0)
+#define is_wordpos_first(wordpos) ((wordpos) == 0)
+#define is_wordpos_last(wordpos)  ((wordpos) == BITS_PER_WORD)
+#else
+#define pixels_to_bitpos(pixels)                                            \
+	((BITS_PER_WORD - BITS_PER_PIXEL) - (int32_t)pixels_to_bitoffs(pixels))
+#define pixels_to_bitpos_byte(pixels)                                \
+	((8 - BITS_PER_PIXEL) - (int32_t)pixels_to_bitoffs_byte(pixels))
+
+#define advance_wordpos(wordpos)        (wordpos) -= BITS_PER_PIXEL
+#define build_mask(size)                ((~0u) << (BITS_PER_WORD - size))
+#define build_shifted_mask(size, shift) (build_mask(size) >> (shift))
+
+#define FIRST_WORDPOS             (BITS_PER_WORD - BITS_PER_PIXEL)
+#define is_wordpos_first(wordpos) ((wordpos) == BITS_PER_WORD)
+#define is_wordpos_last(wordpos)  ((wordpos) == -BITS_PER_PIXEL)
+#endif
+
+#define pixel_value(color, offs) (color) << (offs)
+#define write_mask(offs)         ((uint32_t)POW2_BITS_PER_PIXEL_NEG1 << (offs))
+#define clear_mask(offs)         ~write_mask(offs)
+
+#define get_pixel(word, wordpos)          (((word) >> wordpos) & POW2_BITS_PER_PIXEL_NEG1)
+#define build_pixel32(word, wordpos, val) (((word) & ~write_mask(wordpos)) | ((val) << wordpos))
+
+#if defined(INKNIT_BYTEORDER_LITTLE) && IS_LITTLE || defined(INKNIT_BYTEORDER_BIG) && !IS_LITTLE
+#define swap_if_required(word) (word)
+#else
+#define swap_if_required(word) (INKNIT_BSWAP32(word))
+#endif
+
+
+static INKNIT_ALWAYS_INLINE void INTERNAL_FUNCNAME(set_value8)(
+	uint8_t *const byteptr, const uint8_t clear_mask, const uint8_t pixel_value
+) {
+	uint8_t byte_value = *byteptr;
+	byte_value &= clear_mask;
+	byte_value |= pixel_value;
+	*byteptr = byte_value;
+}
+
+static INKNIT_ALWAYS_INLINE void INTERNAL_FUNCNAME(set_value32)(
+	uint32_t *const word, const uint32_t clear_mask, const uint32_t pixel_value
+) {
+	uint32_t word_value = swap_if_required(*word);
+	word_value &= clear_mask;
+	word_value |= pixel_value;
+	*word = swap_if_required(word_value);
+}
+
+static INKNIT_ALWAYS_INLINE inknit_color_t
+INTERNAL_FUNCNAME(get)(const struct inknit_image *image, uint32_t x, uint32_t y) {
+	const uint32_t        pixel    = bytes_to_pixels(image->stride) * y + x;
+	const uint32_t *const word_ptr = (const uint32_t *)image->data + pixels_to_wordidx(pixel);
+	const int32_t         bitpos   = pixels_to_bitpos(x);
+
+	const uint32_t word  = swap_if_required(*word_ptr);
+	const uint32_t value = get_pixel(word, bitpos);
+	return (inknit_color_t)value;
+}
+
+static INKNIT_ALWAYS_INLINE void
+INTERNAL_FUNCNAME(set)(struct inknit_image *image, uint32_t x, uint32_t y, inknit_color_t color) {
+	const uint32_t pixel   = bytes_to_pixels(image->stride) * y + x;
+	const uint32_t wordidx = pixels_to_wordidx(pixel);
+	const int32_t  bitpos  = pixels_to_bitpos(pixel);
+
+	const uint32_t mask  = write_mask(bitpos);
+	const uint32_t value = color << bitpos;
+
+	uint32_t *const data       = (uint32_t *)image->data;
+	const uint32_t  read_word  = swap_if_required(data[wordidx]);
+	const uint32_t  write_word = (read_word & ~mask) | value;
+	data[wordidx]              = swap_if_required(write_word);
+}
+
+static inline void INTERNAL_FUNCNAME(set_checked)(
+	struct inknit_image *image, int32_t x, int32_t y, inknit_color_t color
+) {
+	if (x < 0 || y < 0 || x >= image->width || y >= image->height) {
+		return;
+	}
+
+	const uint32_t pixel   = (uint32_t)(bytes_to_pixels(image->stride) * (uint32_t)y + (uint32_t)x);
+	const uint32_t wordidx = pixels_to_wordidx(pixel);
+	const int32_t  bitpos  = pixels_to_bitpos(pixel);
+
+	const uint32_t mask  = write_mask(bitpos);
+	const uint32_t value = color << bitpos;
+
+	uint32_t *const data       = (uint32_t *)image->data;
+	const uint32_t  read_word  = swap_if_required(data[wordidx]);
+	const uint32_t  write_word = (read_word & ~mask) | value;
+	data[wordidx]              = swap_if_required(write_word);
+}
