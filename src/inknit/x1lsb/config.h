@@ -24,6 +24,7 @@
 // - Pixel Layout: x1lsb
 // - Pixel Format: index or grayscale
 
+#define INKNIT_CURRENT_GROUP    INKNIT_INTERNAL_GROUP(32, 1, le)
 #define TARGET_LAYOUT           INKNIT_X1LSB
 #define PUBLIC_FUNCNAME(name)   INKNIT_PUBLIC_FUNCNAME(INKNIT_X1LSB_BASE, name)
 #define INTERNAL_FUNCNAME(name) INKNIT_INTERNAL_FUNCNAME(INKNIT_X1LSB_BASE, name)

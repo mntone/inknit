@@ -48,8 +48,12 @@ struct inknit_exports {
 
 	void (*const clear)(struct inknit_image *image, inknit_color_t color) INKNIT_NONNULL(1);
 
+	void (*const draw_circle)(
+		struct inknit_image *image, int32_t cx, int32_t cy, uint32_t radius, inknit_color_t color
+	) INKNIT_NONNULL(1);
+
 	void (*const draw_point)(
-		struct inknit_image *image, inknit_uint_t x, inknit_uint_t y, inknit_color_t color
+		struct inknit_image *image, int32_t x, int32_t y, inknit_color_t color
 	) INKNIT_NONNULL(1);
 
 	void (*const draw_hline)(
@@ -70,10 +74,10 @@ struct inknit_exports {
 
 	void (*const draw_line)(
 		struct inknit_image *image,
-		inknit_uint_t        x1,
-		inknit_uint_t        y1,
-		inknit_uint_t        x2,
-		inknit_uint_t        y2,
+		int32_t              x1,
+		int32_t              y1,
+		int32_t              x2,
+		int32_t              y2,
 		inknit_color_t       color
 	) INKNIT_NONNULL(1);
 

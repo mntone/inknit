@@ -30,6 +30,7 @@ foreach(LANG IN ITEMS C CXX ASM)
 	set(CMAKE_${LANG}_LINK_FLAGS "${INKNIT_CLANG_LINK_FLAGS}")
 	set(CMAKE_${LANG}_OUTPUT_EXTENSION .o)
 endforeach()
+set(CMAKE_ASM_FLAGS_INIT "-Wno-unused-command-line-argument ${CMAKE_ASM_FLAGS_INIT}")
 
 # Look for includes and libraries only in the target system prefix.
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)

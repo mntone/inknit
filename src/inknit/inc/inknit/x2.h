@@ -35,14 +35,20 @@ extern "C" {
 
 // -- MARK: primitive
 inknit_color_t INKNIT_EXPORT
-	PUBN(get)(const struct inknit_image *image, inknit_uint_t x, inknit_uint_t y) INKNIT_NONNULL(1);
+	PUBN(get_pixel)(const struct inknit_image *image, int32_t x, int32_t y) INKNIT_NONNULL(1);
 
 void INKNIT_EXPORT PUBN(clear)(struct inknit_image *image, inknit_color_t color) INKNIT_NONNULL(1);
 
 
+// -- MARK: draw_circle
+void INKNIT_EXPORT PUBN(draw_circle)(
+	struct inknit_image *image, int32_t cx, int32_t cy, int32_t radius, inknit_color_t color
+) INKNIT_NONNULL(1);
+
+
 // -- MARK: draw_point
 void INKNIT_EXPORT PUBN(draw_point)(
-	struct inknit_image *image, inknit_uint_t x, inknit_uint_t y, inknit_color_t color
+	struct inknit_image *image, int32_t x, int32_t y, inknit_color_t color
 ) INKNIT_NONNULL(1);
 
 
@@ -57,14 +63,11 @@ INKNIT_BMPROTO(INKNIT_PROTO_DRAW_VLINE(INTN(draw_vline_pointer)));
 INKNIT_BMPROTO(INKNIT_PROTO_DRAW_VLINE(INTN(draw_vline_pointer_unroll)));
 INKNIT_PROTO(INKNIT_PROTO_DRAW_VLINE(PUBN(draw_vline)));
 
-void INKNIT_EXPORT PUBN(draw_line)(
-	struct inknit_image *image,
-	inknit_uint_t        x1,
-	inknit_uint_t        y1,
-	inknit_uint_t        x2,
-	inknit_uint_t        y2,
-	inknit_color_t       color
-) INKNIT_NONNULL(1);
+
+// -- MARK: draw_line
+INKNIT_BMPROTO(INKNIT_PROTO_DRAW_LINE(INTN(draw_line_2loop)));
+INKNIT_BMPROTO(INKNIT_PROTO_DRAW_LINE(INTN(draw_line_1loop)));
+INKNIT_PROTO(INKNIT_PROTO_DRAW_LINE(PUBN(draw_line)));
 
 void INKNIT_EXPORT PUBN(draw_rect)(
 	struct inknit_image *image,
@@ -81,14 +84,6 @@ void INKNIT_EXPORT PUBN(draw_rectp)(
 	inknit_uint_t        y1,
 	inknit_uint_t        x2,
 	inknit_uint_t        y2,
-	inknit_color_t       color
-) INKNIT_NONNULL(1);
-
-void INKNIT_EXPORT PUBN(draw_circle)(
-	struct inknit_image *image,
-	inknit_uint_t        cx,
-	inknit_uint_t        cy,
-	inknit_uint_t        radius,
 	inknit_color_t       color
 ) INKNIT_NONNULL(1);
 

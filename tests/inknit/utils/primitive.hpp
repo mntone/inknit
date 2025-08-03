@@ -65,42 +65,49 @@ namespace details {
 namespace is_pixel_on {
 
 	INKNIT_NODISCARD
-	static constexpr bool point(uint_t x, uint_t y, uint_t ix, uint_t iy) noexcept {
+	static constexpr bool
+	point(std::int32_t x, std::int32_t y, std::int32_t ix, std::int32_t iy) noexcept {
 		return x == ix && y == iy;
 	}
 
 	INKNIT_NODISCARD
-	static constexpr bool hline(uint_t x, uint_t y, uint_t ix1, uint_t ix2, uint_t iy) noexcept {
+	static constexpr bool hline(
+		std::int32_t x, std::int32_t y, std::int32_t ix1, std::int32_t ix2, std::int32_t iy
+	) noexcept {
 		return ix1 <= x && x <= ix2 && y == iy;
 	}
 
 	INKNIT_NODISCARD
-	static constexpr bool vline(uint_t x, uint_t y, uint_t ix, uint_t iy1, uint_t iy2) noexcept {
+	static constexpr bool vline(
+		std::int32_t x, std::int32_t y, std::int32_t ix, std::int32_t iy1, std::int32_t iy2
+	) noexcept {
 		return x == ix && iy1 <= y && y <= iy2;
 	}
 
 	INKNIT_NODISCARD
-	static constexpr bool rect_with_point(uint_t x, uint_t y, point_t ipt1, point_t ipt2) {
+	static constexpr bool
+	rect_with_point(std::int32_t x, std::int32_t y, point_t ipt1, point_t ipt2) {
 		auto [x1, y1] = ipt1;
 		auto [x2, y2] = ipt2;
 		return (x1 <= x && x <= x2) && (y1 <= y && y <= y2);
 	}
 
 	INKNIT_NODISCARD
-	static constexpr bool rect(uint_t x, uint_t y, point_t ipt, size_t isz) {
+	static constexpr bool rect(std::int32_t x, std::int32_t y, point_t ipt, size_t isz) {
 		auto [width, height] = isz;
 		if (width == 0 || height == 0) {
 			return false;
 		}
 
-		auto [left, top] = ipt;
-		uint_t right     = left + width - 1;
-		uint_t bottom    = top + height - 1;
+		auto [left, top]          = ipt;
+		std::int32_t const right  = left + width - 1;
+		std::int32_t const bottom = top + height - 1;
 		return rect_with_point(x, y, ipt, {right, bottom});
 	}
 
 	INKNIT_NODISCARD
-	static constexpr bool rect_edge_with_point(uint_t x, uint_t y, point_t ipt1, point_t ipt2) {
+	static constexpr bool
+	rect_edge_with_point(std::int32_t x, std::int32_t y, point_t ipt1, point_t ipt2) {
 		auto [x1, y1] = ipt1;
 		auto [x2, y2] = ipt2;
 		return (y == y1 || y == y2) && (x1 <= x && x <= x2)
@@ -108,20 +115,20 @@ namespace is_pixel_on {
 	}
 
 	INKNIT_NODISCARD
-	static constexpr bool rect_edge(uint_t x, uint_t y, point_t ipt, size_t isz) {
+	static constexpr bool rect_edge(std::int32_t x, std::int32_t y, point_t ipt, size_t isz) {
 		auto [width, height] = isz;
 		if (width == 0 || height == 0) {
 			return false;
 		}
 
-		auto [left, top] = ipt;
-		uint_t right     = left + width - 1;
-		uint_t bottom    = top + height - 1;
+		auto [left, top]          = ipt;
+		std::int32_t const right  = left + width - 1;
+		std::int32_t const bottom = top + height - 1;
 		return rect_edge_with_point(x, y, ipt, {right, bottom});
 	}
 
 	INKNIT_NODISCARD
-	static constexpr bool list(uint_t x, uint_t y, pixel_list const& il) noexcept {
+	static constexpr bool list(std::int32_t x, std::int32_t y, pixel_list const& il) noexcept {
 		for (point_t ipt : il) {
 			auto [ix, iy] = ipt;
 			if (x == ix && y == iy) {
@@ -134,14 +141,15 @@ namespace is_pixel_on {
 }  // namespace is_pixel_on
 
 static constexpr auto bind_all_pixels(color_t trueColor = colors::white) noexcept {
-	return [trueColor](uint_t, uint_t) noexcept {
+	return [trueColor](std::int32_t, std::int32_t) noexcept {
 		return trueColor;
 	};
 }
 
 INKNIT_NODISCARD
-static constexpr auto
-bind_is_pixel_on_point(uint_t ix, uint_t iy, color_t trueColor = colors::white) noexcept {
+static constexpr auto bind_is_pixel_on_point(
+	std::int32_t ix, std::int32_t iy, color_t trueColor = colors::white
+) noexcept {
 	using namespace std::placeholders;
 	return details::compose(
 		std::bind(details::boolean_to_color, _1, trueColor),
@@ -151,7 +159,7 @@ bind_is_pixel_on_point(uint_t ix, uint_t iy, color_t trueColor = colors::white) 
 
 INKNIT_NODISCARD
 static constexpr auto bind_is_pixel_on_hline(
-	uint_t ix1, uint_t ix2, uint_t iy, color_t trueColor = colors::white
+	std::int32_t ix1, std::int32_t ix2, std::int32_t iy, color_t trueColor = colors::white
 ) noexcept {
 	using namespace std::placeholders;
 	return details::compose(
@@ -162,7 +170,7 @@ static constexpr auto bind_is_pixel_on_hline(
 
 INKNIT_NODISCARD
 static constexpr auto bind_is_pixel_on_vline(
-	uint_t ix, uint_t iy1, uint_t iy2, color_t trueColor = colors::white
+	std::int32_t ix, std::int32_t iy1, std::int32_t iy2, color_t trueColor = colors::white
 ) noexcept {
 	using namespace std::placeholders;
 	return details::compose(
@@ -224,7 +232,8 @@ bind_is_pixel_on_list(pixel_list const& il, color_t trueColor = colors::white) n
 }
 
 INKNIT_NODISCARD
-constexpr pixel_list make_bresenham_line(int x1, int y1, int x2, int y2) noexcept {
+constexpr pixel_list
+make_bresenham_line(std::int32_t x1, std::int32_t y1, std::int32_t x2, std::int32_t y2) noexcept {
 	pixel_list points;
 
 	bool steep = abs(x2 - x1) < abs(y2 - y1);
@@ -238,13 +247,13 @@ constexpr pixel_list make_bresenham_line(int x1, int y1, int x2, int y2) noexcep
 		std::swap(y1, y2);
 	}
 
-	int const dx    = x2 - x1;
-	int const dy    = abs(y2 - y1);
-	int       error = dx / 2;
-	int       ystep = y1 < y2 ? 1 : -1;
-	int       y     = y1;
+	std::int32_t const dx    = x2 - x1;
+	std::int32_t const dy    = abs(y2 - y1);
+	std::int32_t       error = dx / 2;
+	std::int32_t       ystep = y1 < y2 ? 1 : -1;
+	std::int32_t       y     = y1;
 
-	for (int x = x1; x <= x2; ++x) {
+	for (std::int32_t x = x1; x <= x2; ++x) {
 		if (steep) {
 			points.emplace_back(y, x);
 		} else {
@@ -263,7 +272,9 @@ constexpr pixel_list make_bresenham_line(int x1, int y1, int x2, int y2) noexcep
 
 namespace details {
 
-	constexpr void add_circle_points(pixel_list& points, int cx, int cy, int dx, int dy) noexcept {
+	constexpr void add_circle_points(
+		pixel_list& points, std::int32_t cx, std::int32_t cy, std::int32_t dx, std::int32_t dy
+	) noexcept {
 		points.emplace_back(cx + dx, cy + dy);
 		points.emplace_back(cx - dx, cy + dy);
 		points.emplace_back(cx + dx, cy - dy);
@@ -276,8 +287,8 @@ namespace details {
 
 }  // namespace details
 
-template<std::integral I>
-INKNIT_NODISCARD constexpr pixel_list make_midpoint_circle(I cx, I cy, I radius) noexcept {
+INKNIT_NODISCARD constexpr pixel_list
+make_midpoint_circle(std::int32_t cx, std::int32_t cy, std::int32_t radius) noexcept {
 	pixel_list points;
 	if (radius < 0) {
 		return points;
@@ -287,16 +298,12 @@ INKNIT_NODISCARD constexpr pixel_list make_midpoint_circle(I cx, I cy, I radius)
 		return points;
 	}
 
-	std::int32_t const int_cx     = static_cast<std::int32_t>(cx);
-	std::int32_t const int_cy     = static_cast<std::int32_t>(cy);
-	std::int32_t const int_radisu = static_cast<std::int32_t>(radius);
-
 	std::int32_t dx = 0;
-	std::int32_t dy = int_radisu;
-	std::int32_t d  = 1 - int_radisu;
+	std::int32_t dy = radius;
+	std::int32_t d  = 1 - radius;
 
 	do {
-		details::add_circle_points(points, int_cx, int_cy, dx, dy);
+		details::add_circle_points(points, cx, cy, dx, dy);
 
 		++dx;
 		if (d < 0) {

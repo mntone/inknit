@@ -18,50 +18,75 @@
  */
 
 #ifdef __INTELLISENSE__
-#include "../../x1lsb/base.h"
+#include "../../x2/base.h"
 #include "../base.h.in"
 #else
 #include "${LAYOUT_NAME}/base.h"
 #include "../base.h"
 #endif
 
-static INKNIT_ALWAYS_INLINE void INTERNAL_FUNCNAME(draw_circle_points)(
-	struct inknit_image *image, int32_t cx, int32_t cy, int32_t dx, int32_t dy, inknit_color_t color
+#define _inknit_draw_circle_points32 INKNIT_INTERNAL_FUNC(draw_circle_points, INKNIT_CURRENT_GROUP)
+static inline void _inknit_draw_circle_points32(
+	uint32_t      *data,
+	int32_t        stride,
+	int32_t        cx,
+	int32_t        cy,
+	int32_t        dx,
+	int32_t        dy,
+	inknit_color_t color,
+	int32_t        min_x,
+	int32_t        min_y,
+	int32_t        max_x,
+	int32_t        max_y
 ) {
-	INTERNAL_FUNCNAME(set_checked)(image, cx + dx, cy + dy, color);
-	INTERNAL_FUNCNAME(set_checked)(image, cx + dx, cy - dy, color);
-	INTERNAL_FUNCNAME(set_checked)(image, cx - dx, cy + dy, color);
-	INTERNAL_FUNCNAME(set_checked)(image, cx - dx, cy - dy, color);
+	_inknit_draw_point_with_clip32(
+		data, stride, cx + dx, cy + dy, color, min_x, min_y, max_x, max_y
+	);
+	_inknit_draw_point_with_clip32(
+		data, stride, cx + dx, cy - dy, color, min_x, min_y, max_x, max_y
+	);
+	_inknit_draw_point_with_clip32(
+		data, stride, cx - dx, cy + dy, color, min_x, min_y, max_x, max_y
+	);
+	_inknit_draw_point_with_clip32(
+		data, stride, cx - dx, cy - dy, color, min_x, min_y, max_x, max_y
+	);
 
-	INTERNAL_FUNCNAME(set_checked)(image, cx + dy, cy + dx, color);
-	INTERNAL_FUNCNAME(set_checked)(image, cx + dy, cy - dx, color);
-	INTERNAL_FUNCNAME(set_checked)(image, cx - dy, cy + dx, color);
-	INTERNAL_FUNCNAME(set_checked)(image, cx - dy, cy - dx, color);
+	_inknit_draw_point_with_clip32(
+		data, stride, cx + dy, cy + dx, color, min_x, min_y, max_x, max_y
+	);
+	_inknit_draw_point_with_clip32(
+		data, stride, cx + dy, cy - dx, color, min_x, min_y, max_x, max_y
+	);
+	_inknit_draw_point_with_clip32(
+		data, stride, cx - dy, cy + dx, color, min_x, min_y, max_x, max_y
+	);
+	_inknit_draw_point_with_clip32(
+		data, stride, cx - dy, cy - dx, color, min_x, min_y, max_x, max_y
+	);
 }
 
-void PUBLIC_FUNCNAME(draw_circle)(
-	struct inknit_image *image,
-	inknit_uint_t        cx,
-	inknit_uint_t        cy,
-	inknit_uint_t        radius,
-	inknit_color_t       color
+#define _inknit_draw_circle32 INKNIT_INTERNAL_FUNC(draw_circle, INKNIT_CURRENT_GROUP)
+void _inknit_draw_circle32(
+	uint32_t      *data,
+	int32_t        stride,
+	int32_t        cx,
+	int32_t        cy,
+	int32_t        radius,
+	inknit_color_t color,
+	int32_t        min_x,
+	int32_t        min_y,
+	int32_t        max_x,
+	int32_t        max_y
 ) {
-	INKNIT_ASSUME(image != NULL, MSG_IMAGE_IS_NULL);
-	INKNIT_ASSUME(image->pixel_layout == TARGET_LAYOUT, MSG_IMAGE_IS_INVALID_LAYOUT);
-	INKNIT_ASSUME(image->alignment >= TARGET_ALIGNMENT, MSG_IMAGE_IS_INVALID_ALIGN);
-
-	INKNIT_ASSUME(cx <= INKNIT_X_MAX, MSG_CX_GREATER_THAN_MAX_VALUE);
-	INKNIT_ASSUME(cy <= INKNIT_Y_MAX, MSG_CY_GREATER_THAN_MAX_VALUE);
-	INKNIT_ASSUME(radius <= INKNIT_RADIUS_MAX, MSG_RADIUS_GREATER_THAN_MAX_VALUE);
-
-	INKNIT_ASSUME(color <= POW2_BITS_PER_PIXEL_NEG1, MSG_COLOR_GREATER_THAN_MAX_VALUE);
-
 	int32_t dx = 0;
-	int32_t dy = (int32_t)radius;
-	int32_t d  = 1 - (int32_t)radius;
+	int32_t dy = radius;
+	int32_t d  = 1 - radius;
 
 	do {
-		INTERNAL_FUNCNAME(draw_circle_points)(image, (int32_t)cx, (int32_t)cy, dx, dy, color);
+		_inknit_draw_circle_points32(
+			data, stride, cx, cy, dx, dy, color, min_x, min_y, max_x, max_y
+		);
 
 		++dx;
 		if (d < 0) {
@@ -71,4 +96,31 @@ void PUBLIC_FUNCNAME(draw_circle)(
 			d += ((dx - dy) << 1) + 1;
 		}
 	} while (dx <= dy);
+}
+
+void PUBLIC_FUNCNAME(draw_circle)(
+	struct inknit_image *image, int32_t cx, int32_t cy, int32_t radius, inknit_color_t color
+) {
+	INKNIT_ASSUME(image != NULL, MSG_IMAGE_IS_NULL);
+	INKNIT_ASSUME(image->pixel_layout == TARGET_LAYOUT, MSG_IMAGE_IS_INVALID_LAYOUT);
+	INKNIT_ASSUME(image->alignment >= INKNIT_ALIGN32, MSG_IMAGE_IS_INVALID_ALIGN);
+
+	INKNIT_ASSUME(cx >= INKNIT_X_MIN, MSG_CX_GREATER_THAN_MIN_VALUE);
+	INKNIT_ASSUME(cx <= INKNIT_X_MAX, MSG_CX_GREATER_THAN_MAX_VALUE);
+	INKNIT_ASSUME(cy >= INKNIT_Y_MIN, MSG_CY_GREATER_THAN_MIN_VALUE);
+	INKNIT_ASSUME(cy <= INKNIT_Y_MAX, MSG_CY_GREATER_THAN_MAX_VALUE);
+	INKNIT_ASSUME(radius >= 0, MSG_RADIUS_LESS_THAN_ZERO);
+	INKNIT_ASSUME(radius <= INKNIT_RADIUS_MAX, MSG_RADIUS_GREATER_THAN_MAX_VALUE);
+
+	INKNIT_ASSUME(color <= POW2_BITS_PER_PIXEL_NEG1, MSG_COLOR_GREATER_THAN_MAX_VALUE);
+
+	uint32_t *const data = (uint32_t *)image->data;
+
+	const int32_t stride = (int32_t)bytes_to_pixels(image->stride);
+	const int32_t min_x  = 0;
+	const int32_t min_y  = 0;
+	const int32_t max_x  = image->width - 1;
+	const int32_t max_y  = image->height - 1;
+
+	_inknit_draw_circle32(data, stride, cx, cy, radius, color, min_x, min_y, max_x, max_y);
 }

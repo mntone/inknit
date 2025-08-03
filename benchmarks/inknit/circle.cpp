@@ -24,7 +24,7 @@
 using namespace inknit;
 using namespace inkbm;
 
-#define TYPES      std::tuple<uint_t, uint_t, uint_t>
+#define TYPES      std::tuple<std::int32_t, std::int32_t, std::int32_t>
 #define ITERATIONS DEFAULT_ITERATIONS
 
 #define GROUP_NAME  draw_circle
@@ -53,7 +53,7 @@ public:
 protected:
 	fixed_image<128, 80, pixel_layout::x1lsb, pixel_format::grayscale> image_;
 
-	uint_t cx_, cy_, radius_;
+	std::int32_t cx_, cy_, radius_;
 };
 
 INKBM_ARGS(

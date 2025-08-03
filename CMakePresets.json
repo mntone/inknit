@@ -26,7 +26,7 @@
 				},
 				"INKNIT_BUILD_SHARED_LIBS": {
 					"type": "BOOL",
-					"value": true
+					"value": false
 				},
 				"INKNIT_USE_MEMORY_H": {
 					"type": "BOOL",

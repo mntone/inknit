@@ -23,16 +23,17 @@
 #include "../inc/inknit/x2.h"
 
 const struct inknit_exports x2 = {
-	.blit       = INKNIT_X2_NAME(blit),
-	.clear      = INKNIT_X2_NAME(clear),
-	.draw_point = INKNIT_X2_NAME(draw_point),
-	.draw_hline = INKNIT_X2_NAME(draw_hline),
-	.draw_vline = INKNIT_X2_NAME(draw_vline),
-	.draw_line  = INKNIT_X2_NAME(draw_line),
-	.draw_rect  = INKNIT_X2_NAME(draw_rect),
-	.draw_rectp = INKNIT_X2_NAME(draw_rectp),
-	.features   = INKNIT_FEATURE_PRIMITIVE | INKNIT_FEATURE_BLIT | INKNIT_FEATURE_DRAW,
-	.layout     = INKNIT_X2,
+	.blit        = INKNIT_X2_NAME(blit),
+	.clear       = INKNIT_X2_NAME(clear),
+	.draw_circle = INKNIT_X2_NAME(draw_circle),
+	.draw_point  = INKNIT_X2_NAME(draw_point),
+	.draw_hline  = INKNIT_X2_NAME(draw_hline),
+	.draw_vline  = INKNIT_X2_NAME(draw_vline),
+	.draw_line   = INKNIT_X2_NAME(draw_line),
+	.draw_rect   = INKNIT_X2_NAME(draw_rect),
+	.draw_rectp  = INKNIT_X2_NAME(draw_rectp),
+	.features    = INKNIT_FEATURE_PRIMITIVE | INKNIT_FEATURE_BLIT | INKNIT_FEATURE_DRAW,
+	.layout      = INKNIT_X2,
 };
 
 #endif

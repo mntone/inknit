@@ -24,7 +24,7 @@ namespace inknit::tests::shared {
 template<typename Image>
 	requires std::convertible_to<Image, inknit::details::image_primitive>
 void subtest_draw_hline(
-	Image& image, uint_t ix1, uint_t ix2, uint_t iy, color_t color = colors::white
+	Image& image, std::int32_t ix1, std::int32_t ix2, std::int32_t iy, color_t color = colors::white
 ) noexcept {
 	image.clear(colors::black);
 	image.draw_hline(ix1, ix2, iy, color);
@@ -56,8 +56,8 @@ TEST_CASE_TEMPLATE(
 		}                                                       \
 	} while (false)
 
-	uint_t const right  = image.width() - 1;
-	uint_t const bottom = image.height() - 1;
+	std::int32_t const right  = image.width() - 1;
+	std::int32_t const bottom = image.height() - 1;
 
 	// 1. basic
 	SUBCASE_INVOKE(0, 7, 1, "basic: short line near top");

@@ -24,18 +24,18 @@ namespace inknit::tests::shared {
 template<typename Image>
 	requires std::convertible_to<Image, inknit::details::image_primitive>
 void subtest_blit(
-	Image& dst,
-	uint_t dx,
-	uint_t dy,
-	uint_t dw,
-	uint_t dh,
-	Image& src,
-	uint_t sx,
-	uint_t sy,
-	uint_t sw,
-	uint_t sh,
-	uint_t width,
-	uint_t height
+	Image&       dst,
+	std::int32_t dx,
+	std::int32_t dy,
+	std::int32_t dw,
+	std::int32_t dh,
+	Image&       src,
+	std::int32_t sx,
+	std::int32_t sy,
+	std::int32_t sw,
+	std::int32_t sh,
+	std::int32_t width,
+	std::int32_t height
 ) noexcept {
 	src.reset(sw, sh);
 	src.clear(colors::white);
@@ -82,21 +82,21 @@ TEST_CASE_TEMPLATE(
 	// IW, IH:  Blit region dimensions (Width, Height)
 	// MSG:     Description of the test case
 
-	uint_t const ppw = src.ppw;
-	uint_t const sw  = src.width();
-	uint_t const sh  = src.height();
-	uint_t const smx = sw / 2;
-	uint_t const smy = sh / 2;
+	std::int32_t const ppw = src.ppw;
+	std::int32_t const sw  = src.width();
+	std::int32_t const sh  = src.height();
+	std::int32_t const smx = sw / 2;
+	std::int32_t const smy = sh / 2;
 
-	uint_t const dw  = dst.width();
-	uint_t const dh  = dst.height();
-	uint_t const dr  = dw - 1;
-	uint_t const db  = dh - 1;
-	uint_t const dmx = dw / 2;
-	uint_t const dmy = dh / 2;
+	std::int32_t const dw  = dst.width();
+	std::int32_t const dh  = dst.height();
+	std::int32_t const dr  = dw - 1;
+	std::int32_t const db  = dh - 1;
+	std::int32_t const dmx = dw / 2;
+	std::int32_t const dmy = dh / 2;
 
-	uint_t const mw = std::min(sw, dw);
-	uint_t const mh = std::min(sh, dh);
+	std::int32_t const mw = std::min(sw, dw);
+	std::int32_t const mh = std::min(sh, dh);
 
 	// clang-format off
 

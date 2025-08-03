@@ -24,17 +24,17 @@ namespace inknit::tests::shared {
 template<typename Image>
 	requires std::convertible_to<Image, inknit::details::image_primitive>
 void subtest_draw_line(
-	Image& image, uint_t ix1, uint_t iy1, uint_t ix2, uint_t iy2, color_t color = colors::white
+	Image&       image,
+	std::int32_t ix1,
+	std::int32_t iy1,
+	std::int32_t ix2,
+	std::int32_t iy2,
+	color_t      color = colors::white
 ) noexcept {
 	image.clear(colors::black);
 	image.draw_line({ix1, iy1}, {ix2, iy2}, color);
 
-	auto const list = make_bresenham_line(
-		static_cast<std::int32_t>(ix1),
-		static_cast<std::int32_t>(iy1),
-		static_cast<std::int32_t>(ix2),
-		static_cast<std::int32_t>(iy2)
-	);
+	auto const list = make_bresenham_line(ix1, iy1, ix2, iy2);
 	image.test(bind_is_pixel_on_list(list));
 }
 
@@ -63,8 +63,8 @@ TEST_CASE_TEMPLATE(
 		}                                                             \
 	} while (false)
 
-	uint_t const right  = image.width() - 1;
-	uint_t const bottom = image.height() - 1;
+	std::int32_t const right  = image.width() - 1;
+	std::int32_t const bottom = image.height() - 1;
 
 	// 1. basic
 	SUBCASE_INVOKE(2, 5, 10, 5, "basic: horizontal line (left-to-right)");

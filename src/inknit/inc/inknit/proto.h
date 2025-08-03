@@ -55,6 +55,19 @@
 #define INKNIT_PROTO_DRAW_VLINE(name) INKNIT_DEFPROTO_DRAW_VLINE(name) INKNIT_NONNULL(1)
 
 
+// -- MARK: draw_vline
+#define INKNIT_DEFPROTO_DRAW_LINE(name) \
+	void name(                          \
+		struct inknit_image *image,     \
+		int32_t              x1,        \
+		int32_t              x2,        \
+		int32_t              y1,        \
+		int32_t              y2,        \
+		inknit_color_t       color      \
+	)
+#define INKNIT_PROTO_DRAW_LINE(name) INKNIT_DEFPROTO_DRAW_LINE(name) INKNIT_NONNULL(1)
+
+
 // -- MARK: blit
 #define INKNIT_DEFPROTO_BLIT(name)                        \
 	void name(                                            \

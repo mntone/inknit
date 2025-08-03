@@ -108,7 +108,7 @@ struct inknit_image {
 
 	const uint16_t              stride;
 	const enum inknit_alignment alignment : 3;
-	const uint16_t              width     : 13;
+	const uint32_t              width     : 13;
 	const uint16_t              height;
 	void *INKNIT_RESTRICT       data;
 };

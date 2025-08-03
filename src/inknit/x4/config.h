@@ -24,6 +24,7 @@
 // - Pixel Layout: x4
 // - Pixel Format: index or grayscale
 
+#define INKNIT_CURRENT_GROUP    INKNIT_INTERNAL_GROUP(32, 4, be)
 #define TARGET_LAYOUT           INKNIT_X4
 #define PUBLIC_FUNCNAME(name)   INKNIT_PUBLIC_FUNCNAME(INKNIT_X4_BASE, name)
 #define INTERNAL_FUNCNAME(name) INKNIT_INTERNAL_FUNCNAME(INKNIT_X4_BASE, name)

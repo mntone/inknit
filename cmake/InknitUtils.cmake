@@ -44,6 +44,7 @@ function(inknit_enable_disassemble target)
 	set(INKNIT_OBJDUMP_${target}_COMMAND
 		"-d"  # --disassemble
 		"--no-show-raw-insn"
+		${INKNIT_OBJDUMP_FLAGS}
 		)
 	if(NOT "NO_SOURCE" IN_LIST INKNIT_OBJDUMP_${target}_OPTIONS)
 		list(APPEND INKNIT_OBJDUMP_${target}_COMMAND "-S")  # --source

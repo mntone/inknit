@@ -24,7 +24,7 @@ namespace inknit::tests::shared {
 template<typename Image>
 	requires std::convertible_to<Image, inknit::details::image_primitive>
 void subtest_draw_point(
-	Image& image, uint_t ix, uint_t iy, color_t color = colors::white
+	Image& image, std::int32_t ix, std::int32_t iy, color_t color = colors::white
 ) noexcept {
 	image.clear(colors::black);
 	image.draw_point(ix, iy, color);
@@ -63,7 +63,7 @@ TEST_CASE_TEMPLATE(
 		if (image.ppw >= 8) {
 			if (image.ppw >= 16) {
 				if (image.ppw >= 32) {
-					SUBCASE_INVOKE(image.ppw / 16 - 1u, 0, "bit offset: 1/16 end");
+					SUBCASE_INVOKE(image.ppw / 16 - 1, 0, "bit offset: 1/16 end");
 					SUBCASE_INVOKE(image.ppw / 16    , 0, "bit offset: 1/16 position");
 				}
 				SUBCASE_INVOKE(image.ppw / 8 - 1, 0, "bit offset: 1/8 end");
@@ -122,7 +122,7 @@ TEST_CASE_TEMPLATE(
 
 	image.draw_point(3, 0, colorA);
 	image.draw_point(4, 0, colorB);
-	image.test([=](uint_t x, uint_t y) noexcept {
+	image.test([=](std::int32_t x, std::int32_t y) noexcept {
 		if (x == 3 && y == 0) return colorA;
 		if (x == 4 && y == 0) return colorB;
 		return colors::black;

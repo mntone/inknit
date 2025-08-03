@@ -37,10 +37,13 @@
 
 #if defined(_MSC_VER)
 #define INKNIT_ALWAYS_INLINE __forceinline
+#define INKNIT_NOINLINE      __declspec(noinline)
 #elif defined(__GNUC__) || defined(__clang__)
 #define INKNIT_ALWAYS_INLINE inline __attribute__((always_inline))
+#define INKNIT_NOINLINE      __attribute__((noinline))
 #else
 #define INKNIT_ALWAYS_INLINE
+#define INKNIT_NOINLINE
 #endif
 
 #ifndef INKNIT_BYTEORDER_ENDIAN
@@ -98,8 +101,10 @@
 	} while (0)
 #endif
 
-#ifdef INKNIT_TARGET_IS_PICO
 #define INKNIT_STRINGIFY(str) #str
+#define INKNIT_TOSTRING(x)    INKNIT_STRINGIFY(x)
+
+#ifdef INKNIT_TARGET_IS_PICO
 #define INKNIT_ARRAY_IN_RAM(name, size)                                           \
 	name[size] __attribute__((section(".time_critical." INKNIT_STRINGIFY(name))))
 #else
@@ -116,18 +121,8 @@
 #define INKNIT_BMPREFIX static INKNIT_ALWAYS_INLINE
 #endif
 
-#define INKNIT_RADIUS_MAX (4095)  // 2^12-1
-#define INKNIT_X_MAX      (4095)  // 2^12-1
-#define INKNIT_Y_MAX      (4095)  // 2^12-1
-
-// #if defined(__GNUC__) || defined(__clang__)
-// #define SPLAT2D_PACKED_STRUCT struct __attribute__((__packed__))
-// #define SPLAT2D_PACKED_STRUCT_END
-// #elif defined(_MSC_VER)
-// #define SPLAT2D_PACKED_STRUCT     __pragma(pack(push, 1)) struct
-// #define SPLAT2D_PACKED_STRUCT_END __pragma(pack(pop))
-// #elif __has_builtin(__builtin_bswap32)
-// #else
-// #define SPLAT2D_PACKED_STRUCT struct
-// #define SPLAT2D_PACKED_STRUCT_END
-// #endif
+#define INKNIT_RADIUS_MAX (8191)   // 2^13-1
+#define INKNIT_X_MIN      (-4096)  // -2^12-1
+#define INKNIT_X_MAX      (4095)   // 2^12
+#define INKNIT_Y_MIN      (-4096)  // -2^12-1
+#define INKNIT_Y_MAX      (4095)   // 2^12

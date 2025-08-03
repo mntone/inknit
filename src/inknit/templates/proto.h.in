@@ -1,0 +1,92 @@
+/*
+ * inknit <https://github.com/mntone/inknit>
+ *
+ * Copyright (C) 2025 mntone <901816+mntone@users.noreply.github.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+#pragma once
+
+#ifdef __INTELLISENSE__
+#include "../x2/base.h"
+#include "base.h.in"
+#else
+#include "${LAYOUT_NAME}/base.h"
+#include "base.h"
+#endif
+
+#ifdef INKNIT_ENABLE_DRAW_POINT_ASM
+#define __inknit_draw_point32_asm INKNIT_INTERNAL_FUNC(draw_point, INKNIT_CURRENT_GROUP)
+INKNIT_NOINLINE void
+__inknit_draw_point32_asm(uint32_t *data, int32_t stride, int32_t x, int32_t y, uint32_t color);
+
+#define _inknit_draw_point32 INKNIT_INTERNAL_WRAPFUNC(__inknit_draw_point32_asm)
+static INKNIT_ALWAYS_INLINE void
+_inknit_draw_point32(uint32_t *data, int32_t stride, int32_t x, int32_t y, uint32_t color) {
+#if defined(__i386__) || defined(_M_IX86)
+	int32_t *ptr0;
+	int32_t  pixel, color_wordval, write_wordval;
+#if BITS_PER_PIXEL != 1
+	int32_t mask;
+#endif
+#ifdef _MSC_VER
+	__asm {
+		mov ebx, data
+		mov edx, stride
+		mov ecx, x
+		mov eax, y
+		mov esi, color
+
+		call __inknit_draw_point32_asm
+
+		mov pixel,         ecx
+		mov ptr0,          edx
+		mov color_wordval, esi
+#if BITS_PER_PIXEL != 1
+		mov mask,          ebx
+#endif
+		mov write_wordval, eax
+	}
+#elif BITS_PER_PIXEL == 1
+	__asm__ volatile("call " INKNIT_TOSTRING(__inknit_draw_point32_asm)
+					 : "=c"(pixel), "=d"(ptr0), "=S"(color_wordval), "=a"(write_wordval)
+					 : "b"(data), "d"(stride), "c"(x), "a"(y), "S"(color)
+					 : "cc", "memory");
+#else
+	__asm__ volatile("call " INKNIT_TOSTRING(__inknit_draw_point32_asm)
+					 : "=c"(pixel), "=d"(ptr0), "=S"(color_wordval), "=b"(mask), "=a"(write_wordval)
+					 : "b"(data), "d"(stride), "c"(x), "a"(y), "S"(color)
+					 : "cc", "memory");
+#endif
+#elif defined(__ARM_ARCH_6M__) || defined(__ARM_ARCH_8M_MAIN__)
+	register uint32_t *reg_data __asm__("r0")   = data;
+	register int32_t   reg_stride __asm__("r1") = stride;
+	register int32_t   reg_x __asm__("r2")      = x;
+	register int32_t   reg_y __asm__("r3")      = y;
+	register uint32_t  reg_color __asm__("r4")  = color;
+
+	__asm__ volatile("bl " INKNIT_TOSTRING(__inknit_draw_point32_asm)
+					 : "=r"(reg_data), "=r"(reg_stride), "=r"(reg_x), "=r"(reg_y), "=r"(reg_color)
+					 : "r"(reg_data), "r"(reg_stride), "r"(reg_x), "r"(reg_y), "r"(reg_color)
+					 : "lr", "cc", "memory");
+#else
+#error "Unknown architecture detected."
+#endif
+}
+#else
+#define _inknit_draw_point32 INKNIT_INTERNAL_FUNC(draw_point, INKNIT_CURRENT_GROUP)
+extern void
+_inknit_draw_point32(uint32_t *data, int32_t stride, int32_t x, int32_t y, uint32_t color);
+#endif

@@ -46,7 +46,7 @@
 #endif
 
 #ifdef __cplusplus
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 #define INKNIT_RESTRICT __restrict
 #else
 #define INKNIT_RESTRICT __restrict__

@@ -18,7 +18,7 @@
  */
 
 #ifdef __INTELLISENSE__
-#include "../../x1lsb/base.h"
+#include "../../x2/base.h"
 #include "../base.h.in"
 #else
 #include "${LAYOUT_NAME}/base.h"
@@ -26,16 +26,19 @@
 #endif
 
 void PUBLIC_FUNCNAME(draw_point)(
-	struct inknit_image *image, inknit_uint_t x, inknit_uint_t y, inknit_color_t color
+	struct inknit_image *image, int32_t x, int32_t y, inknit_color_t color
 ) {
 	INKNIT_ASSUME(image != NULL, MSG_IMAGE_IS_NULL);
 	INKNIT_ASSUME(image->pixel_layout == TARGET_LAYOUT, MSG_IMAGE_IS_INVALID_LAYOUT);
-	INKNIT_ASSUME(image->alignment >= TARGET_ALIGNMENT, MSG_IMAGE_IS_INVALID_ALIGN);
+	INKNIT_ASSUME(image->alignment >= INKNIT_ALIGN32, MSG_IMAGE_IS_INVALID_ALIGN);
 
+	INKNIT_ASSUME(x >= 0, MSG_X_LESS_THAN_ZERO);
 	INKNIT_ASSUME(x <= INKNIT_X_MAX, MSG_X_GREATER_THAN_MAX_VALUE);
+	INKNIT_ASSUME(y >= 0, MSG_Y_LESS_THAN_ZERO);
 	INKNIT_ASSUME(y <= INKNIT_Y_MAX, MSG_Y_GREATER_THAN_MAX_VALUE);
 
 	INKNIT_ASSUME(color <= POW2_BITS_PER_PIXEL_NEG1, MSG_COLOR_GREATER_THAN_MAX_VALUE);
 
-	INTERNAL_FUNCNAME(set)(image, (uint32_t)x, (uint32_t)y, color);
+	const int32_t stride = (int32_t)bytes_to_pixels(image->stride);
+	_inknit_draw_point32(image->data, stride, x, y, (uint32_t)color);
 }

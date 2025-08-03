@@ -30,22 +30,22 @@
 namespace inknit {
 
 template<
-	pixel_layout  PIXEL_LAYOUT,
-	pixel_format  PIXEL_FORMAT,
-	std::uint16_t BITS_PER_PIXEL = ((static_cast<uint_t>(PIXEL_LAYOUT) & 0x3C) >> 2) + 1>
+	pixel_layout PIXEL_LAYOUT,
+	pixel_format PIXEL_FORMAT,
+	std::int32_t BITS_PER_PIXEL = ((static_cast<uint_t>(PIXEL_LAYOUT) & 0x3C) >> 2) + 1>
 struct image
 	: public details::image_traits<image<PIXEL_LAYOUT, PIXEL_FORMAT, BITS_PER_PIXEL>>
 	, public details::drawable_image<PIXEL_LAYOUT> {
-	static inline constexpr std::uint16_t bpw = INKNIT_TARGET_BIT_WIDTH;  // bits per word
-	static inline constexpr std::uint16_t bpp = BITS_PER_PIXEL;           // bits per pixel
-	static inline constexpr std::uint16_t ppw = bpw / bpp;                // pixels per word
+	static inline constexpr std::int32_t bpw = INKNIT_TARGET_BIT_WIDTH;  // bits per word
+	static inline constexpr std::int32_t bpp = BITS_PER_PIXEL;           // bits per pixel
+	static inline constexpr std::int32_t ppw = bpw / bpp;                // pixels per word
 
 private:
-	static inline constexpr std::uint16_t pixelsPerByte = 8 / bpp;
+	static inline constexpr std::int32_t pixelsPerByte = 8 / bpp;
 
 public:
 	constexpr explicit image(std::uint16_t width, std::uint16_t height, color_t color = 0)
-		: buffer_(details::stride(width, bpp, INKNIT_TARGET_BIT_WIDTH) * height / 4)
+		: buffer_(details::stride<std::size_t>(width, bpp, INKNIT_TARGET_BIT_WIDTH) * height / 4)
 		, details::drawable_image<PIXEL_LAYOUT>(
 			  PIXEL_FORMAT,
 			  inknit::colorspace::unspecified,
@@ -53,7 +53,7 @@ public:
 			  details::align(INKNIT_TARGET_BIT_WIDTH),
 			  width,
 			  height,
-			  static_cast<std::uint16_t>(details::stride(width, bpp, INKNIT_TARGET_BIT_WIDTH)),
+			  details::stride<std::uint16_t>(width, bpp, INKNIT_TARGET_BIT_WIDTH),
 			  nullptr
 		  ) {
 		std::uint32_t *const data = buffer_.data();
@@ -67,17 +67,19 @@ public:
 	constexpr image()
 		: image(0, 0, 0) {}
 
-	constexpr void reset(uint_t width, uint_t height, color_t color = 0) noexcept {
-		uint_t const stride  = details::stride(width, bpp, INKNIT_TARGET_BIT_WIDTH);
-		uint_t const newSize = stride * height;
-		uint_t const oldSize = static_cast<uint_t>(4 * buffer_.size());
+	constexpr void reset(std::int32_t width, std::int32_t height, color_t color = 0) noexcept {
+		std::size_t const stride = details::stride<std::size_t>(
+			static_cast<std::size_t>(width), bpp, INKNIT_TARGET_BIT_WIDTH
+		);
+		std::size_t const newSize = stride * static_cast<std::size_t>(height);
+		std::size_t const oldSize = 4 * buffer_.size();
 
 		if (oldSize != newSize) {
 			buffer_.resize(newSize);
 
-			uint32_t *const data = buffer_.data();
+			std::uint32_t *const data = buffer_.data();
 			if (oldSize < newSize) {
-				uint_t const diffSize = newSize - oldSize;
+				std::size_t const diffSize = newSize - oldSize;
 				std::fill_n(
 					data + oldSize,
 					diffSize / 4,
@@ -85,7 +87,7 @@ public:
 				);
 			}
 
-			this->width_  = static_cast<std::uint16_t>(width) & 0x1FFF;
+			this->width_  = width & 0x1FFF;
 			this->height_ = static_cast<std::uint16_t>(height);
 			this->stride_ = static_cast<std::uint16_t>(stride);
 			this->data_   = data;
@@ -101,21 +103,21 @@ template<
 	std::uint16_t HEIGHT,
 	pixel_layout  PIXEL_LAYOUT,
 	pixel_format  PIXEL_FORMAT,
-	std::uint16_t BITS_PER_PIXEL = ((static_cast<uint_t>(PIXEL_LAYOUT) & 0x3C) >> 2) + 1>
+	std::int32_t  BITS_PER_PIXEL = ((static_cast<uint_t>(PIXEL_LAYOUT) & 0x3C) >> 2) + 1>
 struct fixed_image
 	: public details::image_traits<
 		  fixed_image<WIDTH, HEIGHT, PIXEL_LAYOUT, PIXEL_FORMAT, BITS_PER_PIXEL>>
 	, public details::drawable_image<PIXEL_LAYOUT> {
 	// TODO: support rgb bpp
-	static inline constexpr std::uint16_t bpw = INKNIT_TARGET_BIT_WIDTH;  // bits per word
-	static inline constexpr std::uint16_t bpp = BITS_PER_PIXEL;           // bits per pixel
-	static inline constexpr std::uint16_t ppw = bpw / bpp;                // pixels per word
+	static inline constexpr std::int32_t bpw = INKNIT_TARGET_BIT_WIDTH;  // bits per word
+	static inline constexpr std::int32_t bpp = BITS_PER_PIXEL;           // bits per pixel
+	static inline constexpr std::int32_t ppw = bpw / bpp;                // pixels per word
 
 private:
-	static inline constexpr std::uint16_t PIXELS_PER_BYTE = 8 / bpp;
-	static inline constexpr std::uint16_t STRIDE
-		= details::stride(WIDTH, bpp, INKNIT_TARGET_BIT_WIDTH);
-	static inline constexpr std::uint16_t SIZE = STRIDE * HEIGHT;
+	static inline constexpr std::int32_t PIXELS_PER_BYTE = 8 / bpp;
+	static inline constexpr std::int32_t STRIDE
+		= details::stride<std::int32_t>(WIDTH, bpp, INKNIT_TARGET_BIT_WIDTH);
+	static inline constexpr std::int32_t SIZE = STRIDE * HEIGHT;
 
 public:
 	constexpr explicit fixed_image(color_t color) noexcept
@@ -150,13 +152,13 @@ public:
 	static inline constexpr inknit::alignment alignment() noexcept {
 		return inknit::alignment::align32;
 	}
-	static inline constexpr std::uint16_t height() noexcept {
+	static inline constexpr std::int32_t height() noexcept {
 		return HEIGHT;
 	}
-	static inline constexpr std::uint16_t stride() noexcept {
+	static inline constexpr std::int32_t stride() noexcept {
 		return STRIDE;
 	}
-	static inline constexpr std::uint16_t width() noexcept {
+	static inline constexpr std::int32_t width() noexcept {
 		return WIDTH;
 	}
 

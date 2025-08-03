@@ -18,28 +18,12 @@
  */
 
 #ifdef __INTELLISENSE__
-#include "../x1lsb/base.h"
+#include "../x2/base.h"
 #include "base.h.in"
 #else
 #include "${LAYOUT_NAME}/base.h"
 #include "base.h"
 #endif
-
-inknit_color_t
-PUBLIC_FUNCNAME(get)(const struct inknit_image *image, inknit_uint_t x, inknit_uint_t y) {
-	INKNIT_ASSUME(image != NULL, MSG_IMAGE_IS_NULL);
-	INKNIT_ASSUME(image->pixel_layout == TARGET_LAYOUT, MSG_IMAGE_IS_INVALID_LAYOUT);
-	INKNIT_ASSUME(image->alignment >= TARGET_ALIGNMENT, MSG_IMAGE_IS_INVALID_ALIGN);
-
-	INKNIT_ASSUME(x >= 0, MSG_X_LESS_THAN_ZERO);
-	INKNIT_ASSUME(x <= INKNIT_X_MAX, MSG_X_GREATER_THAN_MAX_VALUE);
-
-	INKNIT_ASSUME(y >= 0, MSG_Y_LESS_THAN_ZERO);
-	INKNIT_ASSUME(y <= INKNIT_Y_MAX, MSG_Y_GREATER_THAN_MAX_VALUE);
-
-	inknit_color_t color = INTERNAL_FUNCNAME(get)(image, x, y);
-	return color;
-}
 
 void PUBLIC_FUNCNAME(clear)(struct inknit_image *image, inknit_color_t color) {
 	INKNIT_ASSUME(image != NULL, MSG_IMAGE_IS_NULL);
@@ -60,3 +44,18 @@ void PUBLIC_FUNCNAME(clear)(struct inknit_image *image, inknit_color_t color) {
 	}
 #endif
 }
+
+#ifndef INKNIT_ENABLE_DRAW_POINT_ASM
+void _inknit_draw_point32(uint32_t *data, int32_t stride, int32_t x, int32_t y, uint32_t color) {
+	const int32_t pixel   = stride * y + x;
+	const int32_t wordidx = (int32_t)pixels_to_wordidx(pixel);
+	const int32_t bitpos  = pixels_to_bitpos(pixel);
+
+	const uint32_t mask          = write_mask(bitpos);
+	const uint32_t color_wordval = color << bitpos;
+
+	const uint32_t read_wordval  = swap_if_required(data[wordidx]);
+	const uint32_t write_wordval = (read_wordval & ~mask) | color_wordval;
+	data[wordidx]                = swap_if_required(write_wordval);
+}
+#endif

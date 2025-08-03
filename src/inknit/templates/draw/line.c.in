@@ -18,7 +18,7 @@
  */
 
 #ifdef __INTELLISENSE__
-#include "../../x1lsb/base.h"
+#include "../../x2/base.h"
 #include "../base.h.in"
 #else
 #include "${LAYOUT_NAME}/base.h"
@@ -27,18 +27,14 @@
 
 #ifdef INKNIT_ENABLE_BENCHMARKS
 void INTERNAL_FUNCNAME(draw_line_2loop)(
-	struct inknit_image *image,
-	inknit_uint_t        x1,
-	inknit_uint_t        y1,
-	inknit_uint_t        x2,
-	inknit_uint_t        y2,
-	inknit_color_t       color
+	struct inknit_image *image, int32_t x, int32_t y, int32_t x2, int32_t y2, uint32_t color
 ) {
-	int32_t x = (int32_t)x1;
-	int32_t y = (int32_t)y1;
+	uint32_t *INKNIT_RESTRICT const data = (uint32_t *)image->data;
 
-	int32_t dx = (int32_t)x2 - x;
-	int32_t dy = (int32_t)y2 - y;
+	const int32_t stride = (int32_t)bytes_to_pixels(image->stride);
+
+	int32_t dx = x2 - x;
+	int32_t dy = y2 - y;
 
 	const int32_t sx = dx > 0 ? 1 : dx < 0 ? -1 : 0;
 	const int32_t sy = dy > 0 ? 1 : dy < 0 ? -1 : 0;
@@ -49,7 +45,7 @@ void INTERNAL_FUNCNAME(draw_line_2loop)(
 	if (dx > dy) {
 		int32_t err = dx >> 1;
 		while (1) {
-			INTERNAL_FUNCNAME(set)(image, (uint32_t)x, (uint32_t)y, color);
+			_inknit_draw_point32(data, stride, x, y, color);
 
 			if (x == x2) {
 				break;
@@ -65,7 +61,7 @@ void INTERNAL_FUNCNAME(draw_line_2loop)(
 	} else {
 		int32_t err = dy >> 1;
 		while (1) {
-			INTERNAL_FUNCNAME(set)(image, (uint32_t)x, (uint32_t)y, color);
+			_inknit_draw_point32(data, stride, x, y, color);
 
 			if (y == y2) {
 				break;
@@ -83,18 +79,14 @@ void INTERNAL_FUNCNAME(draw_line_2loop)(
 #endif
 
 void INTERNAL_FUNCNAME(draw_line_1loop)(
-	struct inknit_image *image,
-	inknit_uint_t        x1,
-	inknit_uint_t        y1,
-	inknit_uint_t        x2,
-	inknit_uint_t        y2,
-	inknit_color_t       color
+	struct inknit_image *image, int32_t x, int32_t y, int32_t x2, int32_t y2, uint32_t color
 ) {
-	int32_t x = (int32_t)x1;
-	int32_t y = (int32_t)y1;
+	uint32_t *INKNIT_RESTRICT const data = (uint32_t *)image->data;
 
-	int32_t dx = (int32_t)x2 - x;
-	int32_t dy = (int32_t)y2 - y;
+	const int32_t stride = (int32_t)bytes_to_pixels(image->stride);
+
+	int32_t dx = x2 - x;
+	int32_t dy = y2 - y;
 
 	const int32_t sx = dx > 0 ? 1 : -1;
 	const int32_t sy = dy > 0 ? 1 : -1;
@@ -104,9 +96,9 @@ void INTERNAL_FUNCNAME(draw_line_1loop)(
 
 	int32_t err = dx + dy;
 	while (1) {
-		INTERNAL_FUNCNAME(set)(image, (uint32_t)x, (uint32_t)y, color);
+		_inknit_draw_point32(data, stride, x, y, color);
 
-		if (x == (int32_t)x2 && y == (int32_t)y2) {
+		if (x == x2 && y == y2) {
 			break;
 		}
 
@@ -123,30 +115,33 @@ void INTERNAL_FUNCNAME(draw_line_1loop)(
 }
 
 void PUBLIC_FUNCNAME(draw_line)(
-	struct inknit_image *image,
-	inknit_uint_t        x1,
-	inknit_uint_t        y1,
-	inknit_uint_t        x2,
-	inknit_uint_t        y2,
-	inknit_color_t       color
+	struct inknit_image *image, int32_t x1, int32_t y1, int32_t x2, int32_t y2, inknit_color_t color
 ) {
 	INKNIT_ASSUME(image != NULL, MSG_IMAGE_IS_NULL);
 	INKNIT_ASSUME(image->pixel_layout == TARGET_LAYOUT, MSG_IMAGE_IS_INVALID_LAYOUT);
-	INKNIT_ASSUME(image->alignment >= TARGET_ALIGNMENT, MSG_IMAGE_IS_INVALID_ALIGN);
+	INKNIT_ASSUME(image->alignment >= INKNIT_ALIGN32, MSG_IMAGE_IS_INVALID_ALIGN);
 
+	INKNIT_ASSUME(x1 >= 0, MSG_X1_LESS_THAN_ZERO);
+	INKNIT_ASSUME(x1 >= INKNIT_X_MIN, MSG_X1_LESS_THAN_MIN_VALUE);
+	INKNIT_ASSUME(y1 >= 0, MSG_Y1_LESS_THAN_ZERO);
+	INKNIT_ASSUME(y1 >= INKNIT_Y_MIN, MSG_Y1_LESS_THAN_MIN_VALUE);
 	INKNIT_ASSUME(x1 <= x2 || y1 <= y2, "ERROR: x1 > x2 or y1 > y2");
 
 	INKNIT_ASSUME(color <= POW2_BITS_PER_PIXEL_NEG1, MSG_COLOR_GREATER_THAN_MAX_VALUE);
 
 	if (x1 == x2) {
-		PUBLIC_FUNCNAME(draw_vline)(image, x1, y1, y2, color);
+		PUBLIC_FUNCNAME(draw_vline)(
+			image, (inknit_uint_t)x1, (inknit_uint_t)y1, (inknit_uint_t)y2, color
+		);
 		return;
 	}
 
 	if (y1 == y2) {
-		PUBLIC_FUNCNAME(draw_hline)(image, x1, x2, y1, color);
+		PUBLIC_FUNCNAME(draw_hline)(
+			image, (inknit_uint_t)x1, (inknit_uint_t)x2, (inknit_uint_t)y1, color
+		);
 		return;
 	}
 
-	INTERNAL_FUNCNAME(draw_line_1loop)(image, x1, y1, x2, y2, color);
+	INTERNAL_FUNCNAME(draw_line_1loop)(image, x1, y1, x2, y2, (uint32_t)color);
 }

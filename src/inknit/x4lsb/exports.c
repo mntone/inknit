@@ -23,16 +23,17 @@
 #include "../inc/inknit/x4lsb.h"
 
 const struct inknit_exports x4lsb = {
-	.blit       = INKNIT_X4LSB_NAME(blit),
-	.clear      = INKNIT_X4LSB_NAME(clear),
-	.draw_point = INKNIT_X4LSB_NAME(draw_point),
-	.draw_hline = INKNIT_X4LSB_NAME(draw_hline),
-	.draw_vline = INKNIT_X4LSB_NAME(draw_vline),
-	.draw_line  = INKNIT_X4LSB_NAME(draw_line),
-	.draw_rect  = INKNIT_X4LSB_NAME(draw_rect),
-	.draw_rectp = INKNIT_X4LSB_NAME(draw_rectp),
-	.features   = INKNIT_FEATURE_PRIMITIVE | INKNIT_FEATURE_BLIT | INKNIT_FEATURE_DRAW,
-	.layout     = INKNIT_X4LSB,
+	.blit        = INKNIT_X4LSB_NAME(blit),
+	.clear       = INKNIT_X4LSB_NAME(clear),
+	.draw_circle = INKNIT_X4LSB_NAME(draw_circle),
+	.draw_point  = INKNIT_X4LSB_NAME(draw_point),
+	.draw_hline  = INKNIT_X4LSB_NAME(draw_hline),
+	.draw_vline  = INKNIT_X4LSB_NAME(draw_vline),
+	.draw_line   = INKNIT_X4LSB_NAME(draw_line),
+	.draw_rect   = INKNIT_X4LSB_NAME(draw_rect),
+	.draw_rectp  = INKNIT_X4LSB_NAME(draw_rectp),
+	.features    = INKNIT_FEATURE_PRIMITIVE | INKNIT_FEATURE_BLIT | INKNIT_FEATURE_DRAW,
+	.layout      = INKNIT_X4LSB,
 };
 
 #endif

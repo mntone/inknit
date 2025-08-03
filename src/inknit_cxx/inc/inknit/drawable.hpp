@@ -54,36 +54,57 @@ namespace inknit { namespace details {
 				  data
 			  ) {}
 
-		color_t at(uint_t x, uint_t y) const noexcept {
-			return INKNIT_X1_NAME(get)(get(), x, y);
+		color_t at(std::int32_t x, std::int32_t y) const noexcept {
+			return INKNIT_X1_NAME(get_pixel)(get(), x, y);
 		}
 
 		void blit(
-			uint_t                 dx,
-			uint_t                 dy,
+			std::int32_t           dx,
+			std::int32_t           dy,
 			image_primitive const& source,
-			uint_t                 sx,
-			uint_t                 sy,
-			uint_t                 width,
-			uint_t                 height
+			std::int32_t           sx,
+			std::int32_t           sy,
+			std::int32_t           width,
+			std::int32_t           height
 		) noexcept {
-			INKNIT_X1_NAME(blit)(get(), dx, dy, &source, sx, sy, width, height);
+			INKNIT_X1_NAME(blit)(
+				get(),
+				static_cast<uint_t>(dx),
+				static_cast<uint_t>(dy),
+				&source,
+				static_cast<uint_t>(sx),
+				static_cast<uint_t>(sy),
+				static_cast<uint_t>(width),
+				static_cast<uint_t>(height)
+			);
 		}
 
 		void clear(color_t color) noexcept {
 			INKNIT_X1_NAME(clear)(get(), color);
 		}
 
-		void draw_point(uint_t x, uint_t y, color_t color) noexcept {
+		void draw_point(std::int32_t x, std::int32_t y, color_t color) noexcept {
 			INKNIT_X1_NAME(draw_point)(get(), x, y, color);
 		}
 
-		void draw_hline(uint_t x1, uint_t x2, uint_t y, color_t color) noexcept {
-			INKNIT_X1_NAME(draw_hline)(get(), x1, x2, y, color);
+		void draw_hline(std::int32_t x1, std::int32_t x2, std::int32_t y, color_t color) noexcept {
+			INKNIT_X1_NAME(draw_hline)(
+				get(),
+				static_cast<uint_t>(x1),
+				static_cast<uint_t>(x2),
+				static_cast<uint_t>(y),
+				color
+			);
 		}
 
-		void draw_vline(uint_t x, uint_t y1, uint_t y2, color_t color) noexcept {
-			INKNIT_X1_NAME(draw_vline)(get(), x, y1, y2, color);
+		void draw_vline(std::int32_t x, std::int32_t y1, std::int32_t y2, color_t color) noexcept {
+			INKNIT_X1_NAME(draw_vline)(
+				get(),
+				static_cast<uint_t>(x),
+				static_cast<uint_t>(y1),
+				static_cast<uint_t>(y2),
+				color
+			);
 		}
 
 		void draw_line(point_t pt1, point_t pt2, color_t color) noexcept {
@@ -95,16 +116,30 @@ namespace inknit { namespace details {
 		void draw_rect(point_t pt, size_t sz, color_t color) noexcept {
 			auto [x, y]          = pt;
 			auto [width, height] = sz;
-			INKNIT_X1_NAME(draw_rect)(get(), x, y, width, height, color);
+			INKNIT_X1_NAME(draw_rect)(
+				get(),
+				static_cast<uint_t>(x),
+				static_cast<uint_t>(y),
+				static_cast<uint_t>(width),
+				static_cast<uint_t>(height),
+				color
+			);
 		}
 
 		void draw_rectp(point_t pt1, point_t pt2, color_t color) noexcept {
 			auto [x1, y1] = pt1;
 			auto [x2, y2] = pt2;
-			INKNIT_X1_NAME(draw_rectp)(get(), x1, y1, x2, y2, color);
+			INKNIT_X1_NAME(draw_rectp)(
+				get(),
+				static_cast<uint_t>(x1),
+				static_cast<uint_t>(y1),
+				static_cast<uint_t>(x2),
+				static_cast<uint_t>(y2),
+				color
+			);
 		}
 
-		void draw_circle(point_t ct, uint_t radius, color_t color) noexcept {
+		void draw_circle(point_t ct, std::int32_t radius, color_t color) noexcept {
 			auto [x, y] = ct;
 			INKNIT_X1_NAME(draw_circle)(get(), x, y, radius, color);
 		}
@@ -151,36 +186,57 @@ namespace inknit { namespace details {
 				  data
 			  ) {}
 
-		color_t at(uint_t x, uint_t y) const noexcept {
-			return INKNIT_X1LSB_NAME(get)(get(), x, y);
+		color_t at(std::int32_t x, std::int32_t y) const noexcept {
+			return INKNIT_X1LSB_NAME(get_pixel)(get(), x, y);
 		}
 
 		void blit(
-			uint_t                 dx,
-			uint_t                 dy,
+			std::int32_t           dx,
+			std::int32_t           dy,
 			image_primitive const& source,
-			uint_t                 sx,
-			uint_t                 sy,
-			uint_t                 width,
-			uint_t                 height
+			std::int32_t           sx,
+			std::int32_t           sy,
+			std::int32_t           width,
+			std::int32_t           height
 		) noexcept {
-			INKNIT_X1LSB_NAME(blit)(get(), dx, dy, &source, sx, sy, width, height);
+			INKNIT_X1LSB_NAME(blit)(
+				get(),
+				static_cast<uint_t>(dx),
+				static_cast<uint_t>(dy),
+				&source,
+				static_cast<uint_t>(sx),
+				static_cast<uint_t>(sy),
+				static_cast<uint_t>(width),
+				static_cast<uint_t>(height)
+			);
 		}
 
 		void clear(color_t color) noexcept {
 			INKNIT_X1LSB_NAME(clear)(get(), color);
 		}
 
-		void draw_point(uint_t x, uint_t y, color_t color) noexcept {
+		void draw_point(std::int32_t x, std::int32_t y, color_t color) noexcept {
 			INKNIT_X1LSB_NAME(draw_point)(get(), x, y, color);
 		}
 
-		void draw_hline(uint_t x1, uint_t x2, uint_t y, color_t color) noexcept {
-			INKNIT_X1LSB_NAME(draw_hline)(get(), x1, x2, y, color);
+		void draw_hline(std::int32_t x1, std::int32_t x2, std::int32_t y, color_t color) noexcept {
+			INKNIT_X1LSB_NAME(draw_hline)(
+				get(),
+				static_cast<uint_t>(x1),
+				static_cast<uint_t>(x2),
+				static_cast<uint_t>(y),
+				color
+			);
 		}
 
-		void draw_vline(uint_t x, uint_t y1, uint_t y2, color_t color) noexcept {
-			INKNIT_X1LSB_NAME(draw_vline)(get(), x, y1, y2, color);
+		void draw_vline(std::int32_t x, std::int32_t y1, std::int32_t y2, color_t color) noexcept {
+			INKNIT_X1LSB_NAME(draw_vline)(
+				get(),
+				static_cast<uint_t>(x),
+				static_cast<uint_t>(y1),
+				static_cast<uint_t>(y2),
+				color
+			);
 		}
 
 		void draw_line(point_t pt1, point_t pt2, color_t color) noexcept {
@@ -192,16 +248,30 @@ namespace inknit { namespace details {
 		void draw_rect(point_t pt, size_t sz, color_t color) noexcept {
 			auto [x, y]          = pt;
 			auto [width, height] = sz;
-			INKNIT_X1LSB_NAME(draw_rect)(get(), x, y, width, height, color);
+			INKNIT_X1LSB_NAME(draw_rect)(
+				get(),
+				static_cast<uint_t>(x),
+				static_cast<uint_t>(y),
+				static_cast<uint_t>(width),
+				static_cast<uint_t>(height),
+				color
+			);
 		}
 
 		void draw_rectp(point_t pt1, point_t pt2, color_t color) noexcept {
 			auto [x1, y1] = pt1;
 			auto [x2, y2] = pt2;
-			INKNIT_X1LSB_NAME(draw_rectp)(get(), x1, y1, x2, y2, color);
+			INKNIT_X1LSB_NAME(draw_rectp)(
+				get(),
+				static_cast<uint_t>(x1),
+				static_cast<uint_t>(y1),
+				static_cast<uint_t>(x2),
+				static_cast<uint_t>(y2),
+				color
+			);
 		}
 
-		void draw_circle(point_t ct, uint_t radius, color_t color) noexcept {
+		void draw_circle(point_t ct, std::int32_t radius, color_t color) noexcept {
 			auto [x, y] = ct;
 			INKNIT_X1LSB_NAME(draw_circle)(get(), x, y, radius, color);
 		}
@@ -248,36 +318,57 @@ namespace inknit { namespace details {
 				  data
 			  ) {}
 
-		color_t at(uint_t x, uint_t y) const noexcept {
-			return INKNIT_X2_NAME(get)(get(), x, y);
+		color_t at(std::int32_t x, std::int32_t y) const noexcept {
+			return INKNIT_X2_NAME(get_pixel)(get(), x, y);
 		}
 
 		void blit(
-			uint_t                 dx,
-			uint_t                 dy,
+			std::int32_t           dx,
+			std::int32_t           dy,
 			image_primitive const& source,
-			uint_t                 sx,
-			uint_t                 sy,
-			uint_t                 width,
-			uint_t                 height
+			std::int32_t           sx,
+			std::int32_t           sy,
+			std::int32_t           width,
+			std::int32_t           height
 		) noexcept {
-			INKNIT_X2_NAME(blit)(get(), dx, dy, &source, sx, sy, width, height);
+			INKNIT_X2_NAME(blit)(
+				get(),
+				static_cast<uint_t>(dx),
+				static_cast<uint_t>(dy),
+				&source,
+				static_cast<uint_t>(sx),
+				static_cast<uint_t>(sy),
+				static_cast<uint_t>(width),
+				static_cast<uint_t>(height)
+			);
 		}
 
 		void clear(color_t color) noexcept {
 			INKNIT_X2_NAME(clear)(get(), color);
 		}
 
-		void draw_point(uint_t x, uint_t y, color_t color) noexcept {
+		void draw_point(std::int32_t x, std::int32_t y, color_t color) noexcept {
 			INKNIT_X2_NAME(draw_point)(get(), x, y, color);
 		}
 
-		void draw_hline(uint_t x1, uint_t x2, uint_t y, color_t color) noexcept {
-			INKNIT_X2_NAME(draw_hline)(get(), x1, x2, y, color);
+		void draw_hline(std::int32_t x1, std::int32_t x2, std::int32_t y, color_t color) noexcept {
+			INKNIT_X2_NAME(draw_hline)(
+				get(),
+				static_cast<uint_t>(x1),
+				static_cast<uint_t>(x2),
+				static_cast<uint_t>(y),
+				color
+			);
 		}
 
-		void draw_vline(uint_t x, uint_t y1, uint_t y2, color_t color) noexcept {
-			INKNIT_X2_NAME(draw_vline)(get(), x, y1, y2, color);
+		void draw_vline(std::int32_t x, std::int32_t y1, std::int32_t y2, color_t color) noexcept {
+			INKNIT_X2_NAME(draw_vline)(
+				get(),
+				static_cast<uint_t>(x),
+				static_cast<uint_t>(y1),
+				static_cast<uint_t>(y2),
+				color
+			);
 		}
 
 		void draw_line(point_t pt1, point_t pt2, color_t color) noexcept {
@@ -289,16 +380,30 @@ namespace inknit { namespace details {
 		void draw_rect(point_t pt, size_t sz, color_t color) noexcept {
 			auto [x, y]          = pt;
 			auto [width, height] = sz;
-			INKNIT_X2_NAME(draw_rect)(get(), x, y, width, height, color);
+			INKNIT_X2_NAME(draw_rect)(
+				get(),
+				static_cast<uint_t>(x),
+				static_cast<uint_t>(y),
+				static_cast<uint_t>(width),
+				static_cast<uint_t>(height),
+				color
+			);
 		}
 
 		void draw_rectp(point_t pt1, point_t pt2, color_t color) noexcept {
 			auto [x1, y1] = pt1;
 			auto [x2, y2] = pt2;
-			INKNIT_X2_NAME(draw_rectp)(get(), x1, y1, x2, y2, color);
+			INKNIT_X2_NAME(draw_rectp)(
+				get(),
+				static_cast<uint_t>(x1),
+				static_cast<uint_t>(y1),
+				static_cast<uint_t>(x2),
+				static_cast<uint_t>(y2),
+				color
+			);
 		}
 
-		void draw_circle(point_t ct, uint_t radius, color_t color) noexcept {
+		void draw_circle(point_t ct, std::int32_t radius, color_t color) noexcept {
 			auto [x, y] = ct;
 			INKNIT_X2_NAME(draw_circle)(get(), x, y, radius, color);
 		}
@@ -344,36 +449,57 @@ namespace inknit { namespace details {
 				  data
 			  ) {}
 
-		color_t at(uint_t x, uint_t y) const noexcept {
-			return INKNIT_X2LSB_NAME(get)(get(), x, y);
+		color_t at(std::int32_t x, std::int32_t y) const noexcept {
+			return INKNIT_X2LSB_NAME(get_pixel)(get(), x, y);
 		}
 
 		void blit(
-			uint_t                 dx,
-			uint_t                 dy,
+			std::int32_t           dx,
+			std::int32_t           dy,
 			image_primitive const& source,
-			uint_t                 sx,
-			uint_t                 sy,
-			uint_t                 width,
-			uint_t                 height
+			std::int32_t           sx,
+			std::int32_t           sy,
+			std::int32_t           width,
+			std::int32_t           height
 		) noexcept {
-			INKNIT_X2LSB_NAME(blit)(get(), dx, dy, &source, sx, sy, width, height);
+			INKNIT_X2LSB_NAME(blit)(
+				get(),
+				static_cast<uint_t>(dx),
+				static_cast<uint_t>(dy),
+				&source,
+				static_cast<uint_t>(sx),
+				static_cast<uint_t>(sy),
+				static_cast<uint_t>(width),
+				static_cast<uint_t>(height)
+			);
 		}
 
 		void clear(color_t color) noexcept {
 			INKNIT_X2LSB_NAME(clear)(get(), color);
 		}
 
-		void draw_point(uint_t x, uint_t y, color_t color) noexcept {
+		void draw_point(std::int32_t x, std::int32_t y, color_t color) noexcept {
 			INKNIT_X2LSB_NAME(draw_point)(get(), x, y, color);
 		}
 
-		void draw_hline(uint_t x1, uint_t x2, uint_t y, color_t color) noexcept {
-			INKNIT_X2LSB_NAME(draw_hline)(get(), x1, x2, y, color);
+		void draw_hline(std::int32_t x1, std::int32_t x2, std::int32_t y, color_t color) noexcept {
+			INKNIT_X2LSB_NAME(draw_hline)(
+				get(),
+				static_cast<uint_t>(x1),
+				static_cast<uint_t>(x2),
+				static_cast<uint_t>(y),
+				color
+			);
 		}
 
-		void draw_vline(uint_t x, uint_t y1, uint_t y2, color_t color) noexcept {
-			INKNIT_X2LSB_NAME(draw_vline)(get(), x, y1, y2, color);
+		void draw_vline(std::int32_t x, std::int32_t y1, std::int32_t y2, color_t color) noexcept {
+			INKNIT_X2LSB_NAME(draw_vline)(
+				get(),
+				static_cast<uint_t>(x),
+				static_cast<uint_t>(y1),
+				static_cast<uint_t>(y2),
+				color
+			);
 		}
 
 		void draw_line(point_t pt1, point_t pt2, color_t color) noexcept {
@@ -385,16 +511,30 @@ namespace inknit { namespace details {
 		void draw_rect(point_t pt, size_t sz, color_t color) noexcept {
 			auto [x, y]          = pt;
 			auto [width, height] = sz;
-			INKNIT_X2LSB_NAME(draw_rect)(get(), x, y, width, height, color);
+			INKNIT_X2LSB_NAME(draw_rect)(
+				get(),
+				static_cast<uint_t>(x),
+				static_cast<uint_t>(y),
+				static_cast<uint_t>(width),
+				static_cast<uint_t>(height),
+				color
+			);
 		}
 
 		void draw_rectp(point_t pt1, point_t pt2, color_t color) noexcept {
 			auto [x1, y1] = pt1;
 			auto [x2, y2] = pt2;
-			INKNIT_X2LSB_NAME(draw_rectp)(get(), x1, y1, x2, y2, color);
+			INKNIT_X2LSB_NAME(draw_rectp)(
+				get(),
+				static_cast<uint_t>(x1),
+				static_cast<uint_t>(y1),
+				static_cast<uint_t>(x2),
+				static_cast<uint_t>(y2),
+				color
+			);
 		}
 
-		void draw_circle(point_t ct, uint_t radius, color_t color) noexcept {
+		void draw_circle(point_t ct, std::int32_t radius, color_t color) noexcept {
 			auto [x, y] = ct;
 			INKNIT_X2LSB_NAME(draw_circle)(get(), x, y, radius, color);
 		}
@@ -440,36 +580,57 @@ namespace inknit { namespace details {
 				  data
 			  ) {}
 
-		color_t at(uint_t x, uint_t y) const noexcept {
-			return INKNIT_X4_NAME(get)(get(), x, y);
+		color_t at(std::int32_t x, std::int32_t y) const noexcept {
+			return INKNIT_X4_NAME(get_pixel)(get(), x, y);
 		}
 
 		void blit(
-			uint_t                 dx,
-			uint_t                 dy,
+			std::int32_t           dx,
+			std::int32_t           dy,
 			image_primitive const& source,
-			uint_t                 sx,
-			uint_t                 sy,
-			uint_t                 width,
-			uint_t                 height
+			std::int32_t           sx,
+			std::int32_t           sy,
+			std::int32_t           width,
+			std::int32_t           height
 		) noexcept {
-			INKNIT_X4_NAME(blit)(get(), dx, dy, &source, sx, sy, width, height);
+			INKNIT_X4_NAME(blit)(
+				get(),
+				static_cast<uint_t>(dx),
+				static_cast<uint_t>(dy),
+				&source,
+				static_cast<uint_t>(sx),
+				static_cast<uint_t>(sy),
+				static_cast<uint_t>(width),
+				static_cast<uint_t>(height)
+			);
 		}
 
 		void clear(color_t color) noexcept {
 			INKNIT_X4_NAME(clear)(get(), color);
 		}
 
-		void draw_point(uint_t x, uint_t y, color_t color) noexcept {
+		void draw_point(std::int32_t x, std::int32_t y, color_t color) noexcept {
 			INKNIT_X4_NAME(draw_point)(get(), x, y, color);
 		}
 
-		void draw_hline(uint_t x1, uint_t x2, uint_t y, color_t color) noexcept {
-			INKNIT_X4_NAME(draw_hline)(get(), x1, x2, y, color);
+		void draw_hline(std::int32_t x1, std::int32_t x2, std::int32_t y, color_t color) noexcept {
+			INKNIT_X4_NAME(draw_hline)(
+				get(),
+				static_cast<uint_t>(x1),
+				static_cast<uint_t>(x2),
+				static_cast<uint_t>(y),
+				color
+			);
 		}
 
-		void draw_vline(uint_t x, uint_t y1, uint_t y2, color_t color) noexcept {
-			INKNIT_X4_NAME(draw_vline)(get(), x, y1, y2, color);
+		void draw_vline(std::int32_t x, std::int32_t y1, std::int32_t y2, color_t color) noexcept {
+			INKNIT_X4_NAME(draw_vline)(
+				get(),
+				static_cast<uint_t>(x),
+				static_cast<uint_t>(y1),
+				static_cast<uint_t>(y2),
+				color
+			);
 		}
 
 		void draw_line(point_t pt1, point_t pt2, color_t color) noexcept {
@@ -481,16 +642,30 @@ namespace inknit { namespace details {
 		void draw_rect(point_t pt, size_t sz, color_t color) noexcept {
 			auto [x, y]          = pt;
 			auto [width, height] = sz;
-			INKNIT_X4_NAME(draw_rect)(get(), x, y, width, height, color);
+			INKNIT_X4_NAME(draw_rect)(
+				get(),
+				static_cast<uint_t>(x),
+				static_cast<uint_t>(y),
+				static_cast<uint_t>(width),
+				static_cast<uint_t>(height),
+				color
+			);
 		}
 
 		void draw_rectp(point_t pt1, point_t pt2, color_t color) noexcept {
 			auto [x1, y1] = pt1;
 			auto [x2, y2] = pt2;
-			INKNIT_X4_NAME(draw_rectp)(get(), x1, y1, x2, y2, color);
+			INKNIT_X4_NAME(draw_rectp)(
+				get(),
+				static_cast<uint_t>(x1),
+				static_cast<uint_t>(y1),
+				static_cast<uint_t>(x2),
+				static_cast<uint_t>(y2),
+				color
+			);
 		}
 
-		void draw_circle(point_t ct, uint_t radius, color_t color) noexcept {
+		void draw_circle(point_t ct, std::int32_t radius, color_t color) noexcept {
 			auto [x, y] = ct;
 			INKNIT_X4_NAME(draw_circle)(get(), x, y, radius, color);
 		}
@@ -535,36 +710,57 @@ namespace inknit { namespace details {
 				  data
 			  ) {}
 
-		color_t at(uint_t x, uint_t y) const noexcept {
-			return INKNIT_X4LSB_NAME(get)(get(), x, y);
+		color_t at(std::int32_t x, std::int32_t y) const noexcept {
+			return INKNIT_X4LSB_NAME(get_pixel)(get(), x, y);
 		}
 
 		void blit(
-			uint_t                 dx,
-			uint_t                 dy,
+			std::int32_t           dx,
+			std::int32_t           dy,
 			image_primitive const& source,
-			uint_t                 sx,
-			uint_t                 sy,
-			uint_t                 width,
-			uint_t                 height
+			std::int32_t           sx,
+			std::int32_t           sy,
+			std::int32_t           width,
+			std::int32_t           height
 		) noexcept {
-			INKNIT_X4LSB_NAME(blit)(get(), dx, dy, &source, sx, sy, width, height);
+			INKNIT_X4LSB_NAME(blit)(
+				get(),
+				static_cast<uint_t>(dx),
+				static_cast<uint_t>(dy),
+				&source,
+				static_cast<uint_t>(sx),
+				static_cast<uint_t>(sy),
+				static_cast<uint_t>(width),
+				static_cast<uint_t>(height)
+			);
 		}
 
 		void clear(color_t color) noexcept {
 			INKNIT_X4LSB_NAME(clear)(get(), color);
 		}
 
-		void draw_point(uint_t x, uint_t y, color_t color) noexcept {
+		void draw_point(std::int32_t x, std::int32_t y, color_t color) noexcept {
 			INKNIT_X4LSB_NAME(draw_point)(get(), x, y, color);
 		}
 
-		void draw_hline(uint_t x1, uint_t x2, uint_t y, color_t color) noexcept {
-			INKNIT_X4LSB_NAME(draw_hline)(get(), x1, x2, y, color);
+		void draw_hline(std::int32_t x1, std::int32_t x2, std::int32_t y, color_t color) noexcept {
+			INKNIT_X4LSB_NAME(draw_hline)(
+				get(),
+				static_cast<uint_t>(x1),
+				static_cast<uint_t>(x2),
+				static_cast<uint_t>(y),
+				color
+			);
 		}
 
-		void draw_vline(uint_t x, uint_t y1, uint_t y2, color_t color) noexcept {
-			INKNIT_X4LSB_NAME(draw_vline)(get(), x, y1, y2, color);
+		void draw_vline(std::int32_t x, std::int32_t y1, std::int32_t y2, color_t color) noexcept {
+			INKNIT_X4LSB_NAME(draw_vline)(
+				get(),
+				static_cast<uint_t>(x),
+				static_cast<uint_t>(y1),
+				static_cast<uint_t>(y2),
+				color
+			);
 		}
 
 		void draw_line(point_t pt1, point_t pt2, color_t color) noexcept {
@@ -576,16 +772,30 @@ namespace inknit { namespace details {
 		void draw_rect(point_t pt, size_t sz, color_t color) noexcept {
 			auto [x, y]          = pt;
 			auto [width, height] = sz;
-			INKNIT_X4LSB_NAME(draw_rect)(get(), x, y, width, height, color);
+			INKNIT_X4LSB_NAME(draw_rect)(
+				get(),
+				static_cast<uint_t>(x),
+				static_cast<uint_t>(y),
+				static_cast<uint_t>(width),
+				static_cast<uint_t>(height),
+				color
+			);
 		}
 
 		void draw_rectp(point_t pt1, point_t pt2, color_t color) noexcept {
 			auto [x1, y1] = pt1;
 			auto [x2, y2] = pt2;
-			INKNIT_X4LSB_NAME(draw_rectp)(get(), x1, y1, x2, y2, color);
+			INKNIT_X4LSB_NAME(draw_rectp)(
+				get(),
+				static_cast<uint_t>(x1),
+				static_cast<uint_t>(y1),
+				static_cast<uint_t>(x2),
+				static_cast<uint_t>(y2),
+				color
+			);
 		}
 
-		void draw_circle(point_t ct, uint_t radius, color_t color) noexcept {
+		void draw_circle(point_t ct, std::int32_t radius, color_t color) noexcept {
 			auto [x, y] = ct;
 			INKNIT_X4LSB_NAME(draw_circle)(get(), x, y, radius, color);
 		}

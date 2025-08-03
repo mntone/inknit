@@ -51,7 +51,7 @@ INKNIT_DEFPROTO_BLIT(INTERNAL_FUNCNAME(blit_pixel_old)) {
 			// const uint32_t writeValue = src_wordval << dst_bitpos;
 			// const uint32_t mask       = write_mask(dst_bitpos);
 			// dst_data[dst_words]    = (dst_wordval & ~mask) | writeValue;
-			const uint32_t value         = get_pixel(src_wordval, src_bitpos);
+			const uint32_t value         = get_pixval(src_wordval, src_bitpos);
 			const uint32_t write_wordval = build_pixel32(dst_wordval, dst_bitpos, value);
 			dst_data[dst_wordidx]        = swap_if_required(write_wordval);
 		}
@@ -84,7 +84,7 @@ INKNIT_DEFPROTO_BLIT(INTERNAL_FUNCNAME(blit_pixel)) {
 			const int32_t dst_bitpos = pixels_to_bitpos(dst_pixel);
 			const int32_t src_bitpos = pixels_to_bitpos(src_pixel);
 
-			const uint32_t value      = get_pixel(src_wordval, src_bitpos);
+			const uint32_t value      = get_pixval(src_wordval, src_bitpos);
 			const uint32_t write_word = build_pixel32(dst_wordval, dst_bitpos, value);
 			dst_data[dst_wordidx]     = swap_if_required(write_word);
 
@@ -120,7 +120,7 @@ INKNIT_DEFPROTO_BLIT(INTERNAL_FUNCNAME(blit_unaligned)) {
 		int32_t src_bitpos = pixels_to_bitpos(src_pixel);
 
 		for (uint32_t x = 0; x < width; ++x) {
-			const uint32_t pixel = get_pixel(src_wordval, src_bitpos);
+			const uint32_t pixel = get_pixval(src_wordval, src_bitpos);
 			dst_wordval          = build_pixel32(dst_wordval, dst_bitpos, pixel);
 
 			advance_wordpos(dst_bitpos);

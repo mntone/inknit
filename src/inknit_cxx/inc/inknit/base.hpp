@@ -29,8 +29,8 @@ namespace inknit {
 
 using color_t = inknit_color_t;
 using uint_t  = inknit_uint_t;
-using point_t = std::pair<uint_t, uint_t>;
-using size_t  = std::pair<uint_t, uint_t>;
+using point_t = std::pair<std::int32_t, std::int32_t>;
+using size_t  = std::pair<std::int32_t, std::int32_t>;
 
 enum class pixel_layout : std::uint8_t {
 	x1    = INKNIT_X1,
@@ -96,9 +96,9 @@ enum class alignment : std::uint8_t {
 
 namespace details {
 
-	constexpr inknit::alignment align(uint_t bitsPerPixels) noexcept {
-		uint_t bitflags  = bitsPerPixels / 4 - 1;
-		uint_t alignment = 0;
+	constexpr inknit::alignment align(std::int32_t bitsPerPixels) noexcept {
+		std::int32_t bitflags  = bitsPerPixels / 4 - 1;
+		std::int32_t alignment = 0;
 		if (bitflags & 0xF0) {
 			bitflags >>= 4;
 			alignment += 4;
@@ -114,7 +114,8 @@ namespace details {
 		return static_cast<inknit::alignment>(alignment);
 	}
 
-	constexpr uint_t stride(uint_t width, uint_t bitsPerPixels, uint_t align) noexcept {
+	template<std::integral I>
+	constexpr I stride(I width, I bitsPerPixels, I align) noexcept {
 		return ((width * bitsPerPixels + (align - 1)) & ~(align - 1)) / (align >> 3);
 	}
 
@@ -179,14 +180,14 @@ namespace details {
 		inline constexpr inknit::alignment alignment() const noexcept {
 			return alignment_;
 		}
-		inline constexpr std::uint16_t height() const noexcept {
-			return height_;
+		inline constexpr std::int32_t height() const noexcept {
+			return static_cast<std::int32_t>(height_);
 		}
-		inline constexpr std::uint16_t stride() const noexcept {
-			return stride_;
+		inline constexpr std::int32_t stride() const noexcept {
+			return static_cast<std::int32_t>(stride_);
 		}
-		inline constexpr std::uint16_t width() const noexcept {
-			return width_;
+		inline constexpr std::int32_t width() const noexcept {
+			return static_cast<std::int32_t>(width_);
 		}
 
 		inline inknit_image *operator&() noexcept {
@@ -213,7 +214,7 @@ namespace details {
 
 		std::uint16_t           stride_;
 		inknit::alignment const alignment_ : 3;
-		std::uint16_t           width_     : 13;
+		std::uint32_t           width_     : 13;
 		std::uint16_t           height_;
 		void                   *data_;
 	};

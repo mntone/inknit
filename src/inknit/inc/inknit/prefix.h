@@ -34,3 +34,8 @@
 	_INKNIT_CONCAT4(__INKNIT_INTERNAL_FUNCNAME_BASE, group, _, name)
 #define INKNIT_INTERNAL_VARNAME(group, name)                        \
 	_INKNIT_CONCAT4(__INKNIT_INTERNAL_VARNAME_BASE, group, _, name)
+
+#define INKNIT_INTERNAL_GROUP(width_and_align, _bpp, endian)                   \
+	_INKNIT_CONCAT4(width_and_align, _, _bpp, _INKNIT_CONCAT3(bpp, _, endian))
+#define INKNIT_INTERNAL_FUNC(name, group) _INKNIT_CONCAT3(_inknit_, name, group)
+#define INKNIT_INTERNAL_WRAPFUNC(name)    _INKNIT_CONCAT2(__wrap, name)

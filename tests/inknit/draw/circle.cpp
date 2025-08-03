@@ -24,7 +24,11 @@ namespace inknit::tests::shared {
 template<typename Image>
 	requires std::convertible_to<Image, inknit::details::image_primitive>
 void subtest_draw_circle(
-	Image& image, uint_t cx, uint_t cy, uint_t radius, color_t color = colors::white
+	Image&       image,
+	std::int32_t cx,
+	std::int32_t cy,
+	std::int32_t radius,
+	color_t      color = colors::white
 ) noexcept {
 	image.clear(colors::black);
 	image.draw_circle({cx, cy}, radius, color);

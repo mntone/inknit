@@ -36,8 +36,8 @@ class f_blit: public fixture {
 public:
 	explicit f_blit() {
 		src_.clear(COLOR_BLACK);
-		for (uint_t y = 0; y < src_.height(); ++y) {
-			for (uint_t x = 0; x < src_.width(); ++x) {
+		for (std::int32_t y = 0; y < src_.height(); ++y) {
+			for (std::int32_t x = 0; x < src_.width(); ++x) {
 				if (((x / 8) + (y / 8)) % 2 == 0) {
 					src_.draw_point(x, y, COLOR_BLACK);
 				} else {

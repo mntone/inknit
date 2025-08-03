@@ -252,10 +252,10 @@ struct test_image
 		: image<PIXEL_LAYOUT, PIXEL_FORMAT>(width, height, color) {}
 
 	constexpr void dump(std::ostream& os) const noexcept {
-		uint_t const height = this->height();
-		uint_t const width  = this->width();
-		for (uint_t y = 0; y < height; ++y) {
-			for (uint_t x = 0; x < width; ++x) {
+		std::int32_t const height = this->height();
+		std::int32_t const width  = this->width();
+		for (std::int32_t y = 0; y < height; ++y) {
+			for (std::int32_t x = 0; x < width; ++x) {
 				color_t color = this->at(x, y);
 				os << details::stringable<PIXEL_LAYOUT, PIXEL_FORMAT>::visualize(color);
 			}
@@ -268,12 +268,12 @@ struct test_image
 	}
 
 	template<class Function>
-		requires details::color_invocable<Function, uint_t, uint_t>
+		requires details::color_invocable<Function, std::int32_t, std::int32_t>
 	void test(Function fn) const noexcept {
-		uint_t const height = this->height();
-		uint_t const width  = this->width();
-		for (uint_t y = 0; y < height; ++y) {
-			for (uint_t x = 0; x < width; ++x) {
+		std::int32_t const height = this->height();
+		std::int32_t const width  = this->width();
+		for (std::int32_t y = 0; y < height; ++y) {
+			for (std::int32_t x = 0; x < width; ++x) {
 				color_t actual   = this->at(x, y);
 				color_t expected = fn(x, y);
 				if (actual != expected) {

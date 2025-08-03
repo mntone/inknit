@@ -39,10 +39,50 @@ inknit_generate_source_files(${PROJECT_NAME}
 	)
 
 target_sources(${PROJECT_NAME} PRIVATE
+	$<$<BOOL:${INKNIT_SHARED}>:x1/exports.c>
 	$<$<BOOL:${INKNIT_SHARED}>:x1lsb/exports.c>
+	$<$<BOOL:${INKNIT_SHARED}>:x2/exports.c>
 	$<$<BOOL:${INKNIT_SHARED}>:x2lsb/exports.c>
+	$<$<BOOL:${INKNIT_SHARED}>:x4/exports.c>
 	$<$<BOOL:${INKNIT_SHARED}>:x4lsb/exports.c>
 	)
+if(INKNIT_PROCESSOR STREQUAL "x86")
+	target_compile_definitions(${PROJECT_NAME} PRIVATE
+		INKNIT_ENABLE_DRAW_POINT_ASM
+		)
+	target_sources(${PROJECT_NAME} PRIVATE
+		x1/draw_point_x86.s
+		x1lsb/draw_point_x86.s
+		x2/draw_point_x86.s
+		x2lsb/draw_point_x86.s
+		x4/draw_point_x86.s
+		x4lsb/draw_point_x86.s
+		)
+elseif(INKNIT_PROCESSOR STREQUAL "armv6m")
+	target_compile_definitions(${PROJECT_NAME} PRIVATE
+		INKNIT_ENABLE_DRAW_POINT_ASM
+		)
+	target_sources(${PROJECT_NAME} PRIVATE
+		x1/draw_point_armv6m.s
+		x1lsb/draw_point_armv6m.s
+		x2/draw_point_armv6m.s
+		x2lsb/draw_point_armv6m.s
+		x4/draw_point_armv6m.s
+		x4lsb/draw_point_armv6m.s
+		)
+elseif(INKNIT_PROCESSOR STREQUAL "armv8m")
+	target_compile_definitions(${PROJECT_NAME} PRIVATE
+		INKNIT_ENABLE_DRAW_POINT_ASM
+		)
+	target_sources(${PROJECT_NAME} PRIVATE
+		x1/draw_point_armv8m.s
+		x1lsb/draw_point_armv8m.s
+		x2/draw_point_armv8m.s
+		x2lsb/draw_point_armv8m.s
+		x4/draw_point_armv8m.s
+		x4lsb/draw_point_armv8m.s
+		)
+endif()
 
 if(INKNIT_ENABLE_OBJDUMP)
 	inknit_enable_disassemble(${PROJECT_NAME})
