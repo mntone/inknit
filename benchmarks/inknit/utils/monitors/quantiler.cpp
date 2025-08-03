@@ -137,7 +137,7 @@ void p2_estimator::dump(std::string const& name) const noexcept {
 	printf("p = %f, count = %d\n", probability_, count_);
 	// clang-format off
 	printf("q  (heights) = {%6.1f, %6.1f, %6.1f, %6.1f, %6.1f}\n", q_[0],  q_[1],  q_[2],  q_[3],  q_[4]);
-	printf("n  (actual)  = {%4u  , %4u  , %4u  , %4u  , %4u  }\n",           n_[0],  n_[1],  n_[2],  n_[3],  n_[4]);
+	printf("n  (actual)  = {%4u  , %4u  , %4u  , %4u  , %4u  }\n", n_[0],  n_[1],  n_[2],  n_[3],  n_[4]);
 	printf("ns (desired) = {%6.1f, %6.1f, %6.1f, %6.1f, %6.1f}\n", ns_[0], ns_[1], ns_[2], ns_[3], ns_[4]);
 	// clang-format on
 	puts("----------------------------------");

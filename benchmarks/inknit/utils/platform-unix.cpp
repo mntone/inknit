@@ -24,10 +24,11 @@
 #include <errno.h>         // errno
 #include <sys/resource.h>  // getpriority
 
-#define INKBM_NICE_MAX     19
-#define INKBM_NICE_MAX_STR "19"
+#define INKBM_NICE_HIGH     -20
+#define INKBM_NICE_HIGH_STR "-20"
 
-static int __inkbm_linux_nice = 0;
+static bool __inkbm_linux_disable_setpriority = false;
+static int  __inkbm_linux_previous_nice       = 0;
 
 void inkbm_platform_init() noexcept {}
 
@@ -48,6 +49,10 @@ void inkbm_platform_sleep(int milliseconds) noexcept {
 }
 
 void inkbm_platform_benchmark_start() noexcept {
+	if (__inkbm_linux_disable_setpriority) {
+		return;
+	}
+
 	id_t const thread_id = static_cast<id_t>(gettid());
 
 	errno = 0;  // require to reset 0
@@ -57,21 +62,27 @@ void inkbm_platform_benchmark_start() noexcept {
 		INKBM_FATAL("Failed to get process priority: errno=%d.", errno);
 	}
 
-	int ret = setpriority(PRIO_PROCESS, thread_id, INKBM_NICE_MAX);
+	int ret = setpriority(PRIO_PROCESS, thread_id, INKBM_NICE_HIGH);
 	if (ret != 0) {
-		INKBM_FATAL("Failed to set process priority to INKBM_NICE_MAX (" INKBM_NICE_MAX_STR ").");
+		__inkbm_linux_disable_setpriority = true;
+		INKBM_WARN("Failed to set process priority to INKBM_NICE_MAX (" INKBM_NICE_HIGH_STR ").");
+		return;
 	}
 
-	__inkbm_linux_nice = old_nice;
+	__inkbm_linux_previous_nice = old_nice;
 }
 
 void inkbm_platform_benchmark_stop() noexcept {
+	if (__inkbm_linux_disable_setpriority) {
+		return;
+	}
+
 	id_t const thread_id = static_cast<id_t>(gettid());
 
-	int ret = setpriority(PRIO_PROCESS, thread_id, __inkbm_linux_nice);
+	int ret = setpriority(PRIO_PROCESS, thread_id, __inkbm_linux_previous_nice);
 	if (ret != 0) {
 		INKBM_WARN("Failed to restore process priority.");
 	}
 
-	__inkbm_linux_nice = 0;
+	__inkbm_linux_previous_nice = 0;
 }

@@ -21,10 +21,14 @@
 
 #include "../types.hpp"
 
-#include <array>   // array
-#include <vector>  // vector
+#include <algorithm>  // sort
+#include <array>      // array
+#include <variant>    // variant
+#include <vector>     // vector
 
-#include <iostream>  // for est::get; remove in the fture
+#if _DEBUG
+#include <cstdio>  // printf, puts
+#endif
 
 namespace inkbm::monitors {
 
@@ -44,6 +48,7 @@ struct p2_estimator final {
 		n_     = {0, 1, 2, 3, 4};
 	}
 
+	INKBM_NODISCARD
 	double get() const noexcept;
 
 #if _DEBUG
@@ -84,6 +89,7 @@ namespace details {
 		void add(stat_value val) noexcept;
 		void clear() noexcept;
 
+		INKBM_NODISCARD
 		inline quantile get() const noexcept {
 			quantile quantile {
 				quant1_.get(),
@@ -94,13 +100,8 @@ namespace details {
 			};
 #if _DEBUG
 			if (quantile.quant1 > quantile.median) {
-				std::cout << "!!! ANOMALY DETECTED: quant1 > median !!!\n" << std::endl;
-				std::cout
-					<< "quant1 = "
-					<< quantile.quant1
-					<< ", median = "
-					<< quantile.median
-					<< std::endl;
+				puts("!!! ANOMALY DETECTED: quant1 > median !!!");
+				printf("quant1 = %6.1f, median = %6.1f\n", quantile.quant1, quantile.median);
 
 				quant1_.dump("quant1_estimator");
 				median_.dump("median_estimator");
@@ -126,6 +127,7 @@ namespace details {
 			data_.clear();
 		}
 
+		INKBM_NODISCARD
 		inline quantile get() const noexcept {
 			std::sort(data_.begin(), data_.end());
 
@@ -189,6 +191,7 @@ public:
 		);
 	}
 
+	INKBM_NODISCARD
 	inline quantile get() const noexcept {
 		return std::visit(
 			[](auto& impl) noexcept -> quantile {

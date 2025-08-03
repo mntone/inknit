@@ -27,7 +27,7 @@
 static constexpr char const *FATAL_HEADER = INKBM_HEADER "[FATAL] ";
 static constexpr char const *WARN_HEADER  = INKBM_HEADER "[WARN] ";
 
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 #pragma comment(linker, "/alternatename:inkbm_fatal_handler=inkbm_fatal_handler_default")
 #pragma comment(linker, "/alternatename:inkbm_error_handler=inkbm_error_handler_default")
 

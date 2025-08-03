@@ -26,6 +26,7 @@
 #include <cmath>      // floor, log10
 #include <cinttypes>  // PRIu32
 #include <cstdio>     // printf, puts
+#include <iostream>   // cout
 #include <numeric>    // accumulate
 
 using namespace inkbm;
