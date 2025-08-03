@@ -38,4 +38,5 @@
 #define INKNIT_INTERNAL_GROUP(width_and_align, _bpp, endian)                   \
 	_INKNIT_CONCAT4(width_and_align, _, _bpp, _INKNIT_CONCAT3(bpp, _, endian))
 #define INKNIT_INTERNAL_FUNC(name, group) _INKNIT_CONCAT3(_inknit_, name, group)
-#define INKNIT_INTERNAL_WRAPFUNC(name)    _INKNIT_CONCAT2(__wrap, name)
+
+#define INKNIT_CURRENT_INTERNAL_FUNC(name) INKNIT_INTERNAL_FUNC(name, INKNIT_CURRENT_GROUP)

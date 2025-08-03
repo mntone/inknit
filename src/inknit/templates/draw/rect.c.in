@@ -18,10 +18,8 @@
  */
 
 #ifdef __INTELLISENSE__
-#include "../../x1lsb/base.h"
 #include "../base.h.in"
 #else
-#include "${LAYOUT_NAME}/base.h"
 #include "../base.h"
 #endif
 
@@ -50,8 +48,12 @@ void PUBLIC_FUNCNAME(draw_rect)(
 		PUBLIC_FUNCNAME(draw_hline)(image, x, right, bottom, color);
 
 		if (height > 2) {
-			PUBLIC_FUNCNAME(draw_vline)(image, x, y + 1, bottom - 1, color);
-			PUBLIC_FUNCNAME(draw_vline)(image, right, y + 1, bottom - 1, color);
+			PUBLIC_FUNCNAME(draw_vline)(
+				image, (int32_t)x, (int32_t)(y + 1), (int32_t)(bottom - 1), color
+			);
+			PUBLIC_FUNCNAME(draw_vline)(
+				image, (int32_t)right, (int32_t)(y + 1), (int32_t)(bottom - 1), color
+			);
 		}
 	}
 }
@@ -82,8 +84,12 @@ void PUBLIC_FUNCNAME(draw_rectp)(
 
 		const inknit_uint_t height = y2 - y1 + 1;
 		if (height > 2) {
-			PUBLIC_FUNCNAME(draw_vline)(image, x1, y1 + 1, y2 - 1, color);
-			PUBLIC_FUNCNAME(draw_vline)(image, x2, y1 + 1, y2 - 1, color);
+			PUBLIC_FUNCNAME(draw_vline)(
+				image, (int32_t)x1, (int32_t)(y1 + 1), (int32_t)(y2 - 1), color
+			);
+			PUBLIC_FUNCNAME(draw_vline)(
+				image, (int32_t)x2, (int32_t)(y1 + 1), (int32_t)(y2 - 1), color
+			);
 		}
 	}
 }

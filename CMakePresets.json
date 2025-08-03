@@ -24,6 +24,10 @@
 					"type": "BOOL",
 					"value": false
 				},
+				"INKNIT_ENABLE_UNROLL": {
+					"type": "BOOL",
+					"value": false
+				},
 				"INKNIT_BUILD_SHARED_LIBS": {
 					"type": "BOOL",
 					"value": false
@@ -77,7 +81,8 @@
 				"win32-common-gcc"
 			],
 			"cacheVariables": {
-				"CMAKE_TOOLCHAIN_FILE": "cmake/toolchains/win32-x86-gcc.cmake"
+				"CMAKE_TOOLCHAIN_FILE": "cmake/toolchains/win32-x86-gcc.cmake",
+				"INKNIT_ENABLE_UNROLL": true
 			}
 		},
 		{
@@ -103,7 +108,8 @@
 				"win32-common-gcc"
 			],
 			"cacheVariables": {
-				"CMAKE_TOOLCHAIN_FILE": "cmake/toolchains/win32-x86_64-gcc.cmake"
+				"CMAKE_TOOLCHAIN_FILE": "cmake/toolchains/win32-x86_64-gcc.cmake",
+				"INKNIT_ENABLE_UNROLL": true
 			}
 		},
 		{
@@ -155,7 +161,8 @@
 			],
 			"cacheVariables": {
 				"CMAKE_INSTALL_LIBDIR": "lib/i686-linux-gnu",
-				"CMAKE_TOOLCHAIN_FILE": "cmake/toolchains/linux-x86-gcc.cmake"
+				"CMAKE_TOOLCHAIN_FILE": "cmake/toolchains/linux-x86-gcc.cmake",
+				"INKNIT_ENABLE_UNROLL": true
 			}
 		},
 		{
@@ -182,7 +189,8 @@
 			],
 			"cacheVariables": {
 				"CMAKE_INSTALL_LIBDIR": "lib/i686-linux-gnu",
-				"CMAKE_TOOLCHAIN_FILE": "cmake/toolchains/linux-x86-clang.cmake"
+				"CMAKE_TOOLCHAIN_FILE": "cmake/toolchains/linux-x86-clang.cmake",
+				"INKNIT_ENABLE_UNROLL": true
 			}
 		},
 		{
@@ -209,7 +217,8 @@
 			],
 			"cacheVariables": {
 				"CMAKE_INSTALL_LIBDIR": "lib/x86_64-linux-gnu",
-				"CMAKE_TOOLCHAIN_FILE": "cmake/toolchains/linux-x86_64-gcc.cmake"
+				"CMAKE_TOOLCHAIN_FILE": "cmake/toolchains/linux-x86_64-gcc.cmake",
+				"INKNIT_ENABLE_UNROLL": true
 			}
 		},
 		{
@@ -236,7 +245,8 @@
 			],
 			"cacheVariables": {
 				"CMAKE_INSTALL_LIBDIR": "lib/x86_64-linux-gnu",
-				"CMAKE_TOOLCHAIN_FILE": "cmake/toolchains/linux-x86_64-clang.cmake"
+				"CMAKE_TOOLCHAIN_FILE": "cmake/toolchains/linux-x86_64-clang.cmake",
+				"INKNIT_ENABLE_UNROLL": true
 			}
 		},
 		{
@@ -263,7 +273,8 @@
 			],
 			"cacheVariables": {
 				"CMAKE_INSTALL_LIBDIR": "lib/aarch64-linux-gnu",
-				"CMAKE_TOOLCHAIN_FILE": "cmake/toolchains/linux-aarch64-gcc.cmake"
+				"CMAKE_TOOLCHAIN_FILE": "cmake/toolchains/linux-aarch64-gcc.cmake",
+				"INKNIT_ENABLE_UNROLL": true
 			}
 		},
 		{
@@ -290,7 +301,8 @@
 			],
 			"cacheVariables": {
 				"CMAKE_INSTALL_LIBDIR": "lib/aarch64-linux-gnu",
-				"CMAKE_TOOLCHAIN_FILE": "cmake/toolchains/linux-aarch64-clang.cmake"
+				"CMAKE_TOOLCHAIN_FILE": "cmake/toolchains/linux-aarch64-clang.cmake",
+				"INKNIT_ENABLE_UNROLL": true
 			}
 		},
 		{

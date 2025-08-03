@@ -19,6 +19,8 @@
 
 #pragma once
 
+#define INKNIT_USE_MACRO_NAME
+
 #ifdef __INTELLISENSE__
 #include "proto.h.in"
 #else
@@ -82,6 +84,13 @@
 #define swap_if_required(word) (INKNIT_BSWAP32(word))
 #endif
 
+
+static INKNIT_ALWAYS_INLINE void
+_inknit_swap_int32(int32_t *INKNIT_RESTRICT a, int32_t *INKNIT_RESTRICT b) {
+	int32_t temp = *a;
+	*a           = *b;
+	*b           = temp;
+}
 
 static INKNIT_ALWAYS_INLINE void INTERNAL_FUNCNAME(set_value8)(
 	uint8_t *const byteptr, const uint8_t clear_mask, const uint8_t pixel_value

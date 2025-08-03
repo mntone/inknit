@@ -18,19 +18,18 @@
  */
 
 #include "inknit.hpp"
+#include "inknit_internal.h"
 #include "utils/inkbm.hpp"
 #include "constants.hpp"
 
 using namespace inknit;
 using namespace inkbm;
 
-#define TYPES      std::tuple<uint_t, uint_t, uint_t>
-#define ITERATIONS DEFAULT_ITERATIONS
+#define CURRENT_GROUP INKNIT_INTERNAL_GROUP(32, 1, le)
+#define TYPES         std::tuple<std::int32_t, std::int32_t, std::int32_t>
+#define ITERATIONS    DEFAULT_ITERATIONS
 
-#define GROUP_NAME  draw_vline
 #define APPLY(name) INKBM_FIXTURE_APPLY(name, draw_vline, d_vline)
-#define FUNC_NAME(name)                                                               \
-	INKNIT_INTERNAL_FUNCNAME(INKNIT_X4LSB_BASE, _INKNIT_CONCAT3(GROUP_NAME, _, name))
 
 class d_vline: public fixture {
 public:
@@ -54,7 +53,7 @@ public:
 protected:
 	fixed_image<32, 32, pixel_layout::x1lsb, pixel_format::grayscale> image_;
 
-	uint_t x_, y1_, y2_;
+	std::int32_t x_, y1_, y2_;
 };
 
 INKBM_ARGS(
@@ -81,12 +80,16 @@ INKBM_ARGS(
 
 APPLY(pointer) {
 	for (int i = 0; i < ITERATIONS; ++i) {
-		FUNC_NAME(pointer)(&image_, x_, y1_, y2_, COLOR_WHITE);
+		INKNIT_INTERNAL_FUNC(draw_vline, CURRENT_GROUP)(
+			static_cast<uint32_t *>(image_.data()), image_.stride(), x_, y1_, y2_, COLOR_WHITE
+		);
 	}
 }
 
 APPLY(pointer_unroll) {
 	for (int i = 0; i < ITERATIONS; ++i) {
-		FUNC_NAME(pointer_unroll)(&image_, x_, y1_, y2_, COLOR_WHITE);
+		INKNIT_INTERNAL_FUNC(draw_vline_unroll, CURRENT_GROUP)(
+			static_cast<uint32_t *>(image_.data()), image_.stride(), x_, y1_, y2_, COLOR_WHITE
+		);
 	}
 }

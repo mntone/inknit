@@ -1,0 +1,52 @@
+/*
+ * inknit <https://github.com/mntone/inknit>
+ *
+ * Copyright (C) 2025 mntone <901816+mntone@users.noreply.github.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+#define _inknit_draw_vline32 INKNIT_CURRENT_INTERNAL_FUNC(draw_vline)
+void INKNIT_EXPORT _inknit_draw_vline32(
+	uint32_t *data, int32_t stride, int32_t x, int32_t y1, int32_t y2, inknit_color_t color
+);
+
+#if defined(INKNIT_ENABLE_BENCHMARKS)                                   \
+	|| defined(INKNIT_ENABLE_UNROLL) && !defined(INKNIT_TARGET_IS_PICO)
+#define _inknit_draw_vline_unroll32 INKNIT_CURRENT_INTERNAL_FUNC(draw_vline_unroll)
+void INKNIT_EXPORT _inknit_draw_vline_unroll32(
+	uint32_t *data, int32_t stride, int32_t x, int32_t y1, int32_t y2, inknit_color_t color
+);
+#endif
+
+#define _inknit_draw_circle32 INKNIT_CURRENT_INTERNAL_FUNC(draw_circle)
+void INKNIT_EXPORT _inknit_draw_circle32(
+	uint32_t      *data,
+	int32_t        stride,
+	int32_t        cx,
+	int32_t        cy,
+	int32_t        radius,
+	inknit_color_t color,
+	int32_t        min_x,
+	int32_t        min_y,
+	int32_t        max_x,
+	int32_t        max_y
+);
+
+#ifndef INKNIT_USE_MACRO_NAME
+// Clean up macros
+#undef _inknit_draw_vline32
+#undef _inknit_draw_vline_unroll32
+#undef _inknit_draw_circle32
+#endif

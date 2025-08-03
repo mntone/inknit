@@ -44,18 +44,6 @@
 
 
 // -- MARK: draw_vline
-#define INKNIT_DEFPROTO_DRAW_VLINE(name) \
-	void name(                           \
-		struct inknit_image *image,      \
-		inknit_uint_t        x,          \
-		inknit_uint_t        y1,         \
-		inknit_uint_t        y2,         \
-		inknit_color_t       color       \
-	)
-#define INKNIT_PROTO_DRAW_VLINE(name) INKNIT_DEFPROTO_DRAW_VLINE(name) INKNIT_NONNULL(1)
-
-
-// -- MARK: draw_vline
 #define INKNIT_DEFPROTO_DRAW_LINE(name) \
 	void name(                          \
 		struct inknit_image *image,     \

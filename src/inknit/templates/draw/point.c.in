@@ -18,10 +18,8 @@
  */
 
 #ifdef __INTELLISENSE__
-#include "../../x2/base.h"
 #include "../base.h.in"
 #else
-#include "${LAYOUT_NAME}/base.h"
 #include "../base.h"
 #endif
 

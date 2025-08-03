@@ -18,10 +18,8 @@
  */
 
 #ifdef __INTELLISENSE__
-#include "../../x2/base.h"
 #include "../base.h.in"
 #else
-#include "${LAYOUT_NAME}/base.h"
 #include "../base.h"
 #endif
 
@@ -66,7 +64,6 @@ static inline void _inknit_draw_circle_points32(
 	);
 }
 
-#define _inknit_draw_circle32 INKNIT_INTERNAL_FUNC(draw_circle, INKNIT_CURRENT_GROUP)
 void _inknit_draw_circle32(
 	uint32_t      *data,
 	int32_t        stride,

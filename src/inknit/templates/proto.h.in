@@ -21,14 +21,14 @@
 
 #ifdef __INTELLISENSE__
 #include "../x2/base.h"
-#include "base.h.in"
+#include "../inc/inknit/proto_internal.h.in"
 #else
 #include "${LAYOUT_NAME}/base.h"
-#include "base.h"
+#include "inc/inknit/proto_internal.h.in"
 #endif
 
 #ifdef INKNIT_ENABLE_DRAW_POINT_ASM
-#define __inknit_draw_point32_asm INKNIT_INTERNAL_FUNC(draw_point, INKNIT_CURRENT_GROUP)
+#define __inknit_draw_point32_asm INKNIT_CURRENT_INTERNAL_FUNC(draw_point)
 INKNIT_NOINLINE void
 __inknit_draw_point32_asm(uint32_t *data, int32_t stride, int32_t x, int32_t y, uint32_t color);
 
@@ -86,7 +86,7 @@ _inknit_draw_point32(uint32_t *data, int32_t stride, int32_t x, int32_t y, uint3
 #endif
 }
 #else
-#define _inknit_draw_point32 INKNIT_INTERNAL_FUNC(draw_point, INKNIT_CURRENT_GROUP)
+#define _inknit_draw_point32 INKNIT_CURRENT_INTERNAL_FUNC(draw_point)
 extern void
 _inknit_draw_point32(uint32_t *data, int32_t stride, int32_t x, int32_t y, uint32_t color);
 #endif

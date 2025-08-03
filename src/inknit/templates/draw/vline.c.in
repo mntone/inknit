@@ -18,34 +18,35 @@
  */
 
 #ifdef __INTELLISENSE__
-#include "../../x1lsb/base.h"
 #include "../base.h.in"
 #else
-#include "${LAYOUT_NAME}/base.h"
 #include "../base.h"
 #endif
 
-INKNIT_BMPREFIX
-INKNIT_DEFPROTO_DRAW_VLINE(INTERNAL_FUNCNAME(draw_vline_pointer)) {
-	const uint32_t stride  = (uint32_t)image->stride;
-	uint8_t       *row     = (uint8_t *)image->data + (uint32_t)y1 * stride;
-	const uint8_t *end_row = row + (uint32_t)(y2 - y1) * stride;
+void _inknit_draw_vline32(
+	uint32_t *data, int32_t stride, int32_t x, int32_t y1, int32_t y2, inknit_color_t color
+) {
+	const uint32_t stride_in_byte = pixels_to_bytes(stride);
+	const uint32_t length         = (uint32_t)y1 * stride_in_byte;
 
 	const uint32_t byteoffs    = pixels_to_bytes(x);
 	const int32_t  bitoffs     = pixels_to_bitpos_byte(x);
 	const uint8_t  clear_mask  = (uint8_t)clear_mask(bitoffs);
 	const uint8_t  pixel_value = (uint8_t)(pixel_value(color, bitoffs) & 0xFF);
 
+	uint8_t       *row     = (uint8_t *)data + length;
+	const uint8_t *end_row = row + (uint32_t)(y2 - y1) * stride_in_byte;
 	while (row <= end_row) {
 		uint8_t *byte = row + byteoffs;
 
 		INTERNAL_FUNCNAME(set_value8)(byte, clear_mask, pixel_value);
 
-		row += stride;
+		row += stride_in_byte;
 	}
 }
 
-#ifdef INKNIT_ENABLE_BENCHMARKS
+#if defined(INKNIT_ENABLE_BENCHMARKS)                                   \
+	|| defined(INKNIT_ENABLE_UNROLL) && !defined(INKNIT_TARGET_IS_PICO)
 /*
  * A Note on the Loop Unrolling Optimization (`PointerUnroll` version)
  *
@@ -101,60 +102,95 @@ INKNIT_DEFPROTO_DRAW_VLINE(INTERNAL_FUNCNAME(draw_vline_pointer)) {
 #define SETVAL8(byteptr) INTERNAL_FUNCNAME(set_value8)((byteptr), clear_mask, pixel_value);
 
 INKNIT_BMPREFIX
-INKNIT_DEFPROTO_DRAW_VLINE(INTERNAL_FUNCNAME(draw_vline_pointer_unroll)) {
-	const uint32_t stride = (uint32_t)image->stride;
-	const uint32_t length = (uint32_t)y1 * stride;
-	uint8_t       *row    = (uint8_t *)image->data + length;
+void _inknit_draw_vline_unroll32(
+	uint32_t *data, int32_t stride, int32_t x, int32_t y1, int32_t y2, inknit_color_t color
+) {
+	const uint32_t stride_in_byte = pixels_to_bytes(stride);
+	const uint32_t length         = (uint32_t)y1 * stride_in_byte;
 
 	const uint32_t byteoffs    = pixels_to_bytes(x);
 	const int32_t  bitoffs     = pixels_to_bitpos_byte(x);
 	const uint8_t  clear_mask  = (uint8_t)clear_mask(bitoffs);
 	const uint8_t  pixel_value = (uint8_t)(pixel_value(color, bitoffs) & 0xFF);
 
-	uint8_t *ptr = row + byteoffs;
+	uint8_t *ptr = (uint8_t *)data + length + byteoffs;
 
 	uint32_t       height    = (uint32_t)(y2 - y1 + 1);
 	const uint32_t remainder = height % 4;
 	switch (remainder) {
 	case 3:
 		SETVAL8(ptr);
-		ptr += stride;
+		ptr += stride_in_byte;
 		INKNIT_FALLTHROUGH;
 	case 2:
 		SETVAL8(ptr);
-		ptr += stride;
+		ptr += stride_in_byte;
 		INKNIT_FALLTHROUGH;
 	case 1:
 		SETVAL8(ptr);
-		ptr += stride;
+		ptr += stride_in_byte;
 		break;
 	}
 
 	height >>= 2;
 	while (height-- > 0) {
 		SETVAL8(ptr);
-		SETVAL8(ptr + stride);
-		SETVAL8(ptr + stride * 2);
-		SETVAL8(ptr + stride * 3);
-		ptr += stride * 4;
+		SETVAL8(ptr + stride_in_byte);
+		SETVAL8(ptr + stride_in_byte * 2);
+		SETVAL8(ptr + stride_in_byte * 3);
+		ptr += stride_in_byte * 4;
 	}
 }
 #endif
 
-INKNIT_DEFPROTO_DRAW_VLINE(PUBLIC_FUNCNAME(draw_vline)) {
+void PUBLIC_FUNCNAME(draw_vline)(
+	struct inknit_image *image, int32_t x, int32_t y1, int32_t y2, inknit_color_t color
+) {
 	INKNIT_ASSUME(image != NULL, MSG_IMAGE_IS_NULL);
 	INKNIT_ASSUME(image->pixel_layout == TARGET_LAYOUT, MSG_IMAGE_IS_INVALID_LAYOUT);
 	INKNIT_ASSUME(image->alignment >= TARGET_ALIGNMENT, MSG_IMAGE_IS_INVALID_ALIGN);
 
+	INKNIT_ASSUME(x >= INKNIT_X_MIN, MSG_X_LESS_THAN_MIN_VALUE);
 	INKNIT_ASSUME(x <= INKNIT_X_MAX, MSG_X_GREATER_THAN_MAX_VALUE);
+	INKNIT_ASSUME(y1 >= INKNIT_Y_MIN, MSG_Y1_LESS_THAN_MIN_VALUE);
 	INKNIT_ASSUME(y1 <= y2, MSG_Y1_GREATER_THAN_Y2);
 	INKNIT_ASSUME(y2 <= INKNIT_Y_MAX, MSG_Y2_GREATER_THAN_MAX_VALUE);
 
 	INKNIT_ASSUME(color <= POW2_BITS_PER_PIXEL_NEG1, MSG_COLOR_GREATER_THAN_MAX_VALUE);
 
+	const int32_t stride = (int32_t)bytes_to_pixels(image->stride);
+	const int32_t min_x  = 0;
+	const int32_t min_y  = 0;
+	const int32_t max_x  = image->width - 1;
+	const int32_t max_y  = image->height - 1;
+
+	if (x < min_x || max_x < x) {
+		return;
+	}
+
+	if (y1 > y2) {
+		_inknit_swap_int32(&y1, &y2);
+	}
+	if (y1 < min_y) {
+		y1 = min_y;
+		if (y2 < min_y) {
+			y2 = min_y;
+		}
+	}
+	if (y2 > max_y) {
+		y2 = max_y;
+		if (y1 > max_y) {
+			y1 = max_y;
+		}
+	}
+
 	if (y1 == y2) {
-		INTERNAL_FUNCNAME(set)(image, x, y1, color);
+		_inknit_draw_point32(image->data, stride, x, y1, color);
 	} else {
-		INTERNAL_FUNCNAME(draw_vline_pointer)(image, x, y1, y2, color);
+#if defined(INKNIT_ENABLE_UNROLL) && !defined(INKNIT_TARGET_IS_PICO)
+		_inknit_draw_vline_unroll32(image->data, stride, x, y1, y2, color);
+#else
+		_inknit_draw_vline32(image->data, stride, x, y1, y2, color);
+#endif
 	}
 }

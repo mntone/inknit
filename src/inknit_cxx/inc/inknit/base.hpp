@@ -190,6 +190,13 @@ namespace details {
 			return static_cast<std::int32_t>(width_);
 		}
 
+		inline constexpr void *data() noexcept {
+			return data_;
+		}
+		inline constexpr void const *data() const noexcept {
+			return data_;
+		}
+
 		inline inknit_image *operator&() noexcept {
 			return reinterpret_cast<inknit_image *>(this);
 		}

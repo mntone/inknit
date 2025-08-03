@@ -59,9 +59,9 @@ INKNIT_PROTO(INKNIT_PROTO_DRAW_HLINE(PUBN(draw_hline)));
 
 
 // -- MARK: draw_vline
-INKNIT_BMPROTO(INKNIT_PROTO_DRAW_VLINE(INTN(draw_vline_pointer)));
-INKNIT_BMPROTO(INKNIT_PROTO_DRAW_VLINE(INTN(draw_vline_pointer_unroll)));
-INKNIT_PROTO(INKNIT_PROTO_DRAW_VLINE(PUBN(draw_vline)));
+void INKNIT_EXPORT PUBN(draw_vline)(
+	struct inknit_image *image, int32_t x, int32_t y1, int32_t y2, inknit_color_t color
+) INKNIT_NONNULL(1);
 
 
 // -- MARK: draw_line

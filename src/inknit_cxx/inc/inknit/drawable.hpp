@@ -98,13 +98,7 @@ namespace inknit { namespace details {
 		}
 
 		void draw_vline(std::int32_t x, std::int32_t y1, std::int32_t y2, color_t color) noexcept {
-			INKNIT_X1_NAME(draw_vline)(
-				get(),
-				static_cast<uint_t>(x),
-				static_cast<uint_t>(y1),
-				static_cast<uint_t>(y2),
-				color
-			);
+			INKNIT_X1_NAME(draw_vline)(get(), x, y1, y2, color);
 		}
 
 		void draw_line(point_t pt1, point_t pt2, color_t color) noexcept {
@@ -230,13 +224,7 @@ namespace inknit { namespace details {
 		}
 
 		void draw_vline(std::int32_t x, std::int32_t y1, std::int32_t y2, color_t color) noexcept {
-			INKNIT_X1LSB_NAME(draw_vline)(
-				get(),
-				static_cast<uint_t>(x),
-				static_cast<uint_t>(y1),
-				static_cast<uint_t>(y2),
-				color
-			);
+			INKNIT_X1LSB_NAME(draw_vline)(get(), x, y1, y2, color);
 		}
 
 		void draw_line(point_t pt1, point_t pt2, color_t color) noexcept {
@@ -362,13 +350,7 @@ namespace inknit { namespace details {
 		}
 
 		void draw_vline(std::int32_t x, std::int32_t y1, std::int32_t y2, color_t color) noexcept {
-			INKNIT_X2_NAME(draw_vline)(
-				get(),
-				static_cast<uint_t>(x),
-				static_cast<uint_t>(y1),
-				static_cast<uint_t>(y2),
-				color
-			);
+			INKNIT_X2_NAME(draw_vline)(get(), x, y1, y2, color);
 		}
 
 		void draw_line(point_t pt1, point_t pt2, color_t color) noexcept {
@@ -493,13 +475,7 @@ namespace inknit { namespace details {
 		}
 
 		void draw_vline(std::int32_t x, std::int32_t y1, std::int32_t y2, color_t color) noexcept {
-			INKNIT_X2LSB_NAME(draw_vline)(
-				get(),
-				static_cast<uint_t>(x),
-				static_cast<uint_t>(y1),
-				static_cast<uint_t>(y2),
-				color
-			);
+			INKNIT_X2LSB_NAME(draw_vline)(get(), x, y1, y2, color);
 		}
 
 		void draw_line(point_t pt1, point_t pt2, color_t color) noexcept {
@@ -624,13 +600,7 @@ namespace inknit { namespace details {
 		}
 
 		void draw_vline(std::int32_t x, std::int32_t y1, std::int32_t y2, color_t color) noexcept {
-			INKNIT_X4_NAME(draw_vline)(
-				get(),
-				static_cast<uint_t>(x),
-				static_cast<uint_t>(y1),
-				static_cast<uint_t>(y2),
-				color
-			);
+			INKNIT_X4_NAME(draw_vline)(get(), x, y1, y2, color);
 		}
 
 		void draw_line(point_t pt1, point_t pt2, color_t color) noexcept {
@@ -754,13 +724,7 @@ namespace inknit { namespace details {
 		}
 
 		void draw_vline(std::int32_t x, std::int32_t y1, std::int32_t y2, color_t color) noexcept {
-			INKNIT_X4LSB_NAME(draw_vline)(
-				get(),
-				static_cast<uint_t>(x),
-				static_cast<uint_t>(y1),
-				static_cast<uint_t>(y2),
-				color
-			);
+			INKNIT_X4LSB_NAME(draw_vline)(get(), x, y1, y2, color);
 		}
 
 		void draw_line(point_t pt1, point_t pt2, color_t color) noexcept {

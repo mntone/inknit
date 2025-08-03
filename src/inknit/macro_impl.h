@@ -121,6 +121,8 @@
 #define INKNIT_BMPREFIX static INKNIT_ALWAYS_INLINE
 #endif
 
+#define INKNIT_INTERNAL_WRAPFUNC(name) _INKNIT_CONCAT2(__wrap, name)
+
 #define INKNIT_RADIUS_MAX (8191)   // 2^13-1
 #define INKNIT_X_MIN      (-4096)  // -2^12-1
 #define INKNIT_X_MAX      (4095)   // 2^12

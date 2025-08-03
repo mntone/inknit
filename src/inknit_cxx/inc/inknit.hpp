@@ -94,6 +94,13 @@ public:
 		}
 	}
 
+	inline constexpr std::uint32_t *data() noexcept {
+		return buffer_.data();
+	}
+	inline constexpr std::uint32_t const *data() const noexcept {
+		return buffer_.data();
+	}
+
 protected:
 	std::vector<std::uint32_t> buffer_;
 };
