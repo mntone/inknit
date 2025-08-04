@@ -28,13 +28,16 @@ void subtest_draw_circle(
 	std::int32_t cx,
 	std::int32_t cy,
 	std::int32_t radius,
-	color_t      color = colors::white
+	color_t      color     = colors::white,
+	bool         skip_test = false
 ) noexcept {
 	image.clear(colors::black);
 	image.draw_circle({cx, cy}, radius, color);
 
-	pixel_list const& list = make_midpoint_circle(cx, cy, radius);
-	image.test(bind_is_pixel_on_list(list));
+	if (skip_test) {
+		pixel_list const& list = make_midpoint_circle(cx, cy, radius);
+		image.test(bind_is_pixel_on_list(list));
+	}
 }
 
 }  // namespace inknit::tests::shared
@@ -55,12 +58,17 @@ TEST_CASE_TEMPLATE(
 	Image image;
 	image.reset(4 * image.ppw, 4 * image.ppw);
 
-#define SUBCASE_INVOKE(_ICX, _ICY, _IR, _MSG)                    \
-	do {                                                         \
-		SUBCASE(_MSG) {                                          \
-			shared::subtest_draw_circle(image, _ICX, _ICY, _IR); \
-		}                                                        \
-	} while (false)
+#define SUBCASE_INVOKE(_ICX, _ICY, _IR, _MSG)                                        \
+	INKNIT_SUBCASE_INVOKE(shared::subtest_draw_circle(image, _ICX, _ICY, _IR), _MSG)
+
+#define SUBCASE_EXPECT_ASSERT(_ICX, _ICY, _IR, _MSG, _EXPECTED_MESSAGE)                    \
+	INKNIT_SUBCASE_EXPECT_ASSERT(                                                          \
+		shared::subtest_draw_circle(image, _ICX, _ICY, _IR, true), _MSG, _EXPECTED_MESSAGE \
+	)
+
+	std::int32_t const width  = image.width();
+	std::int32_t const height = image.height();
+	std::int32_t const minlen = std::min(width, height);
 
 	// 1. basic
 	SUBCASE_INVOKE(15, 15, 10, "basic: standard circle at center");
@@ -71,11 +79,17 @@ TEST_CASE_TEMPLATE(
 	SUBCASE_INVOKE(20, 5, 1, "degenerate: 1-radius circle");
 
 	// 3. edge
-	SUBCASE_INVOKE(21, 21, 10, "edge: bottom-right edge tangent circle");
-	SUBCASE_INVOKE(5, 5, 10, "edge: partially off-screen circle");
+	SUBCASE_INVOKE(width - 11, height / 2, 10, "edge: right edge tangent");
+	SUBCASE_INVOKE(width / 2, height - 11, 10, "edge: bottom edge tangent");
+	SUBCASE_INVOKE(width / 4, height / 4, minlen / 2, "edge: partially off-screen");
 
 	// 4. large
-	SUBCASE_INVOKE(15, 15, 16, "large: circle covering most of the image");
+	SUBCASE_INVOKE(width / 2, height / 2, minlen / 2, "large: inscribed circle");
+
+	// 5. robustness (or invalid_input)
+	SUBCASE_EXPECT_ASSERT(15, 15, -1, "robustness: negative radius", "ERROR: radius < 0");
+	SUBCASE_EXPECT_ASSERT(15, 15, -10, "robustness: large negative radius", "ERROR: radius < 0");
 
 #undef SUBCASE_INVOKE
+#undef SUBCASE_EXPECT_ASSERT
 }

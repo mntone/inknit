@@ -35,9 +35,9 @@
 #define MSG_IMAGE_IS_INVALID_ALIGN "ERROR: image is invalid alignment"
 #define MSG_SRC_IS_INVALID_ALIGN   "ERROR: src is invalid alignment"
 
-#define MSG_CX_GREATER_THAN_MIN_VALUE "ERROR: cx < -2^12 - 1"
+#define MSG_CX_LESS_THAN_MIN_VALUE    "ERROR: cx < -2^12 - 1"
 #define MSG_CX_GREATER_THAN_MAX_VALUE "ERROR: cx > 2^12"
-#define MSG_CY_GREATER_THAN_MIN_VALUE "ERROR: cy < -2^12 - 1"
+#define MSG_CY_LESS_THAN_MIN_VALUE    "ERROR: cy < -2^12 - 1"
 #define MSG_CY_GREATER_THAN_MAX_VALUE "ERROR: cy > 2^12"
 
 #define MSG_DX_GREATER_THAN_MAX_VALUE "ERROR: dx > 2^12"

@@ -37,31 +37,71 @@ static inline void _inknit_draw_circle_points32(
 	int32_t        max_x,
 	int32_t        max_y
 ) {
-	_inknit_draw_point_with_clip32(
-		data, stride, cx + dx, cy + dy, color, min_x, min_y, max_x, max_y
-	);
-	_inknit_draw_point_with_clip32(
-		data, stride, cx + dx, cy - dy, color, min_x, min_y, max_x, max_y
-	);
-	_inknit_draw_point_with_clip32(
-		data, stride, cx - dx, cy + dy, color, min_x, min_y, max_x, max_y
-	);
-	_inknit_draw_point_with_clip32(
-		data, stride, cx - dx, cy - dy, color, min_x, min_y, max_x, max_y
-	);
+	const int32_t y1a = cy - dy;
+	if (min_y <= y1a && y1a <= max_y) {
+		const int32_t x1 = cx - dx;
+		if (min_x <= x1 && x1 <= max_x) {
+			_inknit_draw_point32(data, stride, (uint32_t)x1, (uint32_t)y1a, color);
+		}
 
-	_inknit_draw_point_with_clip32(
-		data, stride, cx + dy, cy + dx, color, min_x, min_y, max_x, max_y
-	);
-	_inknit_draw_point_with_clip32(
-		data, stride, cx + dy, cy - dx, color, min_x, min_y, max_x, max_y
-	);
-	_inknit_draw_point_with_clip32(
-		data, stride, cx - dy, cy + dx, color, min_x, min_y, max_x, max_y
-	);
-	_inknit_draw_point_with_clip32(
-		data, stride, cx - dy, cy - dx, color, min_x, min_y, max_x, max_y
-	);
+		if (dx != 0) {
+			const int32_t x2 = cx + dx;
+			if (min_x <= x2 && x2 <= max_x) {
+				_inknit_draw_point32(data, stride, (uint32_t)x2, (uint32_t)y1a, color);
+			}
+		}
+	}
+
+	if (dy != 0) {
+		const int32_t y2a = cy + dy;
+		if (min_y <= y2a && y2a <= max_y) {
+			const int32_t x1 = cx - dx;
+			if (min_x <= x1 && x1 <= max_x) {
+				_inknit_draw_point32(data, stride, (uint32_t)x1, (uint32_t)y2a, color);
+			}
+
+			if (dx != 0) {
+				const int32_t x2 = cx + dx;
+				if (min_x <= x2 && x2 <= max_x) {
+					_inknit_draw_point32(data, stride, (uint32_t)x2, (uint32_t)y2a, color);
+				}
+			}
+		}
+	}
+
+	if (dx != dy) {
+		const int32_t y1b = cy - dx;
+		if (min_y <= y1b && y1b <= max_y) {
+			const int32_t x1 = cx - dy;
+			if (min_x <= x1 && x1 <= max_x) {
+				_inknit_draw_point32(data, stride, (uint32_t)x1, (uint32_t)y1b, color);
+			}
+
+			if (dy != 0) {
+				const int32_t x2 = cx + dy;
+				if (min_x <= x2 && x2 <= max_x) {
+					_inknit_draw_point32(data, stride, (uint32_t)x2, (uint32_t)y1b, color);
+				}
+			}
+		}
+
+		if (dy != 0) {
+			const int32_t y2b = cy + dx;
+			if (min_y <= y2b && y2b <= max_y) {
+				const int32_t x1 = cx - dy;
+				if (min_x <= x1 && x1 <= max_x) {
+					_inknit_draw_point32(data, stride, (uint32_t)x1, (uint32_t)y2b, color);
+				}
+
+				if (dy != 0) {
+					const int32_t x2 = cx + dy;
+					if (min_x <= x2 && x2 <= max_x) {
+						_inknit_draw_point32(data, stride, (uint32_t)x2, (uint32_t)y2b, color);
+					}
+				}
+			}
+		}
+	}
 }
 
 void _inknit_draw_circle32(
@@ -76,6 +116,17 @@ void _inknit_draw_circle32(
 	int32_t        max_x,
 	int32_t        max_y
 ) {
+	INKNIT_ASSUME(INKNIT_X_MIN <= cx, MSG_CX_LESS_THAN_MIN_VALUE);
+	INKNIT_ASSUME(cx <= INKNIT_X_MAX, MSG_CX_GREATER_THAN_MAX_VALUE);
+	INKNIT_ASSUME(INKNIT_Y_MIN <= cy, MSG_CY_LESS_THAN_MIN_VALUE);
+	INKNIT_ASSUME(cy <= INKNIT_Y_MAX, MSG_CY_GREATER_THAN_MAX_VALUE);
+
+	INKNIT_ASSUME_RANGE(
+		radius, 0, INKNIT_RADIUS_MAX, MSG_RADIUS_LESS_THAN_ZERO, MSG_RADIUS_GREATER_THAN_MAX_VALUE
+	);
+	INKNIT_ASSUME_COLOR(color);
+	INKNIT_ASSUME_CLIP_RECT(min_x, min_y, min_y, max_y);
+
 	int32_t dx = 0;
 	int32_t dy = radius;
 	int32_t d  = 1 - radius;
@@ -101,15 +152,6 @@ void PUBLIC_FUNCNAME(draw_circle)(
 	INKNIT_ASSUME(image != NULL, MSG_IMAGE_IS_NULL);
 	INKNIT_ASSUME(image->pixel_layout == TARGET_LAYOUT, MSG_IMAGE_IS_INVALID_LAYOUT);
 	INKNIT_ASSUME(image->alignment >= INKNIT_ALIGN32, MSG_IMAGE_IS_INVALID_ALIGN);
-
-	INKNIT_ASSUME(cx >= INKNIT_X_MIN, MSG_CX_GREATER_THAN_MIN_VALUE);
-	INKNIT_ASSUME(cx <= INKNIT_X_MAX, MSG_CX_GREATER_THAN_MAX_VALUE);
-	INKNIT_ASSUME(cy >= INKNIT_Y_MIN, MSG_CY_GREATER_THAN_MIN_VALUE);
-	INKNIT_ASSUME(cy <= INKNIT_Y_MAX, MSG_CY_GREATER_THAN_MAX_VALUE);
-	INKNIT_ASSUME(radius >= 0, MSG_RADIUS_LESS_THAN_ZERO);
-	INKNIT_ASSUME(radius <= INKNIT_RADIUS_MAX, MSG_RADIUS_GREATER_THAN_MAX_VALUE);
-
-	INKNIT_ASSUME(color <= POW2_BITS_PER_PIXEL_NEG1, MSG_COLOR_GREATER_THAN_MAX_VALUE);
 
 	uint32_t *const data = (uint32_t *)image->data;
 

@@ -49,7 +49,7 @@ struct inknit_exports {
 	void (*const clear)(struct inknit_image *image, inknit_color_t color) INKNIT_NONNULL(1);
 
 	void (*const draw_circle)(
-		struct inknit_image *image, int32_t cx, int32_t cy, uint32_t radius, inknit_color_t color
+		struct inknit_image *image, int32_t cx, int32_t cy, int32_t radius, inknit_color_t color
 	) INKNIT_NONNULL(1);
 
 	void (*const draw_point)(
