@@ -51,14 +51,12 @@ void INKNIT_EXPORT _inknit_draw_hline_with_clip32(
 	int32_t        max_y
 ) INKNIT_NONNULL(1);
 
-#if defined(INKNIT_ENABLE_BENCHMARKS) || defined(INKNIT_DISABLE_LUT)
+#if defined(INKNIT_ENABLE_BENCHMARKS)
 #define _inknit_draw_hline_arith32 INKNIT_CURRENT_INTERNAL_FUNC(draw_hline_arith)
 void INKNIT_EXPORT _inknit_draw_hline_arith32(
 	uint32_t *data, uint32_t stride, uint32_t x1, uint32_t x2, uint32_t y, inknit_color_t color
 ) INKNIT_NONNULL(1);
-#endif
 
-#if defined(INKNIT_ENABLE_BENCHMARKS) || !defined(INKNIT_DISABLE_LUT)
 #define _inknit_draw_hline_lut32 INKNIT_CURRENT_INTERNAL_FUNC(draw_hline_lut)
 void INKNIT_EXPORT _inknit_draw_hline_lut32(
 	uint32_t *data, uint32_t stride, uint32_t x1, uint32_t x2, uint32_t y, inknit_color_t color
@@ -86,17 +84,12 @@ void INKNIT_EXPORT _inknit_draw_vline_with_clip32(
 	int32_t        max_y
 ) INKNIT_NONNULL(1);
 
-#if defined(INKNIT_ENABLE_BENCHMARKS) \
-	|| !defined(INKNIT_ENABLE_UNROLL) \
-	|| defined(INKNIT_TARGET_IS_PICO)
+#if defined(INKNIT_ENABLE_BENCHMARKS)
 #define _inknit_draw_vline_scalar32 INKNIT_CURRENT_INTERNAL_FUNC(draw_vline_scalar)
 void INKNIT_EXPORT _inknit_draw_vline_scalar32(
 	uint32_t *data, uint32_t stride, uint32_t x, uint32_t y1, uint32_t y2, inknit_color_t color
 ) INKNIT_NONNULL(1);
-#endif
 
-#if defined(INKNIT_ENABLE_BENCHMARKS)                                   \
-	|| defined(INKNIT_ENABLE_UNROLL) && !defined(INKNIT_TARGET_IS_PICO)
 #define _inknit_draw_vline_unroll32 INKNIT_CURRENT_INTERNAL_FUNC(draw_vline_unroll)
 void INKNIT_EXPORT _inknit_draw_vline_unroll32(
 	uint32_t *data, uint32_t stride, uint32_t x, uint32_t y1, uint32_t y2, inknit_color_t color

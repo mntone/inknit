@@ -53,7 +53,9 @@ public:
 			  details::align(INKNIT_TARGET_BIT_WIDTH),
 			  width,
 			  height,
-			  details::stride<std::uint16_t>(width, bpp, INKNIT_TARGET_BIT_WIDTH),
+			  static_cast<std::uint16_t>(
+				  details::stride<std::uint32_t>(width, bpp, INKNIT_TARGET_BIT_WIDTH)
+			  ),
 			  nullptr
 		  ) {
 		std::uint32_t *const data = buffer_.data();
