@@ -28,3 +28,13 @@
 #include "macro_impl.h"  // load internal macro
 
 typedef uint32_t inknit_unit_t;
+
+#if !NDEBUG
+void _inknit_assert(
+	const char *INKNIT_RESTRICT __message,
+	const char *INKNIT_RESTRICT __condition,
+	const char *INKNIT_RESTRICT __file,
+	const char *INKNIT_RESTRICT __func,
+	int                         __line
+) INKNIT_NONNULL(1, 2, 3, 4);
+#endif

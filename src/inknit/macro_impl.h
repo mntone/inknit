@@ -20,6 +20,13 @@
 #pragma once
 
 #if NDEBUG
+#define INKNIT_ASSERT(expr, msg)
+#else
+#define INKNIT_ASSERT(expr, msg)                                            \
+	if (!(expr)) _inknit_assert((msg), #expr, __FILE__, __func__, __LINE__)
+#endif
+
+#if NDEBUG
 #if defined(__clang__)
 #define INKNIT_ASSUME(expr, msg) __builtin_assume(expr)
 #elif defined(__GNUC__)
@@ -31,8 +38,7 @@
 #define INKNIT_ASSUME(expr, msg) ((void)0)
 #endif
 #else
-#include <assert.h>
-#define INKNIT_ASSUME(expr, msg) assert((expr) && (void *)msg)
+#define INKNIT_ASSUME(expr, msg) INKNIT_ASSERT(expr, msg)
 #endif
 
 #if defined(_MSC_VER)

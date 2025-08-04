@@ -40,6 +40,7 @@ inknit_generate_source_files(${PROJECT_NAME}
 	)
 
 target_sources(${PROJECT_NAME} PRIVATE
+	$<$<NOT:$<STREQUAL:${CMAKE_BUILD_TYPE},Release>>:assertion.c>
 	$<$<BOOL:${INKNIT_SHARED}>:x1/exports.c>
 	$<$<BOOL:${INKNIT_SHARED}>:x1lsb/exports.c>
 	$<$<BOOL:${INKNIT_SHARED}>:x2/exports.c>

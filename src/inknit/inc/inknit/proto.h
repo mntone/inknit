@@ -22,6 +22,29 @@
 #include "macro.h"   // INKNIT_EXPORT, INKNIT_NONNULL, INKNIT_RESTRICT
 #include "prefix.h"  // __INKNIT_{access}_{type}NAME_BASE
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#if !NDEBUG
+typedef void (*inknit_assert_t)(
+	const char *INKNIT_RESTRICT __message,
+	const char *INKNIT_RESTRICT __condition,
+	const char *INKNIT_RESTRICT __file,
+	const char *INKNIT_RESTRICT __func,
+	int                         __line,
+	void *INKNIT_RESTRICT       data
+);
+
+struct inknit_assert_info {
+	inknit_assert_t       handler;
+	void *INKNIT_RESTRICT data;
+};
+
+struct inknit_assert_info INKNIT_EXPORT
+inknit_hook_assert(inknit_assert_t handler, void *INKNIT_RESTRICT data) INKNIT_NONNULL(1, 2);
+#endif
+
 #define INKNIT_PROTO(prototype) INKNIT_EXPORT prototype
 
 #ifdef INKNIT_ENABLE_BENCHMARKS
@@ -57,3 +80,7 @@
 		inknit_uint_t                              height \
 	)
 #define INKNIT_PROTO_BLIT(name) INKNIT_DEFPROTO_BLIT(name) INKNIT_NONNULL(1, 4)
+
+#ifdef __cplusplus
+} /* extern "C" { */
+#endif
