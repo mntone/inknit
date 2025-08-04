@@ -68,6 +68,7 @@ TEST_CASE_TEMPLATE(
 	SUBCASE_INVOKE(0, 0, 0, "degenerate: top-left single-pixel line");
 	SUBCASE_INVOKE(4, 3, 3, "degenerate: single-pixel line");
 	SUBCASE_INVOKE(right, bottom, bottom, "degenerate: bottom-right single-pixel line");
+	SUBCASE_INVOKE(10, 9, 1, "degenerate: negative height");
 
 	// 3. full span
 	SUBCASE_INVOKE(5, 0, bottom, "full: full-height line");
@@ -80,6 +81,12 @@ TEST_CASE_TEMPLATE(
 	SUBCASE_INVOKE(image.ppw / 4, 0, 3, "mask: first quarter");
 	SUBCASE_INVOKE(image.ppw * 3 / 4, 0, 3, "mask: third quarter");
 	SUBCASE_INVOKE(image.ppw - 1, 0, 3, "mask: word-boundary edge");
+
+	// 6. robust
+	SUBCASE_INVOKE(10, -5, 5, "robust: clipped at top");
+	SUBCASE_INVOKE(10, bottom - 5, bottom + 5, "robust: clipped at bottom");
+	SUBCASE_INVOKE(10, -10, -5, "robust: fully clipped (top)");
+	SUBCASE_INVOKE(10, bottom + 5, bottom + 10, "robust: fully clipped (bottom)");
 
 #undef SUBCASE_INVOKE
 

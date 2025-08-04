@@ -23,11 +23,15 @@
 #include "../base.h"
 #endif
 
-void _inknit_draw_vline32(
-	uint32_t *data, uint32_t stride, int32_t x, int32_t y1, int32_t y2, inknit_color_t color
+#if defined(INKNIT_ENABLE_BENCHMARKS) \
+	|| !defined(INKNIT_ENABLE_UNROLL) \
+	|| defined(INKNIT_TARGET_IS_PICO)
+INKNIT_BMPREFIX
+void _inknit_draw_vline_scalar32(
+	uint32_t *data, uint32_t stride, uint32_t x, uint32_t y1, uint32_t y2, inknit_color_t color
 ) {
 	const uint32_t stride_in_byte = pixels_to_bytes(stride);
-	const uint32_t length         = (uint32_t)y1 * stride_in_byte;
+	const uint32_t length         = y1 * stride_in_byte;
 
 	const uint32_t byteoffs    = pixels_to_bytes(x);
 	const int32_t  bitoffs     = pixels_to_bitpos_byte(x);
@@ -35,7 +39,7 @@ void _inknit_draw_vline32(
 	const uint8_t  pixel_value = (uint8_t)(pixel_value(color, bitoffs) & 0xFF);
 
 	uint8_t       *row     = (uint8_t *)data + length;
-	const uint8_t *end_row = row + (uint32_t)(y2 - y1) * stride_in_byte;
+	const uint8_t *end_row = row + (y2 - y1) * stride_in_byte;
 	while (row <= end_row) {
 		uint8_t *byte = row + byteoffs;
 
@@ -44,6 +48,7 @@ void _inknit_draw_vline32(
 		row += stride_in_byte;
 	}
 }
+#endif
 
 #if defined(INKNIT_ENABLE_BENCHMARKS)                                   \
 	|| defined(INKNIT_ENABLE_UNROLL) && !defined(INKNIT_TARGET_IS_PICO)
@@ -103,10 +108,10 @@ void _inknit_draw_vline32(
 
 INKNIT_BMPREFIX
 void _inknit_draw_vline_unroll32(
-	uint32_t *data, uint32_t stride, int32_t x, int32_t y1, int32_t y2, inknit_color_t color
+	uint32_t *data, uint32_t stride, uint32_t x, uint32_t y1, uint32_t y2, inknit_color_t color
 ) {
 	const uint32_t stride_in_byte = pixels_to_bytes(stride);
-	const uint32_t length         = (uint32_t)y1 * stride_in_byte;
+	const uint32_t length         = y1 * stride_in_byte;
 
 	const uint32_t byteoffs    = pixels_to_bytes(x);
 	const int32_t  bitoffs     = pixels_to_bitpos_byte(x);
@@ -115,7 +120,7 @@ void _inknit_draw_vline_unroll32(
 
 	uint8_t *ptr = (uint8_t *)data + length + byteoffs;
 
-	uint32_t       height    = (uint32_t)(y2 - y1 + 1);
+	uint32_t       height    = y2 - y1 + 1;
 	const uint32_t remainder = height % 4;
 	switch (remainder) {
 	case 3:
@@ -143,35 +148,44 @@ void _inknit_draw_vline_unroll32(
 }
 #endif
 
-void PUBLIC_FUNCNAME(draw_vline)(
-	struct inknit_image *image, int32_t x, int32_t y1, int32_t y2, inknit_color_t color
+void _inknit_draw_vline32(
+	uint32_t *data, uint32_t stride, uint32_t x, uint32_t y1, uint32_t y2, inknit_color_t color
 ) {
-	INKNIT_ASSUME(image != NULL, MSG_IMAGE_IS_NULL);
-	INKNIT_ASSUME(image->pixel_layout == TARGET_LAYOUT, MSG_IMAGE_IS_INVALID_LAYOUT);
-	INKNIT_ASSUME(image->alignment >= TARGET_ALIGNMENT, MSG_IMAGE_IS_INVALID_ALIGN);
+	if (y1 == y2) {
+		_inknit_draw_point32(data, stride, (uint32_t)x, (uint32_t)y1, color);
+	} else {
+#if defined(INKNIT_ENABLE_UNROLL) && !defined(INKNIT_TARGET_IS_PICO)
+		_inknit_draw_vline_unroll32(data, stride, x, y1, y2, color);
+#else
+		_inknit_draw_vline_scalar32(data, stride, x, y1, y2, color);
+#endif
+	}
+}
 
-	INKNIT_ASSUME(x >= INKNIT_X_MIN, MSG_X_LESS_THAN_MIN_VALUE);
-	INKNIT_ASSUME(x <= INKNIT_X_MAX, MSG_X_GREATER_THAN_MAX_VALUE);
-	INKNIT_ASSUME(y1 >= INKNIT_Y_MIN, MSG_Y1_LESS_THAN_MIN_VALUE);
-	INKNIT_ASSUME(y1 <= y2, MSG_Y1_GREATER_THAN_Y2);
-	INKNIT_ASSUME(y2 <= INKNIT_Y_MAX, MSG_Y2_GREATER_THAN_MAX_VALUE);
-
-	INKNIT_ASSUME(color <= POW2_BITS_PER_PIXEL_NEG1, MSG_COLOR_GREATER_THAN_MAX_VALUE);
-
-	const uint32_t stride = bytes_to_pixels(image->stride);
-
-	const int32_t min_x = 0;
-	const int32_t min_y = 0;
-	const int32_t max_x = image->width - 1;
-	const int32_t max_y = image->height - 1;
+void _inknit_draw_vline_with_clip32(
+	uint32_t      *data,
+	uint32_t       stride,
+	int32_t        x,
+	int32_t        y1,
+	int32_t        y2,
+	inknit_color_t color,
+	int32_t        min_x,
+	int32_t        min_y,
+	int32_t        max_x,
+	int32_t        max_y
+) {
+	INKNIT_ASSUME_COORD_X(x);
+	INKNIT_ASSUME_COORD_Y_RANGE(y1, y2);
+	INKNIT_ASSUME_COLOR(color);
+	INKNIT_ASSUME_CLIP_RECT(min_x, min_y, min_y, max_y);
 
 	if (x < min_x || max_x < x) {
 		return;
 	}
-
-	if (y1 > y2) {
-		_inknit_swap_int32(&y1, &y2);
+	if (y2 < min_y || max_y < y1) {
+		return;
 	}
+
 	if (y1 < min_y) {
 		y1 = min_y;
 		if (y2 < min_y) {
@@ -185,13 +199,28 @@ void PUBLIC_FUNCNAME(draw_vline)(
 		}
 	}
 
-	if (y1 == y2) {
-		_inknit_draw_point32(image->data, stride, (uint32_t)x, (uint32_t)y1, color);
-	} else {
-#if defined(INKNIT_ENABLE_UNROLL) && !defined(INKNIT_TARGET_IS_PICO)
-		_inknit_draw_vline_unroll32(image->data, stride, x, y1, y2, color);
-#else
-		_inknit_draw_vline32(image->data, stride, x, y1, y2, color);
-#endif
+	_inknit_draw_vline32(data, stride, (uint32_t)x, (uint32_t)y1, (uint32_t)y2, color);
+}
+
+void PUBLIC_FUNCNAME(draw_vline)(
+	struct inknit_image *image, int32_t x, int32_t y1, int32_t y2, inknit_color_t color
+) {
+	INKNIT_ASSUME(image != NULL, MSG_IMAGE_IS_NULL);
+	INKNIT_ASSUME(image->pixel_layout == TARGET_LAYOUT, MSG_IMAGE_IS_INVALID_LAYOUT);
+	INKNIT_ASSUME(image->alignment >= TARGET_ALIGNMENT, MSG_IMAGE_IS_INVALID_ALIGN);
+
+	const uint32_t stride = bytes_to_pixels(image->stride);
+
+	const int32_t min_x = 0;
+	const int32_t min_y = 0;
+	const int32_t max_x = image->width - 1;
+	const int32_t max_y = image->height - 1;
+
+	if (y1 > y2) {
+		_inknit_swap_int32(&y1, &y2);
 	}
+
+	_inknit_draw_vline_with_clip32(
+		image->data, stride, x, y1, y2, color, min_x, min_y, max_x, max_y
+	);
 }

@@ -26,7 +26,7 @@ using namespace inknit;
 using namespace inkbm;
 
 #define CURRENT_GROUP INKNIT_INTERNAL_GROUP(32, 1, le)
-#define TYPES         std::tuple<std::int32_t, std::int32_t, std::int32_t>
+#define TYPES         std::tuple<std::uint32_t, std::uint32_t, std::uint32_t>
 #define ITERATIONS    DEFAULT_ITERATIONS
 
 #define APPLY(name) INKBM_FIXTURE_APPLY(name, draw_vline, d_vline)
@@ -53,7 +53,7 @@ public:
 protected:
 	fixed_image<32, 32, pixel_layout::x1lsb, pixel_format::grayscale> image_;
 
-	std::int32_t x_, y1_, y2_;
+	std::uint32_t x_, y1_, y2_;
 };
 
 INKBM_ARGS(
@@ -80,7 +80,7 @@ INKBM_ARGS(
 
 APPLY(pointer) {
 	for (int i = 0; i < ITERATIONS; ++i) {
-		INKNIT_INTERNAL_FUNC(draw_vline, CURRENT_GROUP)(
+		INKNIT_INTERNAL_FUNC(draw_vline_scalar, CURRENT_GROUP)(
 			static_cast<uint32_t *>(image_.data()), image_.stride(), x_, y1_, y2_, COLOR_WHITE
 		);
 	}
