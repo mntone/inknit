@@ -22,6 +22,7 @@
 #define DOCTEST_CONFIG_NO_MULTITHREADING
 #include <doctest/doctest.h>
 
+#include "utils/assert_helper.hpp"
 #include "utils/macro.hpp"
 #include "utils/primitive.hpp"
 #include "utils/test_image.hpp"

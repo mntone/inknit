@@ -35,3 +35,27 @@
 #define INKNIT_NODISCARD /* NODISCARD not supported */
 #endif
 #endif
+
+#define INKNIT_SUBCASE_INVOKE(invoke, subcase_name) \
+	do {                                            \
+		SUBCASE(subcase_name) {                     \
+			(invoke);                               \
+		}                                           \
+	} while (false)
+
+#if NDEBUG
+#define INKNIT_SUBCASE_EXPECT_ASSERT(invoke, subcase_name, expected_message)
+#else
+#define INKNIT_SUBCASE_EXPECT_ASSERT(invoke, subcase_name, expected_message) \
+	do {                                                                     \
+		SUBCASE(subcase_name) {                                              \
+			auto& instance = assert_helper::instance();                      \
+			instance.reset();                                                \
+                                                                             \
+			(invoke);                                                        \
+                                                                             \
+			CHECK(instance.fired());                                         \
+			CHECK_EQ(instance.message(), expected_message);                  \
+		}                                                                    \
+	} while (false)
+#endif

@@ -23,6 +23,10 @@
 int main(int argc, char **argv) {
 	doctest::Context context(argc, argv);
 
+#if !NDEBUG
+	inknit::tests::assert_helper::instance().hook();
+#endif
+
 	int res = context.run();
 	if (!context.shouldExit()) {
 		// Nothing.

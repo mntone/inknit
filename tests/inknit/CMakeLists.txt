@@ -9,6 +9,7 @@ add_executable(${PROJECT_NAME}_tests
 	draw/rect.cpp
 	draw/rectp.cpp
 	draw/vline.cpp
+	$<$<NOT:$<STREQUAL:${CMAKE_BUILD_TYPE},Release>>:utils/assert_helper.cpp>
 	blit.cpp
 	clear.cpp
 	test_main.cpp
