@@ -26,6 +26,5 @@
 #include "inc/inknit/types.h"  // load base types
 
 #include "macro_impl.h"  // load internal macro
-#include "message.h"     // load internal message
 
 typedef uint32_t inknit_unit_t;

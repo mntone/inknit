@@ -43,6 +43,14 @@
 #define MSG_DX_GREATER_THAN_MAX_VALUE "ERROR: dx > 2^12"
 #define MSG_DY_GREATER_THAN_MAX_VALUE "ERROR: dy > 2^12"
 
+#define MSG_MIN_X_LESS_THAN_ZERO         "ERROR: min_x < 0"
+#define MSG_MIN_X_GREATER_THAN_MAX_X     "ERROR: min_x > max_x"
+#define MSG_MAX_X_GREATER_THAN_MAX_VALUE "ERROR: max_x > 2^12"
+
+#define MSG_MIN_Y_LESS_THAN_ZERO         "ERROR: min_y < 0"
+#define MSG_MIN_Y_GREATER_THAN_MAX_Y     "ERROR: min_y > max_y"
+#define MSG_MAX_Y_GREATER_THAN_MAX_VALUE "ERROR: max_y > 2^12"
+
 #define MSG_RADIUS_LESS_THAN_ZERO         "ERROR: radius < 0"
 #define MSG_RADIUS_GREATER_THAN_MAX_VALUE "ERROR: radius > 2^13 - 1"
 
@@ -54,7 +62,9 @@
 #define MSG_X_GREATER_THAN_MAX_VALUE  "ERROR: x > 2^12"
 #define MSG_X1_LESS_THAN_MIN_VALUE    "ERROR: x1 < -2^12 - 1"
 #define MSG_X1_LESS_THAN_ZERO         "ERROR: x1 < 0"
+#define MSG_X1_GREATER_THAN_MAX_VALUE "ERROR: x1 > 2^12"
 #define MSG_X1_GREATER_THAN_X2        "ERROR: x1 > x2"
+#define MSG_X2_LESS_THAN_MIN_VALUE    "ERROR: x2 < -2^12 - 1"
 #define MSG_X2_GREATER_THAN_MAX_VALUE "ERROR: x2 > 2^12"
 
 #define MSG_Y_LESS_THAN_MIN_VALUE     "ERROR: y < -2^12 - 1"

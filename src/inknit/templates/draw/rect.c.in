@@ -40,12 +40,12 @@ void PUBLIC_FUNCNAME(draw_rect)(
 
 	INKNIT_ASSUME(color <= POW2_BITS_PER_PIXEL_NEG1, MSG_COLOR_GREATER_THAN_MAX_VALUE);
 
-	const inknit_uint_t right = x + width - 1;
-	PUBLIC_FUNCNAME(draw_hline)(image, x, right, y, color);
+	const int32_t right = (int32_t)(x + width - 1);
+	PUBLIC_FUNCNAME(draw_hline)(image, (int32_t)x, right, (int32_t)y, color);
 
 	if (height != 1) {
-		const inknit_uint_t bottom = y + height - 1;
-		PUBLIC_FUNCNAME(draw_hline)(image, x, right, bottom, color);
+		const int32_t bottom = (int32_t)(y + height - 1);
+		PUBLIC_FUNCNAME(draw_hline)(image, (int32_t)x, right, bottom, color);
 
 		if (height > 2) {
 			PUBLIC_FUNCNAME(draw_vline)(
@@ -77,10 +77,10 @@ void PUBLIC_FUNCNAME(draw_rectp)(
 
 	INKNIT_ASSUME(color <= POW2_BITS_PER_PIXEL_NEG1, MSG_COLOR_GREATER_THAN_MAX_VALUE);
 
-	PUBLIC_FUNCNAME(draw_hline)(image, x1, x2, y1, color);
+	PUBLIC_FUNCNAME(draw_hline)(image, (int32_t)x1, (int32_t)x2, (int32_t)y1, color);
 
 	if (y1 != y2) {
-		PUBLIC_FUNCNAME(draw_hline)(image, x1, x2, y2, color);
+		PUBLIC_FUNCNAME(draw_hline)(image, (int32_t)x1, (int32_t)x2, (int32_t)y2, color);
 
 		const inknit_uint_t height = y2 - y1 + 1;
 		if (height > 2) {

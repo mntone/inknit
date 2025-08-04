@@ -123,8 +123,83 @@
 
 #define INKNIT_INTERNAL_WRAPFUNC(name) _INKNIT_CONCAT2(__wrap, name)
 
+
+// -- MARK: internal constants
 #define INKNIT_RADIUS_MAX (8191)   // 2^13-1
 #define INKNIT_X_MIN      (-4096)  // -2^12-1
 #define INKNIT_X_MAX      (4095)   // 2^12
 #define INKNIT_Y_MIN      (-4096)  // -2^12-1
 #define INKNIT_Y_MAX      (4095)   // 2^12
+
+
+// -- MARK: assume macros
+#include "message.h"
+
+#define INKNIT_ASSUME_RANGE(var, min, max, msg_low, msg_high) \
+	do {                                                      \
+		INKNIT_ASSUME((min) <= (var), msg_low);               \
+		INKNIT_ASSUME((var) <= (max), msg_high);              \
+	} while (0)
+#define INKNIT_ASSUME_BOUNDED_RANGE(min, max, min_limit, max_limit, msg_low, msg_order, msg_high) \
+	do {                                                                                          \
+		INKNIT_ASSUME((min_limit) <= (min), msg_low);                                             \
+		INKNIT_ASSUME((min) <= (max), msg_order);                                                 \
+		INKNIT_ASSUME((max) <= (max_limit), msg_high);                                            \
+	} while (0)
+
+#define INKNIT_ASSUME_COORD_X(var_x)                                                               \
+	INKNIT_ASSUME_RANGE(                                                                           \
+		var_x, INKNIT_X_MIN, INKNIT_X_MAX, MSG_X_LESS_THAN_MIN_VALUE, MSG_X_GREATER_THAN_MAX_VALUE \
+	)
+#define INKNIT_ASSUME_COORD_Y(var_y)                                                               \
+	INKNIT_ASSUME_RANGE(                                                                           \
+		var_y, INKNIT_Y_MIN, INKNIT_Y_MAX, MSG_Y_LESS_THAN_MIN_VALUE, MSG_Y_GREATER_THAN_MAX_VALUE \
+	)
+
+#define INKNIT_ASSUME_COORD_X_RANGE(var_x1, var_x2) \
+	INKNIT_ASSUME_BOUNDED_RANGE(                    \
+		var_x1,                                     \
+		var_x2,                                     \
+		INKNIT_X_MIN,                               \
+		INKNIT_X_MAX,                               \
+		MSG_X1_LESS_THAN_MIN_VALUE,                 \
+		MSG_X1_GREATER_THAN_X2,                     \
+		MSG_X2_GREATER_THAN_MAX_VALUE               \
+	)
+#define INKNIT_ASSUME_COORD_Y_RANGE(var_y1, var_y2) \
+	INKNIT_ASSUME_BOUNDED_RANGE(                    \
+		var_y1,                                     \
+		var_y2,                                     \
+		INKNIT_Y_MIN,                               \
+		INKNIT_Y_MAX,                               \
+		MSG_Y1_LESS_THAN_MIN_VALUE,                 \
+		MSG_Y1_GREATER_THAN_Y2,                     \
+		MSG_Y2_GREATER_THAN_MAX_VALUE               \
+	)
+
+#define INKNIT_ASSUME_CLIP_X_RANGE(var_min_x, var_max_x) \
+	INKNIT_ASSUME_BOUNDED_RANGE(                         \
+		var_min_x,                                       \
+		var_max_x,                                       \
+		0,                                               \
+		INKNIT_X_MAX,                                    \
+		MSG_MIN_X_LESS_THAN_ZERO,                        \
+		MSG_MIN_X_GREATER_THAN_MAX_X,                    \
+		MSG_MAX_X_GREATER_THAN_MAX_VALUE                 \
+	)
+#define INKNIT_ASSUME_CLIP_Y_RANGE(var_min_y, var_max_y) \
+	INKNIT_ASSUME_BOUNDED_RANGE(                         \
+		var_min_y,                                       \
+		var_max_y,                                       \
+		0,                                               \
+		INKNIT_Y_MAX,                                    \
+		MSG_MIN_Y_LESS_THAN_ZERO,                        \
+		MSG_MIN_Y_GREATER_THAN_MAX_Y,                    \
+		MSG_MAX_Y_GREATER_THAN_MAX_VALUE                 \
+	)
+#define INKNIT_ASSUME_CLIP_RECT(var_min_x, var_max_x, var_min_y, var_max_y) \
+	INKNIT_ASSUME_CLIP_X_RANGE(var_min_x, var_max_x);                       \
+	INKNIT_ASSUME_CLIP_Y_RANGE(var_min_y, var_max_y)
+
+#define INKNIT_ASSUME_COLOR(var_color)                                                       \
+	INKNIT_ASSUME((var_color) <= POW2_BITS_PER_PIXEL_NEG1, MSG_COLOR_GREATER_THAN_MAX_VALUE)

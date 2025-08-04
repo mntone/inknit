@@ -31,18 +31,6 @@
 #endif
 
 
-// -- MARK: draw_hline
-#define INKNIT_DEFPROTO_DRAW_HLINE(name) \
-	void name(                           \
-		struct inknit_image *image,      \
-		inknit_uint_t        x1,         \
-		inknit_uint_t        x2,         \
-		inknit_uint_t        y,          \
-		inknit_color_t       color       \
-	)
-#define INKNIT_PROTO_DRAW_HLINE(name) INKNIT_DEFPROTO_DRAW_HLINE(name) INKNIT_NONNULL(1)
-
-
 // -- MARK: draw_vline
 #define INKNIT_DEFPROTO_DRAW_LINE(name) \
 	void name(                          \

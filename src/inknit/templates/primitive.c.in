@@ -44,18 +44,3 @@ void PUBLIC_FUNCNAME(clear)(struct inknit_image *image, inknit_color_t color) {
 	}
 #endif
 }
-
-#ifndef INKNIT_ENABLE_DRAW_POINT_ASM
-void _inknit_draw_point32(uint32_t *data, int32_t stride, int32_t x, int32_t y, uint32_t color) {
-	const int32_t pixel   = stride * y + x;
-	const int32_t wordidx = (int32_t)pixels_to_wordidx(pixel);
-	const int32_t bitpos  = pixels_to_bitpos(pixel);
-
-	const uint32_t mask          = write_mask(bitpos);
-	const uint32_t color_wordval = color << bitpos;
-
-	const uint32_t read_wordval  = swap_if_required(data[wordidx]);
-	const uint32_t write_wordval = (read_wordval & ~mask) | color_wordval;
-	data[wordidx]                = swap_if_required(write_wordval);
-}
-#endif

@@ -56,24 +56,29 @@ TEST_CASE_TEMPLATE(
 		}                                                       \
 	} while (false)
 
-	std::int32_t const right  = image.width() - 1;
+	std::int32_t const width  = image.width();
+	std::int32_t const right  = width - 1;
 	std::int32_t const bottom = image.height() - 1;
 
 	// 1. basic
 	SUBCASE_INVOKE(0, 7, 1, "basic: short line near top");
 	SUBCASE_INVOKE(14, 17, 6, "basic: short line in mid-bottom");
 	SUBCASE_INVOKE(11, 23, 2, "basic: medium-length line");
+	SUBCASE_INVOKE(5, width - 5, 3, "basic: unaligned long line");
 
 	// 2. degenerate
 	SUBCASE_INVOKE(0, 0, 0, "degenerate: top-left single-pixel line");
 	SUBCASE_INVOKE(3, 3, 5, "degenerate: single-pixel line");
 	SUBCASE_INVOKE(right, right, bottom, "degenerate: bottom-right single-pixel line");
+	SUBCASE_INVOKE(10, 9, 1, "degenerate: zero or negative length");
 
 	// 3. full span
 	SUBCASE_INVOKE(0, right, 5, "full: full-width line");
 
 	// 4. edge (boundary)
 	SUBCASE_INVOKE(0, right, bottom, "edge: bottommost row");
+	SUBCASE_INVOKE(5, 5 + image.ppw - 1, 1, "edge: unaligned single-word length");
+	SUBCASE_INVOKE(image.ppw, image.ppw + 5, 2, "edge: starts exactly on boundary");
 
 	// 5. alignment
 	SUBCASE_INVOKE(0, image.ppw - 1, 6, "align: word-aligned full-width line");
@@ -87,6 +92,9 @@ TEST_CASE_TEMPLATE(
 	SUBCASE_INVOKE(image.ppw - 1, image.ppw, 2, "cross: minimal cross-word span (boundary edge)");
 	SUBCASE_INVOKE(image.ppw - 1, image.ppw, 4, "cross: 1-pixel overlap");
 	SUBCASE_INVOKE(10, 20, 3, "cross: spans multiple words");
+
+	// 8. robust
+	SUBCASE_INVOKE(width - 10, width + 10, 5, "robust: partially out of bounds");
 
 #undef SUBCASE_INVOKE
 

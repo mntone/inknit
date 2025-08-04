@@ -18,19 +18,18 @@
  */
 
 #include "inknit.hpp"
+#include "inknit_internal.h"
 #include "utils/inkbm.hpp"
 #include "constants.hpp"
 
 using namespace inknit;
 using namespace inkbm;
 
-#define TYPES      std::tuple<uint_t, uint_t, uint_t>
-#define ITERATIONS DEFAULT_ITERATIONS
+#define CURRENT_GROUP INKNIT_INTERNAL_GROUP(32, 1, le)
+#define TYPES         std::tuple<std::uint32_t, std::uint32_t, std::uint32_t>
+#define ITERATIONS    DEFAULT_ITERATIONS
 
-#define GROUP_NAME  draw_hline
 #define APPLY(name) INKBM_FIXTURE_APPLY(name, draw_hline, d_hline)
-#define FUNC_NAME(name)                                                               \
-	INKNIT_INTERNAL_FUNCNAME(INKNIT_X1LSB_BASE, _INKNIT_CONCAT3(GROUP_NAME, _, name))
 
 class d_hline: public fixture {
 public:
@@ -54,7 +53,7 @@ public:
 protected:
 	fixed_image<128, 8, pixel_layout::x1lsb, pixel_format::grayscale> image_;
 
-	uint_t x1_, x2_, y_;
+	std::uint32_t x1_, x2_, y_;
 };
 
 INKBM_ARGS(
@@ -84,12 +83,16 @@ INKBM_ARGS(
 
 APPLY(arith) {
 	for (int i = 0; i < ITERATIONS; ++i) {
-		FUNC_NAME(arith)(&image_, x1_, x2_, y_, COLOR_WHITE);
+		INKNIT_INTERNAL_FUNC(draw_hline_arith, CURRENT_GROUP)(
+			static_cast<uint32_t *>(image_.data()), image_.stride(), x1_, x2_, y_, COLOR_WHITE
+		);
 	}
 }
 
 APPLY(lut) {
 	for (int i = 0; i < ITERATIONS; ++i) {
-		FUNC_NAME(lut)(&image_, x1_, x2_, y_, COLOR_WHITE);
+		INKNIT_INTERNAL_FUNC(draw_hline_lut, CURRENT_GROUP)(
+			static_cast<uint32_t *>(image_.data()), image_.stride(), x1_, x2_, y_, COLOR_WHITE
+		);
 	}
 }

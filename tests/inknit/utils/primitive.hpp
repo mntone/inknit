@@ -161,6 +161,10 @@ INKNIT_NODISCARD
 static constexpr auto bind_is_pixel_on_hline(
 	std::int32_t ix1, std::int32_t ix2, std::int32_t iy, color_t trueColor = colors::white
 ) noexcept {
+	if (ix1 > ix2) {
+		std::swap(ix1, ix2);
+	}
+
 	using namespace std::placeholders;
 	return details::compose(
 		std::bind(details::boolean_to_color, _1, trueColor),

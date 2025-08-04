@@ -30,16 +30,16 @@
 #ifdef INKNIT_ENABLE_DRAW_POINT_ASM
 #define __inknit_draw_point32_asm INKNIT_CURRENT_INTERNAL_FUNC(draw_point)
 INKNIT_NOINLINE void
-__inknit_draw_point32_asm(uint32_t *data, int32_t stride, int32_t x, int32_t y, uint32_t color);
+__inknit_draw_point32_asm(uint32_t *data, uint32_t stride, uint32_t x, uint32_t y, uint32_t color);
 
 #define _inknit_draw_point32 INKNIT_INTERNAL_WRAPFUNC(__inknit_draw_point32_asm)
 static INKNIT_ALWAYS_INLINE void
-_inknit_draw_point32(uint32_t *data, int32_t stride, int32_t x, int32_t y, uint32_t color) {
+_inknit_draw_point32(uint32_t *data, uint32_t stride, uint32_t x, uint32_t y, uint32_t color) {
 #if defined(__i386__) || defined(_M_IX86)
-	int32_t *ptr0;
-	int32_t  pixel, color_wordval, write_wordval;
+	uint32_t *ptr0;
+	uint32_t  pixel, color_wordval, write_wordval;
 #if BITS_PER_PIXEL != 1
-	int32_t mask;
+	uint32_t mask;
 #endif
 #ifdef _MSC_VER
 	__asm {
@@ -72,9 +72,9 @@ _inknit_draw_point32(uint32_t *data, int32_t stride, int32_t x, int32_t y, uint3
 #endif
 #elif defined(__ARM_ARCH_6M__) || defined(__ARM_ARCH_8M_MAIN__)
 	register uint32_t *reg_data __asm__("r0")   = data;
-	register int32_t   reg_stride __asm__("r1") = stride;
-	register int32_t   reg_x __asm__("r2")      = x;
-	register int32_t   reg_y __asm__("r3")      = y;
+	register uint32_t  reg_stride __asm__("r1") = stride;
+	register uint32_t  reg_x __asm__("r2")      = x;
+	register uint32_t  reg_y __asm__("r3")      = y;
 	register uint32_t  reg_color __asm__("r4")  = color;
 
 	__asm__ volatile("bl " INKNIT_TOSTRING(__inknit_draw_point32_asm)
@@ -88,5 +88,5 @@ _inknit_draw_point32(uint32_t *data, int32_t stride, int32_t x, int32_t y, uint3
 #else
 #define _inknit_draw_point32 INKNIT_CURRENT_INTERNAL_FUNC(draw_point)
 extern void
-_inknit_draw_point32(uint32_t *data, int32_t stride, int32_t x, int32_t y, uint32_t color);
+_inknit_draw_point32(uint32_t *data, uint32_t stride, uint32_t x, uint32_t y, uint32_t color);
 #endif

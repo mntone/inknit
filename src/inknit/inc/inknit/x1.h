@@ -40,35 +40,22 @@ inknit_color_t INKNIT_EXPORT
 void INKNIT_EXPORT PUBN(clear)(struct inknit_image *image, inknit_color_t color) INKNIT_NONNULL(1);
 
 
-// -- MARK: draw_circle
+// -- MARK: draw
 void INKNIT_EXPORT PUBN(draw_circle)(
 	struct inknit_image *image, int32_t cx, int32_t cy, int32_t radius, inknit_color_t color
 ) INKNIT_NONNULL(1);
 
-
-// -- MARK: draw_point
-void INKNIT_EXPORT PUBN(draw_point)(
-	struct inknit_image *image, int32_t x, int32_t y, inknit_color_t color
+void INKNIT_EXPORT PUBN(draw_hline)(
+	struct inknit_image *image, int32_t x1, int32_t x2, int32_t y, inknit_color_t color
 ) INKNIT_NONNULL(1);
 
-
-// -- MARK: draw_vline
-INKNIT_BMPROTO(INKNIT_PROTO_DRAW_HLINE(INTN(draw_hline_arith)));
-INKNIT_BMPROTO(INKNIT_PROTO_DRAW_HLINE(INTN(draw_hline_lut)));
-INKNIT_PROTO(INKNIT_PROTO_DRAW_HLINE(PUBN(draw_hline)));
-
-
-// -- MARK: draw_vline
-void INKNIT_EXPORT PUBN(draw_vline)(
-	struct inknit_image *image, int32_t x, int32_t y1, int32_t y2, inknit_color_t color
-) INKNIT_NONNULL(1);
-
-
-// -- MARK: draw_line
 INKNIT_BMPROTO(INKNIT_PROTO_DRAW_LINE(INTN(draw_line_2loop)));
 INKNIT_BMPROTO(INKNIT_PROTO_DRAW_LINE(INTN(draw_line_1loop)));
 INKNIT_PROTO(INKNIT_PROTO_DRAW_LINE(PUBN(draw_line)));
 
+void INKNIT_EXPORT PUBN(draw_point)(
+	struct inknit_image *image, int32_t x, int32_t y, inknit_color_t color
+) INKNIT_NONNULL(1);
 
 void INKNIT_EXPORT PUBN(draw_rect)(
 	struct inknit_image *image,
@@ -86,6 +73,10 @@ void INKNIT_EXPORT PUBN(draw_rectp)(
 	inknit_uint_t        x2,
 	inknit_uint_t        y2,
 	inknit_color_t       color
+) INKNIT_NONNULL(1);
+
+void INKNIT_EXPORT PUBN(draw_vline)(
+	struct inknit_image *image, int32_t x, int32_t y1, int32_t y2, inknit_color_t color
 ) INKNIT_NONNULL(1);
 
 

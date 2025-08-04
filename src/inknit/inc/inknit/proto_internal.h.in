@@ -17,23 +17,75 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+// -- MARK: draw_point
+#define _inknit_draw_point_with_clip32 INKNIT_CURRENT_INTERNAL_FUNC(draw_point_with_clip)
+void INKNIT_EXPORT _inknit_draw_point_with_clip32(
+	uint32_t      *data,
+	uint32_t       stride,
+	int32_t        x,
+	int32_t        y,
+	inknit_color_t color,
+	int32_t        min_x,
+	int32_t        min_y,
+	int32_t        max_x,
+	int32_t        max_y
+) INKNIT_NONNULL(1);
+
+// -- MARK: draw_hline
+#define _inknit_draw_hline32 INKNIT_CURRENT_INTERNAL_FUNC(draw_hline)
+void INKNIT_EXPORT _inknit_draw_hline32(
+	uint32_t *data, uint32_t stride, uint32_t x1, uint32_t x2, uint32_t y, inknit_color_t color
+) INKNIT_NONNULL(1);
+
+#define _inknit_draw_hline_with_clip32 INKNIT_CURRENT_INTERNAL_FUNC(draw_hline_with_clip)
+void INKNIT_EXPORT _inknit_draw_hline_with_clip32(
+	uint32_t      *data,
+	uint32_t       stride,
+	int32_t        x1,
+	int32_t        x2,
+	int32_t        y,
+	inknit_color_t color,
+	int32_t        min_x,
+	int32_t        min_y,
+	int32_t        max_x,
+	int32_t        max_y
+) INKNIT_NONNULL(1);
+
+#if defined(INKNIT_ENABLE_BENCHMARKS) || defined(INKNIT_DISABLE_LUT)
+#define _inknit_draw_hline_arith32 INKNIT_CURRENT_INTERNAL_FUNC(draw_hline_arith)
+void INKNIT_EXPORT _inknit_draw_hline_arith32(
+	uint32_t *data, uint32_t stride, uint32_t x1, uint32_t x2, uint32_t y, inknit_color_t color
+) INKNIT_NONNULL(1);
+#endif
+
+#if defined(INKNIT_ENABLE_BENCHMARKS) || !defined(INKNIT_DISABLE_LUT)
+#define _inknit_draw_hline_lut32 INKNIT_CURRENT_INTERNAL_FUNC(draw_hline_lut)
+void INKNIT_EXPORT _inknit_draw_hline_lut32(
+	uint32_t *data, uint32_t stride, uint32_t x1, uint32_t x2, uint32_t y, inknit_color_t color
+) INKNIT_NONNULL(1);
+#endif
+
+
+// -- MARK: draw_vline
 #define _inknit_draw_vline32 INKNIT_CURRENT_INTERNAL_FUNC(draw_vline)
 void INKNIT_EXPORT _inknit_draw_vline32(
-	uint32_t *data, int32_t stride, int32_t x, int32_t y1, int32_t y2, inknit_color_t color
-);
+	uint32_t *data, uint32_t stride, int32_t x, int32_t y1, int32_t y2, inknit_color_t color
+) INKNIT_NONNULL(1);
 
 #if defined(INKNIT_ENABLE_BENCHMARKS)                                   \
 	|| defined(INKNIT_ENABLE_UNROLL) && !defined(INKNIT_TARGET_IS_PICO)
 #define _inknit_draw_vline_unroll32 INKNIT_CURRENT_INTERNAL_FUNC(draw_vline_unroll)
 void INKNIT_EXPORT _inknit_draw_vline_unroll32(
-	uint32_t *data, int32_t stride, int32_t x, int32_t y1, int32_t y2, inknit_color_t color
-);
+	uint32_t *data, uint32_t stride, int32_t x, int32_t y1, int32_t y2, inknit_color_t color
+) INKNIT_NONNULL(1);
 #endif
 
+
+// -- MARK: draw_circle
 #define _inknit_draw_circle32 INKNIT_CURRENT_INTERNAL_FUNC(draw_circle)
 void INKNIT_EXPORT _inknit_draw_circle32(
 	uint32_t      *data,
-	int32_t        stride,
+	uint32_t       stride,
 	int32_t        cx,
 	int32_t        cy,
 	int32_t        radius,
@@ -42,10 +94,16 @@ void INKNIT_EXPORT _inknit_draw_circle32(
 	int32_t        min_y,
 	int32_t        max_x,
 	int32_t        max_y
-);
+) INKNIT_NONNULL(1);
 
+
+// -- MARK: clean up macros
 #ifndef INKNIT_USE_MACRO_NAME
-// Clean up macros
+#undef _inknit_draw_point_with_clip32
+#undef _inknit_draw_hline32
+#undef _inknit_draw_hline_with_clip32
+#undef _inknit_draw_hline_arith32
+#undef _inknit_draw_hline_lut32
 #undef _inknit_draw_vline32
 #undef _inknit_draw_vline_unroll32
 #undef _inknit_draw_circle32

@@ -136,21 +136,3 @@ _inknit_get_pixel32(const uint32_t *data, int32_t stride, int32_t x, int32_t y) 
 	const uint32_t value = get_pixval(word, bitpos);
 	return (inknit_color_t)value;
 }
-
-#define _inknit_draw_point_with_clip32                               \
-	INKNIT_INTERNAL_FUNC(draw_point_with_clip, INKNIT_CURRENT_GROUP)
-static INKNIT_ALWAYS_INLINE void _inknit_draw_point_with_clip32(
-	uint32_t *data,
-	int32_t   stride,
-	int32_t   x,
-	int32_t   y,
-	uint32_t  color,
-	int32_t   min_x,
-	int32_t   min_y,
-	int32_t   max_x,
-	int32_t   max_y
-) {
-	if (x >= min_x && y >= min_y && x <= max_x && y <= max_y) {
-		_inknit_draw_point32(data, stride, x, y, color);
-	}
-}

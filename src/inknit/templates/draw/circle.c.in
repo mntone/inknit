@@ -26,7 +26,7 @@
 #define _inknit_draw_circle_points32 INKNIT_INTERNAL_FUNC(draw_circle_points, INKNIT_CURRENT_GROUP)
 static inline void _inknit_draw_circle_points32(
 	uint32_t      *data,
-	int32_t        stride,
+	uint32_t       stride,
 	int32_t        cx,
 	int32_t        cy,
 	int32_t        dx,
@@ -66,7 +66,7 @@ static inline void _inknit_draw_circle_points32(
 
 void _inknit_draw_circle32(
 	uint32_t      *data,
-	int32_t        stride,
+	uint32_t       stride,
 	int32_t        cx,
 	int32_t        cy,
 	int32_t        radius,
@@ -113,11 +113,12 @@ void PUBLIC_FUNCNAME(draw_circle)(
 
 	uint32_t *const data = (uint32_t *)image->data;
 
-	const int32_t stride = (int32_t)bytes_to_pixels(image->stride);
-	const int32_t min_x  = 0;
-	const int32_t min_y  = 0;
-	const int32_t max_x  = image->width - 1;
-	const int32_t max_y  = image->height - 1;
+	const uint32_t stride = bytes_to_pixels(image->stride);
+
+	const int32_t min_x = 0;
+	const int32_t min_y = 0;
+	const int32_t max_x = image->width - 1;
+	const int32_t max_y = image->height - 1;
 
 	_inknit_draw_circle32(data, stride, cx, cy, radius, color, min_x, min_y, max_x, max_y);
 }
