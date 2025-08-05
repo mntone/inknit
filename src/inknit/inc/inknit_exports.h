@@ -52,6 +52,15 @@ struct inknit_exports {
 		struct inknit_image *image, int32_t cx, int32_t cy, int32_t radius, inknit_color_t color
 	) INKNIT_NONNULL(1);
 
+	void (*const draw_ellipse)(
+		struct inknit_image *image,
+		int32_t              cx,
+		int32_t              cy,
+		int32_t              rx,
+		int32_t              ry,
+		inknit_color_t       color
+	) INKNIT_NONNULL(1);
+
 	void (*const draw_point)(
 		struct inknit_image *image, int32_t x, int32_t y, inknit_color_t color
 	) INKNIT_NONNULL(1);

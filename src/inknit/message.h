@@ -54,6 +54,11 @@
 #define MSG_RADIUS_LESS_THAN_ZERO         "ERROR: radius < 0"
 #define MSG_RADIUS_GREATER_THAN_MAX_VALUE "ERROR: radius > 2^13 - 1"
 
+#define MSG_RX_LESS_THAN_ZERO         "ERROR: rx < 0"
+#define MSG_RX_GREATER_THAN_MAX_VALUE "ERROR: rx > 2^10 - 1"
+#define MSG_RY_LESS_THAN_ZERO         "ERROR: ry < 0"
+#define MSG_RY_GREATER_THAN_MAX_VALUE "ERROR: ry > 2^10 - 1"
+
 #define MSG_SX_GREATER_THAN_MAX_VALUE "ERROR: sx > 2^12"
 #define MSG_SY_GREATER_THAN_MAX_VALUE "ERROR: sx > 2^12"
 

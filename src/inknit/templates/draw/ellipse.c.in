@@ -1,0 +1,186 @@
+/*
+ * inknit <https://github.com/mntone/inknit>
+ *
+ * Copyright (C) 2025 mntone <901816+mntone@users.noreply.github.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+#ifdef __INTELLISENSE__
+#include "../base.h.in"
+#else
+#include "../base.h"
+#endif
+
+#define _inknit_draw_ellipse_points32                               \
+	INKNIT_INTERNAL_FUNC(draw_ellipse_points, INKNIT_CURRENT_GROUP)
+static inline void _inknit_draw_ellipse_points32(
+	uint32_t      *data,
+	uint32_t       stride,
+	int32_t        cx,
+	int32_t        cy,
+	int32_t        dx,
+	int32_t        dy,
+	inknit_color_t color,
+	int32_t        min_x,
+	int32_t        min_y,
+	int32_t        max_x,
+	int32_t        max_y
+) {
+	const int32_t y1 = cy - dy;
+	if (min_y <= y1 && y1 <= max_y) {
+		const int32_t x1 = cx - dx;
+		if (min_x <= x1 && x1 <= max_x) {
+			_inknit_draw_point32(data, stride, (uint32_t)x1, (uint32_t)y1, color);
+		}
+
+		if (dx != 0) {
+			const int32_t x2 = cx + dx;
+			if (min_x <= x2 && x2 <= max_x) {
+				_inknit_draw_point32(data, stride, (uint32_t)x2, (uint32_t)y1, color);
+			}
+		}
+	}
+
+	if (dy != 0) {
+		const int32_t y2 = cy + dy;
+		if (min_y <= y2 && y2 <= max_y) {
+			const int32_t x1 = cx - dx;
+			if (min_x <= x1 && x1 <= max_x) {
+				_inknit_draw_point32(data, stride, (uint32_t)x1, (uint32_t)y2, color);
+			}
+
+			if (dx != 0) {
+				const int32_t x2 = cx + dx;
+				if (min_x <= x2 && x2 <= max_x) {
+					_inknit_draw_point32(data, stride, (uint32_t)x2, (uint32_t)y2, color);
+				}
+			}
+		}
+	}
+}
+
+#define _inknit_draw_ellipse32 INKNIT_INTERNAL_FUNC(draw_ellipse, INKNIT_CURRENT_GROUP)
+void _inknit_draw_ellipse32(
+	uint32_t      *data,
+	uint32_t       stride,
+	int32_t        cx,
+	int32_t        cy,
+	int32_t        rx,
+	int32_t        ry,
+	inknit_color_t color,
+	int32_t        min_x,
+	int32_t        min_y,
+	int32_t        max_x,
+	int32_t        max_y
+) {
+	INKNIT_ASSUME_CENTER_X(cx);
+	INKNIT_ASSUME_CENTER_Y(cy);
+	INKNIT_ASSUME_RANGE(
+		rx, 0, INKNIT_ELLIPSE_MAX, MSG_RX_LESS_THAN_ZERO, MSG_RX_GREATER_THAN_MAX_VALUE
+	);
+	INKNIT_ASSUME_RANGE(
+		ry, 0, INKNIT_ELLIPSE_MAX, MSG_RY_LESS_THAN_ZERO, MSG_RY_GREATER_THAN_MAX_VALUE
+	);
+	INKNIT_ASSUME_COLOR(color);
+	INKNIT_ASSUME_CLIP_RECT(min_x, min_y, min_y, max_y);
+
+	if (rx == 0) {
+		if (ry == 0) {
+			_inknit_draw_point_with_clip32(data, stride, cx, cy, color, min_x, min_y, max_x, max_y);
+		} else {
+			const int32_t y1 = cy - ry;
+			const int32_t y2 = cy + ry;
+			_inknit_draw_vline_with_clip32(
+				data, stride, cx, y1, y2, color, min_x, min_y, max_x, max_y
+			);
+		}
+		return;
+	}
+
+	if (ry == 0) {
+		const int32_t x1 = cx - rx;
+		const int32_t x2 = cx + rx;
+		_inknit_draw_hline_with_clip32(data, stride, x1, x2, cy, color, min_x, min_y, max_x, max_y);
+		return;
+	}
+
+	const int32_t rx_sq = rx * rx;
+	const int32_t ry_sq = ry * ry;
+
+	const int32_t double_rx_sq = rx_sq << 1;
+	const int32_t double_ry_sq = ry_sq << 1;
+
+	int32_t dx = 0;
+	int32_t dy = ry;
+	int32_t px = 0;
+	int32_t py = double_rx_sq * dy;
+
+	int32_t p;
+
+	// Region 1
+	p = ry_sq - rx_sq * ry + (rx_sq >> 2);
+	while (px < py) {
+		_inknit_draw_ellipse_points32(
+			data, stride, cx, cy, dx, dy, color, min_x, min_y, max_x, max_y
+		);
+
+		++dx;
+		px += double_ry_sq;
+		if (p < 0) {
+			p += px + ry_sq;
+		} else {
+			--dy;
+			py -= double_rx_sq;
+			p += px - py + ry_sq;
+		}
+	}
+
+	// Region 2
+	p = ry_sq * (dx * dx + dx) + rx_sq * (dy * dy - dy) - rx_sq * ry_sq;
+	while (dy >= 0) {
+		_inknit_draw_ellipse_points32(
+			data, stride, cx, cy, dx, dy, color, min_x, min_y, max_x, max_y
+		);
+
+		--dy;
+		py -= double_rx_sq;
+		if (p > 0) {
+			p += rx_sq - py;
+		} else {
+			++dx;
+			px += double_ry_sq;
+			p += px - py + rx_sq;
+		}
+	}
+}
+
+void PUBLIC_FUNCNAME(draw_ellipse)(
+	struct inknit_image *image, int32_t cx, int32_t cy, int32_t rx, int32_t ry, inknit_color_t color
+) {
+	INKNIT_ASSUME(image != NULL, MSG_IMAGE_IS_NULL);
+	INKNIT_ASSUME(image->pixel_layout == TARGET_LAYOUT, MSG_IMAGE_IS_INVALID_LAYOUT);
+	INKNIT_ASSUME(image->alignment >= INKNIT_ALIGN32, MSG_IMAGE_IS_INVALID_ALIGN);
+
+	uint32_t *const data = (uint32_t *)image->data;
+
+	const uint32_t stride = bytes_to_pixels(image->stride);
+
+	const int32_t min_x = 0;
+	const int32_t min_y = 0;
+	const int32_t max_x = image->width - 1;
+	const int32_t max_y = image->height - 1;
+
+	_inknit_draw_ellipse32(data, stride, cx, cy, rx, ry, color, min_x, min_y, max_x, max_y);
+}

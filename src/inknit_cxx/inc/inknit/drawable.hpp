@@ -83,6 +83,17 @@ namespace inknit { namespace details {
 			INKNIT_X1_NAME(clear)(get(), color);
 		}
 
+		void draw_circle(point_t ct, std::int32_t radius, color_t color) noexcept {
+			auto [x, y] = ct;
+			INKNIT_X1_NAME(draw_circle)(get(), x, y, radius, color);
+		}
+
+		void draw_ellipse(point_t ct, size_t radius, color_t color) noexcept {
+			auto [x, y]   = ct;
+			auto [rx, ry] = radius;
+			INKNIT_X1_NAME(draw_ellipse)(get(), x, y, rx, ry, color);
+		}
+
 		void draw_point(std::int32_t x, std::int32_t y, color_t color) noexcept {
 			INKNIT_X1_NAME(draw_point)(get(), x, y, color);
 		}
@@ -125,11 +136,6 @@ namespace inknit { namespace details {
 				static_cast<uint_t>(y2),
 				color
 			);
-		}
-
-		void draw_circle(point_t ct, std::int32_t radius, color_t color) noexcept {
-			auto [x, y] = ct;
-			INKNIT_X1_NAME(draw_circle)(get(), x, y, radius, color);
 		}
 
 	protected:
@@ -203,6 +209,17 @@ namespace inknit { namespace details {
 			INKNIT_X1LSB_NAME(clear)(get(), color);
 		}
 
+		void draw_circle(point_t ct, std::int32_t radius, color_t color) noexcept {
+			auto [x, y] = ct;
+			INKNIT_X1LSB_NAME(draw_circle)(get(), x, y, radius, color);
+		}
+
+		void draw_ellipse(point_t ct, size_t radius, color_t color) noexcept {
+			auto [x, y]   = ct;
+			auto [rx, ry] = radius;
+			INKNIT_X1LSB_NAME(draw_ellipse)(get(), x, y, rx, ry, color);
+		}
+
 		void draw_point(std::int32_t x, std::int32_t y, color_t color) noexcept {
 			INKNIT_X1LSB_NAME(draw_point)(get(), x, y, color);
 		}
@@ -245,11 +262,6 @@ namespace inknit { namespace details {
 				static_cast<uint_t>(y2),
 				color
 			);
-		}
-
-		void draw_circle(point_t ct, std::int32_t radius, color_t color) noexcept {
-			auto [x, y] = ct;
-			INKNIT_X1LSB_NAME(draw_circle)(get(), x, y, radius, color);
 		}
 
 	protected:
@@ -323,6 +335,17 @@ namespace inknit { namespace details {
 			INKNIT_X2_NAME(clear)(get(), color);
 		}
 
+		void draw_circle(point_t ct, std::int32_t radius, color_t color) noexcept {
+			auto [x, y] = ct;
+			INKNIT_X2_NAME(draw_circle)(get(), x, y, radius, color);
+		}
+
+		void draw_ellipse(point_t ct, size_t radius, color_t color) noexcept {
+			auto [x, y]   = ct;
+			auto [rx, ry] = radius;
+			INKNIT_X2_NAME(draw_ellipse)(get(), x, y, rx, ry, color);
+		}
+
 		void draw_point(std::int32_t x, std::int32_t y, color_t color) noexcept {
 			INKNIT_X2_NAME(draw_point)(get(), x, y, color);
 		}
@@ -365,11 +388,6 @@ namespace inknit { namespace details {
 				static_cast<uint_t>(y2),
 				color
 			);
-		}
-
-		void draw_circle(point_t ct, std::int32_t radius, color_t color) noexcept {
-			auto [x, y] = ct;
-			INKNIT_X2_NAME(draw_circle)(get(), x, y, radius, color);
 		}
 
 	protected:
@@ -442,6 +460,17 @@ namespace inknit { namespace details {
 			INKNIT_X2LSB_NAME(clear)(get(), color);
 		}
 
+		void draw_circle(point_t ct, std::int32_t radius, color_t color) noexcept {
+			auto [x, y] = ct;
+			INKNIT_X2LSB_NAME(draw_circle)(get(), x, y, radius, color);
+		}
+
+		void draw_ellipse(point_t ct, size_t radius, color_t color) noexcept {
+			auto [x, y]   = ct;
+			auto [rx, ry] = radius;
+			INKNIT_X2LSB_NAME(draw_ellipse)(get(), x, y, rx, ry, color);
+		}
+
 		void draw_point(std::int32_t x, std::int32_t y, color_t color) noexcept {
 			INKNIT_X2LSB_NAME(draw_point)(get(), x, y, color);
 		}
@@ -484,11 +513,6 @@ namespace inknit { namespace details {
 				static_cast<uint_t>(y2),
 				color
 			);
-		}
-
-		void draw_circle(point_t ct, std::int32_t radius, color_t color) noexcept {
-			auto [x, y] = ct;
-			INKNIT_X2LSB_NAME(draw_circle)(get(), x, y, radius, color);
 		}
 
 	protected:
@@ -561,6 +585,17 @@ namespace inknit { namespace details {
 			INKNIT_X4_NAME(clear)(get(), color);
 		}
 
+		void draw_circle(point_t ct, std::int32_t radius, color_t color) noexcept {
+			auto [x, y] = ct;
+			INKNIT_X4_NAME(draw_circle)(get(), x, y, radius, color);
+		}
+
+		void draw_ellipse(point_t ct, size_t radius, color_t color) noexcept {
+			auto [x, y]   = ct;
+			auto [rx, ry] = radius;
+			INKNIT_X4_NAME(draw_ellipse)(get(), x, y, rx, ry, color);
+		}
+
 		void draw_point(std::int32_t x, std::int32_t y, color_t color) noexcept {
 			INKNIT_X4_NAME(draw_point)(get(), x, y, color);
 		}
@@ -603,11 +638,6 @@ namespace inknit { namespace details {
 				static_cast<uint_t>(y2),
 				color
 			);
-		}
-
-		void draw_circle(point_t ct, std::int32_t radius, color_t color) noexcept {
-			auto [x, y] = ct;
-			INKNIT_X4_NAME(draw_circle)(get(), x, y, radius, color);
 		}
 
 	protected:
@@ -679,6 +709,17 @@ namespace inknit { namespace details {
 			INKNIT_X4LSB_NAME(clear)(get(), color);
 		}
 
+		void draw_circle(point_t ct, std::int32_t radius, color_t color) noexcept {
+			auto [x, y] = ct;
+			INKNIT_X4LSB_NAME(draw_circle)(get(), x, y, radius, color);
+		}
+
+		void draw_ellipse(point_t ct, size_t radius, color_t color) noexcept {
+			auto [x, y]   = ct;
+			auto [rx, ry] = radius;
+			INKNIT_X4LSB_NAME(draw_ellipse)(get(), x, y, rx, ry, color);
+		}
+
 		void draw_point(std::int32_t x, std::int32_t y, color_t color) noexcept {
 			INKNIT_X4LSB_NAME(draw_point)(get(), x, y, color);
 		}
@@ -721,11 +762,6 @@ namespace inknit { namespace details {
 				static_cast<uint_t>(y2),
 				color
 			);
-		}
-
-		void draw_circle(point_t ct, std::int32_t radius, color_t color) noexcept {
-			auto [x, y] = ct;
-			INKNIT_X4LSB_NAME(draw_circle)(get(), x, y, radius, color);
 		}
 
 	protected:

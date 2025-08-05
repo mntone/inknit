@@ -46,10 +46,12 @@ assert_helper::~assert_helper() noexcept {
 void assert_helper::assert_callback(
 	char const *message, char const *condition, char const *file, char const *func, int line
 ) noexcept {
-	message_   = message;
-	condition_ = condition;
-	file_      = file;
-	func_      = func;
-	line_      = line;
-	fired_     = true;
+	if (!fired_) {
+		message_   = message;
+		condition_ = condition;
+		file_      = file;
+		func_      = func;
+		line_      = line;
+		fired_     = true;
+	}
 }

@@ -23,17 +23,18 @@
 #include "../inc/inknit/x1.h"
 
 const struct inknit_exports x1 = {
-	.blit        = INKNIT_X1_NAME(blit),
-	.clear       = INKNIT_X1_NAME(clear),
-	.draw_circle = INKNIT_X1_NAME(draw_circle),
-	.draw_point  = INKNIT_X1_NAME(draw_point),
-	.draw_hline  = INKNIT_X1_NAME(draw_hline),
-	.draw_vline  = INKNIT_X1_NAME(draw_vline),
-	.draw_line   = INKNIT_X1_NAME(draw_line),
-	.draw_rect   = INKNIT_X1_NAME(draw_rect),
-	.draw_rectp  = INKNIT_X1_NAME(draw_rectp),
-	.features    = INKNIT_FEATURE_PRIMITIVE | INKNIT_FEATURE_BLIT | INKNIT_FEATURE_DRAW,
-	.layout      = INKNIT_X1,
+	.blit         = INKNIT_X1_NAME(blit),
+	.clear        = INKNIT_X1_NAME(clear),
+	.draw_circle  = INKNIT_X1_NAME(draw_circle),
+	.draw_ellipse = INKNIT_X1_NAME(draw_ellipse),
+	.draw_point   = INKNIT_X1_NAME(draw_point),
+	.draw_hline   = INKNIT_X1_NAME(draw_hline),
+	.draw_vline   = INKNIT_X1_NAME(draw_vline),
+	.draw_line    = INKNIT_X1_NAME(draw_line),
+	.draw_rect    = INKNIT_X1_NAME(draw_rect),
+	.draw_rectp   = INKNIT_X1_NAME(draw_rectp),
+	.features     = INKNIT_FEATURE_PRIMITIVE | INKNIT_FEATURE_BLIT | INKNIT_FEATURE_DRAW,
+	.layout       = INKNIT_X1,
 };
 
 #endif

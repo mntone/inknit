@@ -131,11 +131,12 @@
 
 
 // -- MARK: internal constants
-#define INKNIT_RADIUS_MAX (8191)   // 2^13-1
-#define INKNIT_X_MIN      (-4096)  // -2^12-1
-#define INKNIT_X_MAX      (4095)   // 2^12
-#define INKNIT_Y_MIN      (-4096)  // -2^12-1
-#define INKNIT_Y_MAX      (4095)   // 2^12
+#define INKNIT_CIRCLE_MAX  8191   // 2^13-1
+#define INKNIT_ELLIPSE_MAX 1023   // 2^10-1
+#define INKNIT_X_MIN       -4096  // -2^12-1
+#define INKNIT_X_MAX       4095   // 2^12
+#define INKNIT_Y_MIN       -4096  // -2^12-1
+#define INKNIT_Y_MAX       4095   // 2^12
 
 
 // -- MARK: assume macros
@@ -143,14 +144,14 @@
 
 #define INKNIT_ASSUME_RANGE(var, min, max, msg_low, msg_high) \
 	do {                                                      \
-		INKNIT_ASSUME((min) <= (var), msg_low);               \
-		INKNIT_ASSUME((var) <= (max), msg_high);              \
+		INKNIT_ASSUME(min <= (var), msg_low);                 \
+		INKNIT_ASSUME((var) <= max, msg_high);                \
 	} while (0)
 #define INKNIT_ASSUME_BOUNDED_RANGE(min, max, min_limit, max_limit, msg_low, msg_order, msg_high) \
 	do {                                                                                          \
-		INKNIT_ASSUME((min_limit) <= (min), msg_low);                                             \
+		INKNIT_ASSUME(min_limit <= (min), msg_low);                                               \
 		INKNIT_ASSUME((min) <= (max), msg_order);                                                 \
-		INKNIT_ASSUME((max) <= (max_limit), msg_high);                                            \
+		INKNIT_ASSUME((max) <= max_limit, msg_high);                                              \
 	} while (0)
 
 #define INKNIT_ASSUME_COORD_X(var_x)                                                               \
@@ -160,6 +161,23 @@
 #define INKNIT_ASSUME_COORD_Y(var_y)                                                               \
 	INKNIT_ASSUME_RANGE(                                                                           \
 		var_y, INKNIT_Y_MIN, INKNIT_Y_MAX, MSG_Y_LESS_THAN_MIN_VALUE, MSG_Y_GREATER_THAN_MAX_VALUE \
+	)
+
+#define INKNIT_ASSUME_CENTER_X(var_cx) \
+	INKNIT_ASSUME_RANGE(               \
+		var_cx,                        \
+		INKNIT_X_MIN,                  \
+		INKNIT_X_MAX,                  \
+		MSG_CX_LESS_THAN_MIN_VALUE,    \
+		MSG_CX_GREATER_THAN_MAX_VALUE  \
+	)
+#define INKNIT_ASSUME_CENTER_Y(var_cy) \
+	INKNIT_ASSUME_RANGE(               \
+		var_cy,                        \
+		INKNIT_Y_MIN,                  \
+		INKNIT_Y_MAX,                  \
+		MSG_CY_LESS_THAN_MIN_VALUE,    \
+		MSG_CY_GREATER_THAN_MAX_VALUE  \
 	)
 
 #define INKNIT_ASSUME_COORD_X_RANGE(var_x1, var_x2) \

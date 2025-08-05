@@ -324,4 +324,87 @@ make_midpoint_circle(std::int32_t cx, std::int32_t cy, std::int32_t radius) noex
 	return points;
 }
 
+namespace details {
+
+	constexpr void add_ellipse_points(
+		pixel_list& points, std::int32_t cx, std::int32_t cy, std::int32_t dx, std::int32_t dy
+	) noexcept {
+		points.emplace_back(cx + dx, cy + dy);
+		points.emplace_back(cx - dx, cy + dy);
+		points.emplace_back(cx + dx, cy - dy);
+		points.emplace_back(cx - dx, cy - dy);
+	}
+
+}  // namespace details
+
+INKNIT_NODISCARD constexpr pixel_list
+make_midpoint_ellipse(std::int32_t cx, std::int32_t cy, std::int32_t rx, std::int32_t ry) noexcept {
+	pixel_list points;
+	if (rx < 0 || ry < 0) {
+		return points;
+	}
+
+	if (rx == 0 && ry == 0) {
+		points.emplace_back(cx, cy);
+		return points;
+	}
+	if (rx == 0) {
+		for (std::int32_t y = -ry; y <= ry; ++y) {
+			points.emplace_back(cx, cy + y);
+		}
+		return points;
+	}
+	if (ry == 0) {
+		for (std::int32_t x = -rx; x <= rx; ++x) {
+			points.emplace_back(cx + x, cy);
+		}
+		return points;
+	}
+
+	std::int64_t const rx_sq        = static_cast<std::int64_t>(rx) * rx;
+	std::int64_t const ry_sq        = static_cast<std::int64_t>(ry) * ry;
+	std::int64_t const double_rx_sq = rx_sq << 1;
+	std::int64_t const double_ry_sq = ry_sq << 1;
+
+	std::int32_t dx = 0;
+	std::int32_t dy = ry;
+	std::int64_t px = 0;
+	std::int64_t py = double_rx_sq * dy;
+
+	std::int64_t p;
+
+	// Region 1
+	p = ry_sq - rx_sq * ry + (rx_sq >> 2);
+	while (px < py) {
+		details::add_ellipse_points(points, cx, cy, dx, dy);
+
+		++dx;
+		px += double_ry_sq;
+		if (p < 0) {
+			p += px + ry_sq;
+		} else {
+			--dy;
+			py -= double_rx_sq;
+			p += px - py + ry_sq;
+		}
+	}
+
+	// Region 2
+	p = ry_sq * (dx * dx + dx) + rx_sq * (dy * dy - dy) - rx_sq * ry_sq;
+	while (dy >= 0) {
+		details::add_ellipse_points(points, cx, cy, dx, dy);
+
+		--dy;
+		py -= double_rx_sq;
+		if (p > 0) {
+			p += rx_sq - py;
+		} else {
+			++dx;
+			px += double_ry_sq;
+			p += px - py + rx_sq;
+		}
+	}
+	return points;
+}
+
 }  // namespace inknit::tests
