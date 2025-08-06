@@ -131,14 +131,14 @@
 
 
 // -- MARK: internal constants
-#define INKNIT_CIRCLE_MAX  8191   // 2^13 - 1
+#define INKNIT_CIRCLE_MAX  4095   // 2^12 - 1
 #define INKNIT_ELLIPSE_MAX 1023   // 2^10 - 1
-#define INKNIT_X_MIN       -4096  // -2^12
-#define INKNIT_X_MAX       4095   // 2^12 - 1
-#define INKNIT_Y_MIN       -4096  // -2^12
-#define INKNIT_Y_MAX       4095   // 2^12 - 1
-#define INKNIT_WIDTH_MAX   4095   // 2^12 - 1
-#define INKNIT_HEIGHT_MAX  4095   // 2^12 - 1
+#define INKNIT_X_MIN       -2048  // -2^11
+#define INKNIT_X_MAX       2047   // 2^11 - 1
+#define INKNIT_Y_MIN       -2048  // -2^11
+#define INKNIT_Y_MAX       2047   // 2^11 - 1
+#define INKNIT_WIDTH_MAX   2047   // 2^11 - 1
+#define INKNIT_HEIGHT_MAX  2047   // 2^11 - 1
 
 
 // -- MARK: assume macros
