@@ -20,15 +20,12 @@
 // -- MARK: draw_point
 #define _inknit_draw_point_with_clip32 INKNIT_CURRENT_INTERNAL_FUNC(draw_point_with_clip)
 void INKNIT_EXPORT _inknit_draw_point_with_clip32(
-	uint32_t      *data,
-	uint32_t       stride,
-	int32_t        x,
-	int32_t        y,
-	inknit_color_t color,
-	int32_t        min_x,
-	int32_t        min_y,
-	int32_t        max_x,
-	int32_t        max_y
+	uint32_t *INKNIT_RESTRICT                 data,
+	uint32_t                                  stride,
+	int32_t                                   x,
+	int32_t                                   y,
+	inknit_color_t                            color,
+	const struct inknit_rect *INKNIT_RESTRICT clip_rect
 ) INKNIT_NONNULL(1);
 
 // -- MARK: draw_hline
@@ -39,16 +36,13 @@ void INKNIT_EXPORT _inknit_draw_hline32(
 
 #define _inknit_draw_hline_with_clip32 INKNIT_CURRENT_INTERNAL_FUNC(draw_hline_with_clip)
 void INKNIT_EXPORT _inknit_draw_hline_with_clip32(
-	uint32_t      *data,
-	uint32_t       stride,
-	int32_t        x1,
-	int32_t        x2,
-	int32_t        y,
-	inknit_color_t color,
-	int32_t        min_x,
-	int32_t        min_y,
-	int32_t        max_x,
-	int32_t        max_y
+	uint32_t *INKNIT_RESTRICT                 data,
+	uint32_t                                  stride,
+	int32_t                                   x1,
+	int32_t                                   x2,
+	int32_t                                   y,
+	inknit_color_t                            color,
+	const struct inknit_rect *INKNIT_RESTRICT clip_rect
 ) INKNIT_NONNULL(1);
 
 #if defined(INKNIT_ENABLE_BENCHMARKS)
@@ -72,16 +66,13 @@ void INKNIT_EXPORT _inknit_draw_vline32(
 
 #define _inknit_draw_vline_with_clip32 INKNIT_CURRENT_INTERNAL_FUNC(draw_vline_with_clip)
 void INKNIT_EXPORT _inknit_draw_vline_with_clip32(
-	uint32_t      *data,
-	uint32_t       stride,
-	int32_t        x,
-	int32_t        y1,
-	int32_t        y2,
-	inknit_color_t color,
-	int32_t        min_x,
-	int32_t        min_y,
-	int32_t        max_x,
-	int32_t        max_y
+	uint32_t *INKNIT_RESTRICT                 data,
+	uint32_t                                  stride,
+	int32_t                                   x,
+	int32_t                                   y1,
+	int32_t                                   y2,
+	inknit_color_t                            color,
+	const struct inknit_rect *INKNIT_RESTRICT clip_rect
 ) INKNIT_NONNULL(1);
 
 #if defined(INKNIT_ENABLE_BENCHMARKS)
@@ -100,16 +91,27 @@ void INKNIT_EXPORT _inknit_draw_vline_unroll32(
 // -- MARK: draw_circle
 #define _inknit_draw_circle32 INKNIT_CURRENT_INTERNAL_FUNC(draw_circle)
 void INKNIT_EXPORT _inknit_draw_circle32(
-	uint32_t      *data,
-	uint32_t       stride,
-	int32_t        cx,
-	int32_t        cy,
-	int32_t        radius,
-	inknit_color_t color,
-	int32_t        min_x,
-	int32_t        min_y,
-	int32_t        max_x,
-	int32_t        max_y
+	uint32_t *INKNIT_RESTRICT                 data,
+	uint32_t                                  stride,
+	int32_t                                   cx,
+	int32_t                                   cy,
+	int32_t                                   radius,
+	inknit_color_t                            color,
+	const struct inknit_rect *INKNIT_RESTRICT clip_rect
+) INKNIT_NONNULL(1);
+
+
+// -- MARK: draw_ellipse
+#define _inknit_draw_ellipse32 INKNIT_CURRENT_INTERNAL_FUNC(draw_ellipse)
+void INKNIT_EXPORT _inknit_draw_ellipse32(
+	uint32_t *INKNIT_RESTRICT                 data,
+	uint32_t                                  stride,
+	int32_t                                   cx,
+	int32_t                                   cy,
+	int32_t                                   rx,
+	int32_t                                   ry,
+	inknit_color_t                            color,
+	const struct inknit_rect *INKNIT_RESTRICT clip_rect
 ) INKNIT_NONNULL(1);
 
 
@@ -125,4 +127,5 @@ void INKNIT_EXPORT _inknit_draw_circle32(
 #undef _inknit_draw_vline_scalar32
 #undef _inknit_draw_vline_unroll32
 #undef _inknit_draw_circle32
+#undef _inknit_draw_ellipse32
 #endif

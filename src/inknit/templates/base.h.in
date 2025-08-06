@@ -125,7 +125,7 @@ INTERNAL_FUNCNAME(set)(struct inknit_image *image, uint32_t x, uint32_t y, inkni
 	data[wordidx]              = swap_if_required(write_word);
 }
 
-#define _inknit_get_pixel32 INKNIT_INTERNAL_FUNC(get_pixel, INKNIT_CURRENT_GROUP)
+#define _inknit_get_pixel32 INKNIT_CURRENT_INTERNAL_FUNC(get_pixel)
 static INKNIT_ALWAYS_INLINE inknit_color_t
 _inknit_get_pixel32(const uint32_t *data, int32_t stride, int32_t x, int32_t y) {
 	const int32_t pixel   = stride * y + x;

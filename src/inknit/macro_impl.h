@@ -156,13 +156,18 @@
 		INKNIT_ASSUME((max) <= max_limit, msg_high);                                              \
 	} while (0)
 
-#define _INKNIT_ASSUME_IMAGE_BASE(image, _layout, _align, _width, _height)                       \
-	do {                                                                                         \
-		INKNIT_ASSUME((image) != NULL, #image MSG_ERROR_IMAGE);                                  \
-		INKNIT_ASSUME((image)->pixel_layout == _layout, #image MSG_ERROR_IMAGE_LAYOUT #_layout); \
-		INKNIT_ASSUME((image)->alignment >= _align, #image MSG_ERROR_IMAGE_ALIGN #_align);       \
-		INKNIT_ASSUME((image)->width <= _width, #image MSG_ERROR_IMAGE_WIDTH);                   \
-		INKNIT_ASSUME((image)->height <= _height, #image MSG_ERROR_IMAGE_HEIGHT);                \
+#define _INKNIT_ASSUME_IMAGE_BASE(image, _layout, _align, _width, _height)                     \
+	do {                                                                                       \
+		INKNIT_ASSUME((image) != NULL, #image MSG_ERROR_IMAGE);                                \
+		INKNIT_ASSUME(                                                                         \
+			(image)->pixel_layout == _layout,                                                  \
+			#image MSG_ERROR_IMAGE_LAYOUT INKNIT_TOSTRING(_layout)                             \
+		);                                                                                     \
+		INKNIT_ASSUME(                                                                         \
+			(image)->alignment >= _align, #image MSG_ERROR_IMAGE_ALIGN INKNIT_TOSTRING(_align) \
+		);                                                                                     \
+		INKNIT_ASSUME((image)->width <= _width, #image MSG_ERROR_IMAGE_WIDTH);                 \
+		INKNIT_ASSUME((image)->height <= _height, #image MSG_ERROR_IMAGE_HEIGHT);              \
 	} while (0)
 #define INKNIT_ASSUME_IMAGE(image)                                                  \
 	_INKNIT_ASSUME_IMAGE_BASE(                                                      \
@@ -236,9 +241,9 @@
 		MSG_MIN_Y_GREATER_THAN_MAX_Y,                    \
 		MSG_MAX_Y_GREATER_THAN_MAX_VALUE                 \
 	)
-#define INKNIT_ASSUME_CLIP_RECT(var_min_x, var_max_x, var_min_y, var_max_y) \
-	INKNIT_ASSUME_CLIP_X_RANGE(var_min_x, var_max_x);                       \
-	INKNIT_ASSUME_CLIP_Y_RANGE(var_min_y, var_max_y)
+#define INKNIT_ASSUME_CLIP_RECT(var_rect)                            \
+	INKNIT_ASSUME_CLIP_X_RANGE((var_rect)->left, (var_rect)->right); \
+	INKNIT_ASSUME_CLIP_Y_RANGE((var_rect)->top, (var_rect)->bottom)
 
 #define INKNIT_ASSUME_COLOR(var_color)                                                       \
 	INKNIT_ASSUME((var_color) <= POW2_BITS_PER_PIXEL_NEG1, MSG_COLOR_GREATER_THAN_MAX_VALUE)

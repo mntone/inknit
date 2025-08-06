@@ -277,51 +277,49 @@ void _inknit_draw_hline_lut32(
 void _inknit_draw_hline32(
 	uint32_t *data, uint32_t stride, uint32_t x1, uint32_t x2, uint32_t y, inknit_color_t color
 ) {
-	if (x1 == x2) {
-		_inknit_draw_point32(data, stride, x1, y, color);
-	} else {
 #ifdef INKNIT_DISABLE_LUT
-		_inknit_draw_hline_arith32(data, stride, x1, x2, y, color);
+	_inknit_draw_hline_arith32(data, stride, x1, x2, y, color);
 #else
-		_inknit_draw_hline_lut32(data, stride, x1, x2, y, color);
+	_inknit_draw_hline_lut32(data, stride, x1, x2, y, color);
 #endif
-	}
 }
 
 void _inknit_draw_hline_with_clip32(
-	uint32_t      *data,
-	uint32_t       stride,
-	int32_t        x1,
-	int32_t        x2,
-	int32_t        y,
-	inknit_color_t color,
-	int32_t        min_x,
-	int32_t        min_y,
-	int32_t        max_x,
-	int32_t        max_y
+	uint32_t *INKNIT_RESTRICT                 data,
+	uint32_t                                  stride,
+	int32_t                                   x1,
+	int32_t                                   x2,
+	int32_t                                   y,
+	inknit_color_t                            color,
+	const struct inknit_rect *INKNIT_RESTRICT clip_rect
 ) {
 	INKNIT_ASSUME_COORD_X_RANGE(x1, x2);
 	INKNIT_ASSUME_COORD_Y(y);
 	INKNIT_ASSUME_COLOR(color);
-	INKNIT_ASSUME_CLIP_RECT(min_x, min_y, min_y, max_y);
+	INKNIT_ASSUME_CLIP_RECT(clip_rect);
 
-	if (y < min_y || max_y < y) {
-		return;
-	}
-	if (x2 < min_x || max_x < x1) {
+	if (x1 == x2) {
+		_inknit_draw_point_with_clip32(data, stride, x1, y, color, clip_rect);
 		return;
 	}
 
-	if (x1 < min_x) {
-		x1 = min_x;
-		if (x2 < min_x) {
-			x2 = min_x;
+	if (y < clip_rect->top || clip_rect->bottom < y) {
+		return;
+	}
+	if (x2 < clip_rect->left || clip_rect->right < x1) {
+		return;
+	}
+
+	if (x1 < clip_rect->left) {
+		x1 = clip_rect->left;
+		if (x2 < clip_rect->left) {
+			x2 = clip_rect->left;
 		}
 	}
-	if (x2 > max_x) {
-		x2 = max_x;
-		if (x1 > max_x) {
-			x1 = max_x;
+	if (x2 > clip_rect->right) {
+		x2 = clip_rect->right;
+		if (x1 > clip_rect->right) {
+			x1 = clip_rect->right;
 		}
 	}
 
@@ -335,16 +333,16 @@ void PUBLIC_FUNCNAME(draw_hline)(
 
 	const uint32_t stride = bytes_to_pixels(image->stride);
 
-	const int32_t min_x = 0;
-	const int32_t min_y = 0;
-	const int32_t max_x = image->width - 1;
-	const int32_t max_y = image->height - 1;
+	struct inknit_rect clip_rect = {
+		0,
+		0,
+		image->width - 1,
+		(int16_t)(image->height - 1),
+	};
 
 	if (x1 > x2) {
 		_inknit_swap_int32(&x1, &x2);
 	}
 
-	_inknit_draw_hline_with_clip32(
-		image->data, stride, x1, x2, y, color, min_x, min_y, max_x, max_y
-	);
+	_inknit_draw_hline_with_clip32(image->data, stride, x1, x2, y, color, &clip_rect);
 }

@@ -100,6 +100,13 @@ enum inknit_alignment {
 	INKNIT_ALIGN1024,
 };
 
+struct inknit_rect {
+	int16_t left;
+	int16_t top;
+	int16_t right;
+	int16_t bottom;
+};
+
 struct inknit_image {
 	const enum inknit_pixellayout pixel_layout : 8;
 	const enum inknit_pixelformat pixel_format : 4;
