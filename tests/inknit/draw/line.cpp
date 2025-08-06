@@ -56,12 +56,8 @@ TEST_CASE_TEMPLATE(
 	Image image;
 	image.reset(4 * image.ppw, 4 * image.ppw);
 
-#define SUBCASE_INVOKE(_IX1, _IY1, _IX2, _IY2, _MSG)                  \
-	do {                                                              \
-		SUBCASE(_MSG) {                                               \
-			shared::subtest_draw_line(image, _IX1, _IY1, _IX2, _IY2); \
-		}                                                             \
-	} while (false)
+#define SUBCASE_INVOKE(_IX1, _IY1, _IX2, _IY2, _MSG)                                      \
+	INKNIT_SUBCASE_INVOKE(shared::subtest_draw_line(image, _IX1, _IY1, _IX2, _IY2), _MSG)
 
 	std::int32_t const right  = image.width() - 1;
 	std::int32_t const bottom = image.height() - 1;
@@ -69,6 +65,8 @@ TEST_CASE_TEMPLATE(
 	// 1. basic
 	SUBCASE_INVOKE(2, 5, 10, 5, "basic: horizontal line (left-to-right)");
 	SUBCASE_INVOKE(8, 1, 8, 6, "basic: vertical line (top-to-bottom)");
+	SUBCASE_INVOKE(10, 5, 2, 5, "basic: horizontal line (right-to-left)");
+	SUBCASE_INVOKE(8, 6, 8, 1, "basic: vertical line (bottom-to-top)");
 
 	SUBCASE_INVOKE(1, 1, 5, 5, "basic: diagonal line (45°)");
 	SUBCASE_INVOKE(5, 2, 7, 10, "basic: steep line (dx < dy)");
@@ -82,6 +80,27 @@ TEST_CASE_TEMPLATE(
 
 	// 4. full span
 	SUBCASE_INVOKE(0, 0, right, bottom, "full: diagonal full image span");
+
+	// 5. robust
+	constexpr int cx = 8, cy = 8;
+	constexpr int r = 6;
+	constexpr int s = 3;
+
+	// - Orthant I (dx > dy, x+, y+)
+	SUBCASE_INVOKE(cx, cy, cx + r, cy + s, "robust: octant 1");
+	SUBCASE_INVOKE(cx, cy, cx + s, cy + r, "robust: octant 2");
+
+	// - Orthant II (dx < dy, x-, y+)
+	SUBCASE_INVOKE(cx, cy, cx - s, cy + r, "robust: octant 3");
+	SUBCASE_INVOKE(cx, cy, cx - r, cy + s, "robust: octant 4");
+
+	// - Orthant III (dx > dy, x-, y-)
+	SUBCASE_INVOKE(cx, cy, cx - r, cy - s, "robust: octant 5");
+	SUBCASE_INVOKE(cx, cy, cx - s, cy - r, "robust: octant 6");
+
+	// - Orthant IV (dx < dy, x+, y-)
+	SUBCASE_INVOKE(cx, cy, cx + s, cy - r, "robust: octant 7");
+	SUBCASE_INVOKE(cx, cy, cx + r, cy - s, "robust: octant 8");
 
 #undef SUBCASE_INVOKE
 

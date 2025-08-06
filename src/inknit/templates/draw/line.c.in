@@ -23,6 +23,8 @@
 #include "../base.h"
 #endif
 
+#define abs(val) ((val) < 0 ? -(val) : (val))
+
 #ifdef INKNIT_ENABLE_BENCHMARKS
 void INTERNAL_FUNCNAME(draw_line_2loop)(
 	struct inknit_image *image, int32_t x, int32_t y, int32_t x2, int32_t y2, uint32_t color
@@ -37,8 +39,8 @@ void INTERNAL_FUNCNAME(draw_line_2loop)(
 	const int32_t sx = dx > 0 ? 1 : dx < 0 ? -1 : 0;
 	const int32_t sy = dy > 0 ? 1 : dy < 0 ? -1 : 0;
 
-	dx = dx < 0 ? -dx : dx;
-	dy = dy < 0 ? -dy : dy;
+	dx = abs(dx);
+	dy = abs(dy);
 
 	if (dx > dy) {
 		int32_t err = dx >> 1;
@@ -77,37 +79,41 @@ void INTERNAL_FUNCNAME(draw_line_2loop)(
 #endif
 
 void INTERNAL_FUNCNAME(draw_line_1loop)(
-	struct inknit_image *image, int32_t x, int32_t y, int32_t x2, int32_t y2, uint32_t color
+	struct inknit_image *image, int32_t x1, int32_t y, int32_t x2, int32_t y2, uint32_t color
 ) {
 	uint32_t *INKNIT_RESTRICT const data = (uint32_t *)image->data;
 
 	const uint32_t stride = bytes_to_pixels(image->stride);
 
-	int32_t dx = x2 - x;
+	int32_t dx = x2 - x1;
 	int32_t dy = y2 - y;
 
-	const int32_t sx = dx > 0 ? 1 : -1;
-	const int32_t sy = dy > 0 ? 1 : -1;
+	bool steep = abs(dx) < abs(dy);
+	if (steep) {
+		_inknit_swap_int32(&x1, &y);
+		_inknit_swap_int32(&x2, &y2);
+		_inknit_swap_int32(&dx, &dy);
+	}
+	if (x1 > x2) {
+		_inknit_swap_int32(&x1, &x2);
+		_inknit_swap_int32(&y, &y2);
+		dx = -dx;
+	}
+	dy = abs(dy);
 
-	dx = dx < 0 ? -dx : dx;
-	dy = dy < 0 ? dy : -dy;
-
-	int32_t err = dx + dy;
-	while (1) {
-		_inknit_draw_point32(data, stride, (uint32_t)x, (uint32_t)y, color);
-
-		if (x == x2 && y == y2) {
-			break;
+	int32_t err  = dx >> 1;
+	int32_t step = y < y2 ? 1 : -1;
+	for (int32_t x = x1; x <= x2; ++x) {
+		if (steep) {
+			_inknit_draw_point32(data, stride, (uint32_t)y, (uint32_t)x, color);
+		} else {
+			_inknit_draw_point32(data, stride, (uint32_t)x, (uint32_t)y, color);
 		}
 
-		const int32_t e2 = err << 1;
-		if (e2 >= dy) {
-			err += dy;
-			x += sx;
-		}
-		if (e2 <= dx) {
+		err -= dy;
+		if (err <= 0) {
+			y += step;
 			err += dx;
-			y += sy;
 		}
 	}
 }
