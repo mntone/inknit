@@ -88,6 +88,55 @@ void INKNIT_EXPORT _inknit_draw_vline_unroll32(
 #endif
 
 
+// -- MARK: draw_line
+#define _inknit_draw_line32 INKNIT_CURRENT_INTERNAL_FUNC(draw_line)
+void INKNIT_EXPORT _inknit_draw_line32(
+	uint32_t      *data,
+	uint32_t       stride,
+	int32_t        x1,
+	int32_t        y1,
+	int32_t        x2,
+	int32_t        y2,
+	inknit_color_t color
+) INKNIT_NONNULL(1);
+
+#define _inknit_draw_line_with_clip32 INKNIT_CURRENT_INTERNAL_FUNC(draw_line_with_clip)
+void INKNIT_EXPORT _inknit_draw_line_with_clip32(
+	uint32_t *INKNIT_RESTRICT                 data,
+	uint32_t                                  stride,
+	int32_t                                   x1,
+	int32_t                                   y1,
+	int32_t                                   x2,
+	int32_t                                   y2,
+	inknit_color_t                            color,
+	const struct inknit_rect *INKNIT_RESTRICT clip_rect
+) INKNIT_NONNULL(1);
+
+#if defined(INKNIT_ENABLE_BENCHMARKS)
+#define _inknit_draw_line_2loop32 INKNIT_CURRENT_INTERNAL_FUNC(draw_line_2loop)
+void INKNIT_EXPORT _inknit_draw_line_2loop32(
+	uint32_t      *data,
+	uint32_t       stride,
+	int32_t        x1,
+	int32_t        y1,
+	int32_t        x2,
+	int32_t        y2,
+	inknit_color_t color
+) INKNIT_NONNULL(1);
+
+#define _inknit_draw_line_1loop32 INKNIT_CURRENT_INTERNAL_FUNC(draw_line_1loop)
+void INKNIT_EXPORT _inknit_draw_line_1loop32(
+	uint32_t      *data,
+	uint32_t       stride,
+	int32_t        x1,
+	int32_t        y1,
+	int32_t        x2,
+	int32_t        y2,
+	inknit_color_t color
+) INKNIT_NONNULL(1);
+#endif
+
+
 // -- MARK: draw_circle
 #define _inknit_draw_circle32 INKNIT_CURRENT_INTERNAL_FUNC(draw_circle)
 void INKNIT_EXPORT _inknit_draw_circle32(
@@ -126,6 +175,10 @@ void INKNIT_EXPORT _inknit_draw_ellipse32(
 #undef _inknit_draw_vline_with_clip32
 #undef _inknit_draw_vline_scalar32
 #undef _inknit_draw_vline_unroll32
+#undef _inknit_draw_line32
+#undef _inknit_draw_line_with_clip32
+#undef _inknit_draw_line_2loop32
+#undef _inknit_draw_line_1loop32
 #undef _inknit_draw_circle32
 #undef _inknit_draw_ellipse32
 #endif

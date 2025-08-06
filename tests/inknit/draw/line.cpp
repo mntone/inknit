@@ -34,7 +34,7 @@ void subtest_draw_line(
 	image.clear(colors::black);
 	image.draw_line({ix1, iy1}, {ix2, iy2}, color);
 
-	auto const list = make_bresenham_line(ix1, iy1, ix2, iy2);
+	auto const list = make_bresenham_line(ix1, iy1, ix2, iy2, image.width(), image.height());
 	image.test(bind_is_pixel_on_list(list));
 }
 
@@ -101,6 +101,10 @@ TEST_CASE_TEMPLATE(
 	// - Orthant IV (dx < dy, x+, y-)
 	SUBCASE_INVOKE(cx, cy, cx + s, cy - r, "robust: octant 7");
 	SUBCASE_INVOKE(cx, cy, cx + r, cy - s, "robust: octant 8");
+
+	// - Max coordinate range
+	SUBCASE_INVOKE(-2048, -2048, 2047, 2047, "robust: max coordinate range");
+	SUBCASE_INVOKE(2047, -2048, -2048, 2047, "robust: max coordinate range, opposite");
 
 #undef SUBCASE_INVOKE
 

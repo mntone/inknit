@@ -19,20 +19,25 @@
 
 #ifdef __INTELLISENSE__
 #include "../base.h.in"
+#include "../shared/draw_line.h"
 #else
 #include "../base.h"
+#include "shared/draw_line.h"
 #endif
 
 #define abs(val) ((val) < 0 ? -(val) : (val))
 
 #ifdef INKNIT_ENABLE_BENCHMARKS
-void INTERNAL_FUNCNAME(draw_line_2loop)(
-	struct inknit_image *image, int32_t x, int32_t y, int32_t x2, int32_t y2, uint32_t color
+INKNIT_BMPREFIX
+void _inknit_draw_line_2loop32(
+	uint32_t      *data,
+	uint32_t       stride,
+	int32_t        x,
+	int32_t        y,
+	int32_t        x2,
+	int32_t        y2,
+	inknit_color_t color
 ) {
-	uint32_t *INKNIT_RESTRICT const data = (uint32_t *)image->data;
-
-	const uint32_t stride = bytes_to_pixels(image->stride);
-
 	int32_t dx = x2 - x;
 	int32_t dy = y2 - y;
 
@@ -78,13 +83,16 @@ void INTERNAL_FUNCNAME(draw_line_2loop)(
 }
 #endif
 
-void INTERNAL_FUNCNAME(draw_line_1loop)(
-	struct inknit_image *image, int32_t x1, int32_t y, int32_t x2, int32_t y2, uint32_t color
+INKNIT_BMPREFIX
+void _inknit_draw_line_1loop32(
+	uint32_t      *data,
+	uint32_t       stride,
+	int32_t        x1,
+	int32_t        y,
+	int32_t        x2,
+	int32_t        y2,
+	inknit_color_t color
 ) {
-	uint32_t *INKNIT_RESTRICT const data = (uint32_t *)image->data;
-
-	const uint32_t stride = bytes_to_pixels(image->stride);
-
 	int32_t dx = x2 - x1;
 	int32_t dy = y2 - y;
 
@@ -118,28 +126,68 @@ void INTERNAL_FUNCNAME(draw_line_1loop)(
 	}
 }
 
+void _inknit_draw_line32(
+	uint32_t      *data,
+	uint32_t       stride,
+	int32_t        x1,
+	int32_t        y1,
+	int32_t        x2,
+	int32_t        y2,
+	inknit_color_t color
+) {
+	_inknit_draw_line_1loop32(data, stride, x1, y1, x2, y2, color);
+}
+
+void _inknit_draw_line_with_clip32(
+	uint32_t *INKNIT_RESTRICT                 data,
+	uint32_t                                  stride,
+	int32_t                                   x1,
+	int32_t                                   y1,
+	int32_t                                   x2,
+	int32_t                                   y2,
+	inknit_color_t                            color,
+	const struct inknit_rect *INKNIT_RESTRICT clip_rect
+) {
+	INKNIT_ASSUME_COORD_X(x1);
+	INKNIT_ASSUME_COORD_X(x2);
+	INKNIT_ASSUME_COORD_Y(y1);
+	INKNIT_ASSUME_COORD_Y(y2);
+	INKNIT_ASSUME_COLOR(color);
+	INKNIT_ASSUME_CLIP_RECT(clip_rect);
+
+	if (x1 == x2) {
+		if (y1 > y2) {
+			_inknit_swap_int32(&y1, &y2);
+		}
+		_inknit_draw_vline_with_clip32(data, stride, x1, y1, y2, color, clip_rect);
+		return;
+	}
+
+	if (y1 == y2) {
+		if (x1 > x2) {
+			_inknit_swap_int32(&x1, &x2);
+		}
+		_inknit_draw_hline_with_clip32(data, stride, x1, x2, y1, color, clip_rect);
+		return;
+	}
+
+	if (_inknit_clip_line_to_bounds(&x1, &y1, &x2, &y2, clip_rect)) {
+		_inknit_draw_line32(data, stride, x1, y1, x2, y2, color);
+	}
+}
+
 void PUBLIC_FUNCNAME(draw_line)(
 	struct inknit_image *image, int32_t x1, int32_t y1, int32_t x2, int32_t y2, inknit_color_t color
 ) {
 	INKNIT_ASSUME_IMAGE(image);
 
-	INKNIT_ASSUME(x1 >= 0, MSG_X1_LESS_THAN_ZERO);
-	INKNIT_ASSUME(x1 >= INKNIT_X_MIN, MSG_X1_LESS_THAN_MIN_VALUE);
-	INKNIT_ASSUME(y1 >= 0, MSG_Y1_LESS_THAN_ZERO);
-	INKNIT_ASSUME(y1 >= INKNIT_Y_MIN, MSG_Y1_LESS_THAN_MIN_VALUE);
-	INKNIT_ASSUME(x1 <= x2 || y1 <= y2, "ERROR: x1 > x2 or y1 > y2");
+	const uint32_t stride = bytes_to_pixels(image->stride);
 
-	INKNIT_ASSUME(color <= POW2_BITS_PER_PIXEL_NEG1, MSG_COLOR_GREATER_THAN_MAX_VALUE);
-
-	if (x1 == x2) {
-		PUBLIC_FUNCNAME(draw_vline)(image, x1, y1, y2, color);
-		return;
-	}
-
-	if (y1 == y2) {
-		PUBLIC_FUNCNAME(draw_hline)(image, x1, x2, y1, color);
-		return;
-	}
-
-	INTERNAL_FUNCNAME(draw_line_1loop)(image, x1, y1, x2, y2, (uint32_t)color);
+	struct inknit_rect clip_rect = {
+		0,
+		0,
+		image->width - 1,
+		(int16_t)(image->height - 1),
+	};
+	_inknit_draw_line_with_clip32(image->data, stride, x1, y1, x2, y2, color, &clip_rect);
 }

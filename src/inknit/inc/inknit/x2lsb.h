@@ -53,9 +53,9 @@ void INKNIT_EXPORT PUBN(draw_hline)(
 	struct inknit_image *image, int32_t x1, int32_t x2, int32_t y, inknit_color_t color
 ) INKNIT_NONNULL(1);
 
-INKNIT_BMPROTO(INKNIT_PROTO_DRAW_LINE(INTN(draw_line_2loop)));
-INKNIT_BMPROTO(INKNIT_PROTO_DRAW_LINE(INTN(draw_line_1loop)));
-INKNIT_PROTO(INKNIT_PROTO_DRAW_LINE(PUBN(draw_line)));
+void INKNIT_EXPORT PUBN(draw_line)(
+	struct inknit_image *image, int32_t x1, int32_t y1, int32_t x2, int32_t y2, inknit_color_t color
+) INKNIT_NONNULL(1);
 
 void INKNIT_EXPORT PUBN(draw_point)(
 	struct inknit_image *image, int32_t x, int32_t y, inknit_color_t color

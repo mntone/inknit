@@ -240,11 +240,17 @@ bind_is_pixel_on_list(pixel_list const& il, color_t trueColor = colors::white) n
 }
 
 INKNIT_NODISCARD
-constexpr pixel_list
-make_bresenham_line(std::int32_t x1, std::int32_t y1, std::int32_t x2, std::int32_t y2) noexcept {
+constexpr pixel_list make_bresenham_line(
+	std::int32_t x1,
+	std::int32_t y1,
+	std::int32_t x2,
+	std::int32_t y2,
+	std::int32_t width  = INT32_MAX,
+	std::int32_t height = INT32_MAX
+) noexcept {
 	pixel_list points;
 
-	bool steep = abs(x2 - x1) < abs(y2 - y1);
+	bool const steep = abs(x2 - x1) < abs(y2 - y1);
 	if (steep) {
 		std::swap(x1, y1);
 		std::swap(x2, y2);
@@ -258,14 +264,18 @@ make_bresenham_line(std::int32_t x1, std::int32_t y1, std::int32_t x2, std::int3
 	std::int32_t const dx    = x2 - x1;
 	std::int32_t const dy    = abs(y2 - y1);
 	std::int32_t       error = dx / 2;
-	std::int32_t       ystep = y1 < y2 ? 1 : -1;
+	std::int32_t const ystep = y1 < y2 ? 1 : -1;
 	std::int32_t       y     = y1;
 
 	for (std::int32_t x = x1; x <= x2; ++x) {
 		if (steep) {
-			points.emplace_back(y, x);
+			if (0 <= y && y <= width && 0 <= x && x <= height) {
+				points.emplace_back(y, x);
+			}
 		} else {
-			points.emplace_back(x, y);
+			if (0 <= x && x <= width && 0 <= y && y <= height) {
+				points.emplace_back(x, y);
+			}
 		}
 
 		error -= dy;
