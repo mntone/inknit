@@ -19,21 +19,11 @@
 
 #pragma once
 
-#define MSG_DST_IS_NULL   "ERROR: dst is NULL"
-#define MSG_IMAGE_IS_NULL "ERROR: image is NULL"
-#define MSG_SRC_IS_NULL   "ERROR: src is NULL"
-
-#define MSG_DST_IS_INVALID_LAYOUT   "ERROR: dst is invalid pixel layout"
-#define MSG_IMAGE_IS_INVALID_LAYOUT "ERROR: image is invalid pixel layout"
-#define MSG_SRC_IS_INVALID_LAYOUT   "ERROR: src is invalid pixel layout"
-
-#define MSG_DST_IS_INVALID_FORMAT   "ERROR: dst is invalid pixel format"
-#define MSG_IMAGE_IS_INVALID_FORMAT "ERROR: image is invalid pixel format"
-#define MSG_SRC_IS_INVALID_FORMAT   "ERROR: src is invalid pixel format"
-
-#define MSG_DST_IS_INVALID_ALIGN   "ERROR: dst is invalid alignment"
-#define MSG_IMAGE_IS_INVALID_ALIGN "ERROR: image is invalid alignment"
-#define MSG_SRC_IS_INVALID_ALIGN   "ERROR: src is invalid alignment"
+#define MSG_ERROR_IMAGE        " == NULL"
+#define MSG_ERROR_IMAGE_LAYOUT "->pixel_layout != "
+#define MSG_ERROR_IMAGE_ALIGN  "->alignment < "
+#define MSG_ERROR_IMAGE_WIDTH  "->width > 2^12 - 1"
+#define MSG_ERROR_IMAGE_HEIGHT "->height > 2^12 - 1"
 
 #define MSG_CX_LESS_THAN_MIN_VALUE    "ERROR: cx < -2^12 - 1"
 #define MSG_CX_GREATER_THAN_MAX_VALUE "ERROR: cx > 2^12"

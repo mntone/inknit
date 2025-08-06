@@ -331,9 +331,7 @@ void _inknit_draw_hline_with_clip32(
 void PUBLIC_FUNCNAME(draw_hline)(
 	struct inknit_image *image, int32_t x1, int32_t x2, int32_t y, inknit_color_t color
 ) {
-	INKNIT_ASSUME(image != NULL, MSG_IMAGE_IS_NULL);
-	INKNIT_ASSUME(image->pixel_layout == TARGET_LAYOUT, MSG_IMAGE_IS_INVALID_LAYOUT);
-	INKNIT_ASSUME(image->alignment >= TARGET_ALIGNMENT, MSG_IMAGE_IS_INVALID_ALIGN);
+	INKNIT_ASSUME_IMAGE(image);
 
 	const uint32_t stride = bytes_to_pixels(image->stride);
 

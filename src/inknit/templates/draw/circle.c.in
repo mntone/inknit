@@ -146,9 +146,7 @@ void _inknit_draw_circle32(
 void PUBLIC_FUNCNAME(draw_circle)(
 	struct inknit_image *image, int32_t cx, int32_t cy, int32_t radius, inknit_color_t color
 ) {
-	INKNIT_ASSUME(image != NULL, MSG_IMAGE_IS_NULL);
-	INKNIT_ASSUME(image->pixel_layout == TARGET_LAYOUT, MSG_IMAGE_IS_INVALID_LAYOUT);
-	INKNIT_ASSUME(image->alignment >= INKNIT_ALIGN32, MSG_IMAGE_IS_INVALID_ALIGN);
+	INKNIT_ASSUME_IMAGE(image);
 
 	uint32_t *const data = (uint32_t *)image->data;
 

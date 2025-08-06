@@ -131,12 +131,14 @@
 
 
 // -- MARK: internal constants
-#define INKNIT_CIRCLE_MAX  8191   // 2^13-1
-#define INKNIT_ELLIPSE_MAX 1023   // 2^10-1
-#define INKNIT_X_MIN       -4096  // -2^12-1
-#define INKNIT_X_MAX       4095   // 2^12
-#define INKNIT_Y_MIN       -4096  // -2^12-1
-#define INKNIT_Y_MAX       4095   // 2^12
+#define INKNIT_CIRCLE_MAX  8191   // 2^13 - 1
+#define INKNIT_ELLIPSE_MAX 1023   // 2^10 - 1
+#define INKNIT_X_MIN       -4096  // -2^12
+#define INKNIT_X_MAX       4095   // 2^12 - 1
+#define INKNIT_Y_MIN       -4096  // -2^12
+#define INKNIT_Y_MAX       4095   // 2^12 - 1
+#define INKNIT_WIDTH_MAX   4095   // 2^12 - 1
+#define INKNIT_HEIGHT_MAX  4095   // 2^12 - 1
 
 
 // -- MARK: assume macros
@@ -153,6 +155,19 @@
 		INKNIT_ASSUME((min) <= (max), msg_order);                                                 \
 		INKNIT_ASSUME((max) <= max_limit, msg_high);                                              \
 	} while (0)
+
+#define _INKNIT_ASSUME_IMAGE_BASE(image, _layout, _align, _width, _height)                       \
+	do {                                                                                         \
+		INKNIT_ASSUME((image) != NULL, #image MSG_ERROR_IMAGE);                                  \
+		INKNIT_ASSUME((image)->pixel_layout == _layout, #image MSG_ERROR_IMAGE_LAYOUT #_layout); \
+		INKNIT_ASSUME((image)->alignment >= _align, #image MSG_ERROR_IMAGE_ALIGN #_align);       \
+		INKNIT_ASSUME((image)->width <= _width, #image MSG_ERROR_IMAGE_WIDTH);                   \
+		INKNIT_ASSUME((image)->height <= _height, #image MSG_ERROR_IMAGE_HEIGHT);                \
+	} while (0)
+#define INKNIT_ASSUME_IMAGE(image)                                                  \
+	_INKNIT_ASSUME_IMAGE_BASE(                                                      \
+		image, TARGET_LAYOUT, TARGET_ALIGNMENT, INKNIT_WIDTH_MAX, INKNIT_HEIGHT_MAX \
+	)
 
 #define INKNIT_ASSUME_COORD_X(var_x)                                                               \
 	INKNIT_ASSUME_RANGE(                                                                           \

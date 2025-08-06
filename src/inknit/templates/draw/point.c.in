@@ -67,9 +67,7 @@ void _inknit_draw_point_with_clip32(
 void PUBLIC_FUNCNAME(draw_point)(
 	struct inknit_image *image, int32_t x, int32_t y, inknit_color_t color
 ) {
-	INKNIT_ASSUME(image != NULL, MSG_IMAGE_IS_NULL);
-	INKNIT_ASSUME(image->pixel_layout == TARGET_LAYOUT, MSG_IMAGE_IS_INVALID_LAYOUT);
-	INKNIT_ASSUME(image->alignment >= INKNIT_ALIGN32, MSG_IMAGE_IS_INVALID_ALIGN);
+	INKNIT_ASSUME_IMAGE(image);
 
 	const uint32_t stride = bytes_to_pixels(image->stride);
 

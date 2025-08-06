@@ -115,9 +115,7 @@ void INTERNAL_FUNCNAME(draw_line_1loop)(
 void PUBLIC_FUNCNAME(draw_line)(
 	struct inknit_image *image, int32_t x1, int32_t y1, int32_t x2, int32_t y2, inknit_color_t color
 ) {
-	INKNIT_ASSUME(image != NULL, MSG_IMAGE_IS_NULL);
-	INKNIT_ASSUME(image->pixel_layout == TARGET_LAYOUT, MSG_IMAGE_IS_INVALID_LAYOUT);
-	INKNIT_ASSUME(image->alignment >= INKNIT_ALIGN32, MSG_IMAGE_IS_INVALID_ALIGN);
+	INKNIT_ASSUME_IMAGE(image);
 
 	INKNIT_ASSUME(x1 >= 0, MSG_X1_LESS_THAN_ZERO);
 	INKNIT_ASSUME(x1 >= INKNIT_X_MIN, MSG_X1_LESS_THAN_MIN_VALUE);

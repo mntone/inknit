@@ -26,10 +26,8 @@
 #endif
 
 void PUBLIC_FUNCNAME(clear)(struct inknit_image *image, inknit_color_t color) {
-	INKNIT_ASSUME(image != NULL, MSG_IMAGE_IS_NULL);
-	INKNIT_ASSUME(image->pixel_layout == TARGET_LAYOUT, MSG_IMAGE_IS_INVALID_LAYOUT);
-	INKNIT_ASSUME(image->alignment >= TARGET_ALIGNMENT, MSG_IMAGE_IS_INVALID_ALIGN);
-	INKNIT_ASSUME(color <= POW2_BITS_PER_PIXEL_NEG1, MSG_COLOR_GREATER_THAN_MAX_VALUE);
+	INKNIT_ASSUME_IMAGE(image);
+	INKNIT_ASSUME_COLOR(color);
 
 #ifdef INKNIT_USE_MEMORY_H
 	const inknit_color_t pattern = INTERNAL_FUNCNAME(fillByteWithColor)(color);

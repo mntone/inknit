@@ -24,15 +24,9 @@
 #endif
 
 inknit_color_t PUBLIC_FUNCNAME(get_pixel)(const struct inknit_image *image, int32_t x, int32_t y) {
-	INKNIT_ASSUME(image != NULL, MSG_IMAGE_IS_NULL);
-	INKNIT_ASSUME(image->pixel_layout == TARGET_LAYOUT, MSG_IMAGE_IS_INVALID_LAYOUT);
-	INKNIT_ASSUME(image->alignment >= TARGET_ALIGNMENT, MSG_IMAGE_IS_INVALID_ALIGN);
-
-	INKNIT_ASSUME(x >= 0, MSG_X_LESS_THAN_ZERO);
-	INKNIT_ASSUME(x <= INKNIT_X_MAX, MSG_X_GREATER_THAN_MAX_VALUE);
-
-	INKNIT_ASSUME(y >= 0, MSG_Y_LESS_THAN_ZERO);
-	INKNIT_ASSUME(y <= INKNIT_Y_MAX, MSG_Y_GREATER_THAN_MAX_VALUE);
+	INKNIT_ASSUME_IMAGE(image);
+	INKNIT_ASSUME_COORD_X(x);
+	INKNIT_ASSUME_COORD_X(y);
 
 	const int32_t        stride = (int32_t)bytes_to_pixels(image->stride);
 	const inknit_color_t color  = _inknit_get_pixel32(image->data, stride, x, y);
