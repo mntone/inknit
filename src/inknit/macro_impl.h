@@ -107,6 +107,14 @@
 	} while (0)
 #endif
 
+#if defined(__GNUC__) || defined(__clang__)
+#define INKNIT_LIKELY(x)   __builtin_expect(!!(x), 1)
+#define INKNIT_UNLIKELY(x) __builtin_expect(!!(x), 0)
+#else
+#define INKNIT_LIKELY(x)   (x)
+#define INKNIT_UNLIKELY(x) (x)
+#endif
+
 #define INKNIT_STRINGIFY(str) #str
 #define INKNIT_TOSTRING(x)    INKNIT_STRINGIFY(x)
 

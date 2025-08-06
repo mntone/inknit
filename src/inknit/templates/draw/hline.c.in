@@ -298,7 +298,7 @@ void _inknit_draw_hline_with_clip32(
 	INKNIT_ASSUME_COLOR(color);
 	INKNIT_ASSUME_CLIP_RECT(clip_rect);
 
-	if (x1 == x2) {
+	if (INKNIT_UNLIKELY(x1 == x2)) {
 		_inknit_draw_point_with_clip32(data, stride, x1, y, color, clip_rect);
 		return;
 	}
@@ -340,7 +340,7 @@ void PUBLIC_FUNCNAME(draw_hline)(
 		(int16_t)(image->height - 1),
 	};
 
-	if (x1 > x2) {
+	if (INKNIT_UNLIKELY(x1 > x2)) {
 		_inknit_swap_int32(&x1, &x2);
 	}
 

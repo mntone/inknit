@@ -172,7 +172,7 @@ void _inknit_draw_vline_with_clip32(
 	INKNIT_ASSUME_COLOR(color);
 	INKNIT_ASSUME_CLIP_RECT(clip_rect);
 
-	if (y1 == y2) {
+	if (INKNIT_UNLIKELY(y1 == y2)) {
 		_inknit_draw_point_with_clip32(data, stride, x, y1, color, clip_rect);
 		return;
 	}
@@ -214,7 +214,7 @@ void PUBLIC_FUNCNAME(draw_vline)(
 		(int16_t)(image->height - 1),
 	};
 
-	if (y1 > y2) {
+	if (INKNIT_UNLIKELY(y1 > y2)) {
 		_inknit_swap_int32(&y1, &y2);
 	}
 

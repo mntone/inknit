@@ -155,7 +155,7 @@ void _inknit_draw_line_with_clip32(
 	INKNIT_ASSUME_COLOR(color);
 	INKNIT_ASSUME_CLIP_RECT(clip_rect);
 
-	if (x1 == x2) {
+	if (INKNIT_UNLIKELY(x1 == x2)) {
 		if (y1 > y2) {
 			_inknit_swap_int32(&y1, &y2);
 		}
@@ -163,7 +163,7 @@ void _inknit_draw_line_with_clip32(
 		return;
 	}
 
-	if (y1 == y2) {
+	if (INKNIT_UNLIKELY(y1 == y2)) {
 		if (x1 > x2) {
 			_inknit_swap_int32(&x1, &x2);
 		}
