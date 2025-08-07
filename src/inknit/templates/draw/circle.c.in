@@ -35,7 +35,7 @@ static inline void _inknit_draw_circle_points32(
 	const struct inknit_rect *INKNIT_RESTRICT clip_rect
 ) {
 	const int32_t y1a = cy - dy;
-	if (clip_rect->top <= y1a && y1a <= clip_rect->top) {
+	if (clip_rect->top <= y1a && y1a <= clip_rect->bottom) {
 		const int32_t x1 = cx - dx;
 		if (clip_rect->left <= x1 && x1 <= clip_rect->right) {
 			_inknit_draw_point32(data, stride, (uint32_t)x1, (uint32_t)y1a, color);

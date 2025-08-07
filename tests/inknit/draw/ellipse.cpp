@@ -29,13 +29,13 @@ void subtest_draw_ellipse(
 	std::int32_t cy,
 	std::int32_t rx,
 	std::int32_t ry,
-	color_t      color     = colors::white,
-	bool         skip_test = false
+	bool         skip_test = false,
+	color_t      color     = colors::white
 ) noexcept {
 	image.clear(colors::black);
 	image.draw_ellipse({cx, cy}, {rx, ry}, color);
 
-	if (skip_test) {
+	if (!skip_test) {
 		pixel_list const& list = make_midpoint_ellipse(cx, cy, rx, ry);
 		image.test(bind_is_pixel_on_list(list));
 	}

@@ -28,13 +28,13 @@ void subtest_draw_circle(
 	std::int32_t cx,
 	std::int32_t cy,
 	std::int32_t radius,
-	color_t      color     = colors::white,
-	bool         skip_test = false
+	bool         skip_test = false,
+	color_t      color     = colors::white
 ) noexcept {
 	image.clear(colors::black);
 	image.draw_circle({cx, cy}, radius, color);
 
-	if (skip_test) {
+	if (!skip_test) {
 		pixel_list const& list = make_midpoint_circle(cx, cy, radius);
 		image.test(bind_is_pixel_on_list(list));
 	}
