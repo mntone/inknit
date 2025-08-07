@@ -25,6 +25,8 @@
 const struct inknit_exports x1 = {
 	.blit            = INKNIT_X1_NAME(blit),
 	.clear           = INKNIT_X1_NAME(clear),
+	.fill_rect       = INKNIT_X1_NAME(fill_rect),
+	.fill_rect_coord = INKNIT_X1_NAME(fill_rect_coord),
 	.draw_circle     = INKNIT_X1_NAME(draw_circle),
 	.draw_ellipse    = INKNIT_X1_NAME(draw_ellipse),
 	.draw_point      = INKNIT_X1_NAME(draw_point),

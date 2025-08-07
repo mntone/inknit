@@ -2,6 +2,8 @@ enable_language(CXX)
 include(FindDoctest)
 
 add_executable(${PROJECT_NAME}_tests
+	fill/rect.cpp
+	fill/rect_coord.cpp
 	draw/circle.cpp
 	draw/ellipse.cpp
 	draw/hline.cpp

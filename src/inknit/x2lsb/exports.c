@@ -25,6 +25,8 @@
 const struct inknit_exports x2lsb = {
 	.blit            = INKNIT_X2LSB_NAME(blit),
 	.clear           = INKNIT_X2LSB_NAME(clear),
+	.fill_rect       = INKNIT_X2LSB_NAME(fill_rect),
+	.fill_rect_coord = INKNIT_X2LSB_NAME(fill_rect_coord),
 	.draw_circle     = INKNIT_X2LSB_NAME(draw_circle),
 	.draw_ellipse    = INKNIT_X2LSB_NAME(draw_ellipse),
 	.draw_point      = INKNIT_X2LSB_NAME(draw_point),

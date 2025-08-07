@@ -1,0 +1,127 @@
+/*
+ * inknit <https://github.com/mntone/inknit>
+ *
+ * Copyright (C) 2025 mntone <901816+mntone@users.noreply.github.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+#ifdef __INTELLISENSE__
+#include "../base.h.in"
+#else
+#include "../base.h"
+#endif
+
+void _inknit_fill_rect_with_clip32(
+	uint32_t *INKNIT_RESTRICT                 data,
+	uint32_t                                  stride,
+	int32_t                                   x1,
+	int32_t                                   y1,
+	int32_t                                   x2,
+	int32_t                                   y2,
+	inknit_color_t                            color,
+	const struct inknit_rect *INKNIT_RESTRICT clip_rect
+) {
+	INKNIT_ASSUME_COORD_X_RANGE(x1, x2);
+	INKNIT_ASSUME_COORD_Y_RANGE(y1, y2);
+	INKNIT_ASSUME_COLOR(color);
+	INKNIT_ASSUME_CLIP_RECT(clip_rect);
+
+	if (y2 < clip_rect->top || clip_rect->bottom < y1) {
+		return;
+	}
+	if (y1 < clip_rect->top) {
+		y1 = clip_rect->top;
+	}
+	if (y2 > clip_rect->bottom) {
+		y2 = clip_rect->bottom;
+	}
+
+	if (x2 < clip_rect->left || clip_rect->right < x1) {
+		return;
+	}
+	if (x1 < clip_rect->left) {
+		x1 = clip_rect->left;
+	}
+	if (x2 > clip_rect->right) {
+		x2 = clip_rect->right;
+	}
+
+	// Eliminate the case where x1 > x2 or y1 > y2 due to clipping
+	if (INKNIT_UNLIKELY(x1 > x2 || y1 > y2)) {
+		return;
+	}
+
+	// Vertical line
+	if (INKNIT_UNLIKELY(x1 == x2)) {
+		if (clip_rect->left <= x1 && x1 <= clip_rect->right) {
+			_inknit_draw_vline32(data, stride, (uint32_t)x1, (uint32_t)y1, (uint32_t)y2, color);
+		}
+	}
+
+	// Normal filled rect
+	else {
+		for (uint32_t t = (uint32_t)y1; t <= (uint32_t)y2; ++t) {
+			_inknit_draw_hline32(data, stride, (uint32_t)x1, (uint32_t)x2, t, color);
+		}
+	}
+}
+
+void PUBLIC_FUNCNAME(fill_rect)(
+	struct inknit_image *image,
+	int32_t              x,
+	int32_t              y,
+	int32_t              width,
+	int32_t              height,
+	inknit_color_t       color
+) {
+	INKNIT_ASSUME_IMAGE(image);
+	INKNIT_ASSUME_COORD_X(x);
+	INKNIT_ASSUME_COORD_Y(y);
+	INKNIT_ASSUME_SIZE(width, height);
+	INKNIT_ASSUME_COLOR(color);
+
+	const uint32_t stride = bytes_to_pixels(image->stride);
+
+	struct inknit_rect clip_rect = {
+		0,
+		0,
+		image->width - 1,
+		(int16_t)(image->height - 1),
+	};
+
+	const int32_t right  = x + width - 1;
+	const int32_t bottom = y + height - 1;
+	_inknit_fill_rect_with_clip32(image->data, stride, x, y, right, bottom, color, &clip_rect);
+}
+
+void PUBLIC_FUNCNAME(fill_rect_coord)(
+	struct inknit_image *image, int32_t x1, int32_t y1, int32_t x2, int32_t y2, inknit_color_t color
+) {
+	INKNIT_ASSUME_IMAGE(image);
+	INKNIT_ASSUME_COORD_X_RANGE(x1, x2);
+	INKNIT_ASSUME_COORD_Y_RANGE(y1, y2);
+	INKNIT_ASSUME_COLOR(color);
+
+	const uint32_t stride = bytes_to_pixels(image->stride);
+
+	struct inknit_rect clip_rect = {
+		0,
+		0,
+		image->width - 1,
+		(int16_t)(image->height - 1),
+	};
+
+	_inknit_fill_rect_with_clip32(image->data, stride, x1, y1, x2, y2, color, &clip_rect);
+}

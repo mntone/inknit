@@ -40,6 +40,21 @@ inknit_color_t INKNIT_EXPORT
 void INKNIT_EXPORT PUBN(clear)(struct inknit_image *image, inknit_color_t color) INKNIT_NONNULL(1);
 
 
+// -- MARK: fill
+void INKNIT_EXPORT PUBN(fill_rect)(
+	struct inknit_image *image,
+	int32_t              x,
+	int32_t              y,
+	int32_t              width,
+	int32_t              height,
+	inknit_color_t       color
+) INKNIT_NONNULL(1);
+
+void INKNIT_EXPORT PUBN(fill_rect_coord)(
+	struct inknit_image *image, int32_t x1, int32_t y1, int32_t x2, int32_t y2, inknit_color_t color
+) INKNIT_NONNULL(1);
+
+
 // -- MARK: draw
 void INKNIT_EXPORT PUBN(draw_circle)(
 	struct inknit_image *image, int32_t cx, int32_t cy, int32_t radius, inknit_color_t color

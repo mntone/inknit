@@ -164,6 +164,20 @@ void INKNIT_EXPORT _inknit_draw_ellipse32(
 ) INKNIT_NONNULL(1);
 
 
+// -- MARK: fill_rect
+#define _inknit_fill_rect_with_clip32 INKNIT_CURRENT_INTERNAL_FUNC(fill_rect_with_clip)
+void INKNIT_EXPORT _inknit_fill_rect_with_clip32(
+	uint32_t *INKNIT_RESTRICT                 data,
+	uint32_t                                  stride,
+	int32_t                                   x1,
+	int32_t                                   y1,
+	int32_t                                   x2,
+	int32_t                                   y2,
+	inknit_color_t                            color,
+	const struct inknit_rect *INKNIT_RESTRICT clip_rect
+) INKNIT_NONNULL(1);
+
+
 // -- MARK: clean up macros
 #ifndef INKNIT_USE_MACRO_NAME
 #undef _inknit_draw_point_with_clip32
