@@ -267,6 +267,16 @@ struct test_image
 		}
 	}
 
+	constexpr rect_t rect() const noexcept {
+		rect_t rect {
+			0,
+			0,
+			this->width_ - 1,
+			this->height_ - 1,
+		};
+		return rect;
+	}
+
 	template<class Function>
 		requires details::color_invocable<Function, std::int32_t, std::int32_t>
 	void test(Function fn) const noexcept {
@@ -326,11 +336,21 @@ struct fixed_test_image
 		}
 	}
 
+	constexpr rect_t rect() const noexcept {
+		rect_t rect {
+			0,
+			0,
+			WIDTH - 1,
+			HEIGHT - 1,
+		};
+		return rect;
+	}
+
 	template<class Function>
-		requires details::color_invocable<Function, uint_t, uint_t>
+		requires details::color_invocable<Function, std::int32_t, std::int32_t>
 	void test(Function fn) const noexcept {
-		for (uint_t y = 0; y < HEIGHT; ++y) {
-			for (uint_t x = 0; x < WIDTH; ++x) {
+		for (std::int32_t y = 0; y < HEIGHT; ++y) {
+			for (std::int32_t x = 0; x < WIDTH; ++x) {
 				color_t actual   = this->at(x, y);
 				color_t expected = fn(x, y);
 				if (actual != expected) {

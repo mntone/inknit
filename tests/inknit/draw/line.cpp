@@ -34,7 +34,7 @@ void subtest_draw_line(
 	image.clear(colors::black);
 	image.draw_line({ix1, iy1}, {ix2, iy2}, color);
 
-	auto const list = make_bresenham_line(ix1, iy1, ix2, iy2, image.width(), image.height());
+	pixel_list const& list = make_bresenham_line(ix1, iy1, ix2, iy2, image.rect());
 	image.test(bind_is_pixel_on_list(list));
 }
 

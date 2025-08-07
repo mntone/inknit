@@ -35,7 +35,7 @@ void subtest_draw_circle(
 	image.draw_circle({cx, cy}, radius, color);
 
 	if (!skip_test) {
-		pixel_list const& list = make_midpoint_circle(cx, cy, radius);
+		pixel_list const& list = make_midpoint_circle(cx, cy, radius, image.rect());
 		image.test(bind_is_pixel_on_list(list));
 	}
 }

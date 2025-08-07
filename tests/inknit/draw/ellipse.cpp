@@ -36,7 +36,7 @@ void subtest_draw_ellipse(
 	image.draw_ellipse({cx, cy}, {rx, ry}, color);
 
 	if (!skip_test) {
-		pixel_list const& list = make_midpoint_ellipse(cx, cy, rx, ry);
+		pixel_list const& list = make_midpoint_ellipse(cx, cy, rx, ry, image.rect());
 		image.test(bind_is_pixel_on_list(list));
 	}
 }

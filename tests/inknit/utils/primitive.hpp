@@ -26,6 +26,20 @@
 
 namespace inknit::tests {
 
+struct rect_t {
+	std::int32_t left;
+	std::int32_t top;
+	std::int32_t right;
+	std::int32_t bottom;
+};
+
+constexpr rect_t DEFAULT_CLIP_RECT = {
+	0,
+	0,
+	INT32_MAX,
+	INT32_MAX,
+};
+
 using pixel_list = std::vector<point_t>;
 
 // indexed color for test
@@ -239,14 +253,28 @@ bind_is_pixel_on_list(pixel_list const& il, color_t trueColor = colors::white) n
 	);
 }
 
+namespace details {
+
+	constexpr void add_point(
+		pixel_list& points, std::int32_t x, std::int32_t y, rect_t const& clip_rect
+	) noexcept {
+		if (clip_rect.top <= y
+			&& y <= clip_rect.bottom
+			&& clip_rect.left <= x
+			&& x <= clip_rect.right) {
+			points.emplace_back(x, y);
+		}
+	}
+
+}  // namespace details
+
 INKNIT_NODISCARD
 constexpr pixel_list make_bresenham_line(
 	std::int32_t x1,
 	std::int32_t y1,
 	std::int32_t x2,
 	std::int32_t y2,
-	std::int32_t width  = INT32_MAX,
-	std::int32_t height = INT32_MAX
+	rect_t       clip_rect = DEFAULT_CLIP_RECT
 ) noexcept {
 	pixel_list points;
 
@@ -269,13 +297,9 @@ constexpr pixel_list make_bresenham_line(
 
 	for (std::int32_t x = x1; x <= x2; ++x) {
 		if (steep) {
-			if (0 <= y && y <= width && 0 <= x && x <= height) {
-				points.emplace_back(y, x);
-			}
+			details::add_point(points, y, x, clip_rect);
 		} else {
-			if (0 <= x && x <= width && 0 <= y && y <= height) {
-				points.emplace_back(x, y);
-			}
+			details::add_point(points, x, y, clip_rect);
 		}
 
 		error -= dy;
@@ -291,22 +315,28 @@ constexpr pixel_list make_bresenham_line(
 namespace details {
 
 	constexpr void add_circle_points(
-		pixel_list& points, std::int32_t cx, std::int32_t cy, std::int32_t dx, std::int32_t dy
+		pixel_list&   points,
+		std::int32_t  cx,
+		std::int32_t  cy,
+		std::int32_t  dx,
+		std::int32_t  dy,
+		rect_t const& clip_rect
 	) noexcept {
-		points.emplace_back(cx + dx, cy + dy);
-		points.emplace_back(cx - dx, cy + dy);
-		points.emplace_back(cx + dx, cy - dy);
-		points.emplace_back(cx - dx, cy - dy);
-		points.emplace_back(cx + dy, cy + dx);
-		points.emplace_back(cx - dy, cy + dx);
-		points.emplace_back(cx + dy, cy - dx);
-		points.emplace_back(cx - dy, cy - dx);
+		add_point(points, cx + dx, cy + dy, clip_rect);
+		add_point(points, cx - dx, cy + dy, clip_rect);
+		add_point(points, cx + dx, cy - dy, clip_rect);
+		add_point(points, cx - dx, cy - dy, clip_rect);
+		add_point(points, cx + dy, cy + dx, clip_rect);
+		add_point(points, cx - dy, cy + dx, clip_rect);
+		add_point(points, cx + dy, cy - dx, clip_rect);
+		add_point(points, cx - dy, cy - dx, clip_rect);
 	}
 
 }  // namespace details
 
-INKNIT_NODISCARD constexpr pixel_list
-make_midpoint_circle(std::int32_t cx, std::int32_t cy, std::int32_t radius) noexcept {
+INKNIT_NODISCARD constexpr pixel_list make_midpoint_circle(
+	std::int32_t cx, std::int32_t cy, std::int32_t radius, rect_t clip_rect = DEFAULT_CLIP_RECT
+) noexcept {
 	pixel_list points;
 	if (radius < 0) {
 		return points;
@@ -321,7 +351,7 @@ make_midpoint_circle(std::int32_t cx, std::int32_t cy, std::int32_t radius) noex
 	std::int32_t d  = 1 - radius;
 
 	do {
-		details::add_circle_points(points, cx, cy, dx, dy);
+		details::add_circle_points(points, cx, cy, dx, dy, clip_rect);
 
 		++dx;
 		if (d < 0) {
@@ -337,18 +367,28 @@ make_midpoint_circle(std::int32_t cx, std::int32_t cy, std::int32_t radius) noex
 namespace details {
 
 	constexpr void add_ellipse_points(
-		pixel_list& points, std::int32_t cx, std::int32_t cy, std::int32_t dx, std::int32_t dy
+		pixel_list&   points,
+		std::int32_t  cx,
+		std::int32_t  cy,
+		std::int32_t  dx,
+		std::int32_t  dy,
+		rect_t const& clip_rect
 	) noexcept {
-		points.emplace_back(cx + dx, cy + dy);
-		points.emplace_back(cx - dx, cy + dy);
-		points.emplace_back(cx + dx, cy - dy);
-		points.emplace_back(cx - dx, cy - dy);
+		add_point(points, cx + dx, cy + dy, clip_rect);
+		add_point(points, cx - dx, cy + dy, clip_rect);
+		add_point(points, cx + dx, cy - dy, clip_rect);
+		add_point(points, cx - dx, cy - dy, clip_rect);
 	}
 
 }  // namespace details
 
-INKNIT_NODISCARD constexpr pixel_list
-make_midpoint_ellipse(std::int32_t cx, std::int32_t cy, std::int32_t rx, std::int32_t ry) noexcept {
+INKNIT_NODISCARD constexpr pixel_list make_midpoint_ellipse(
+	std::int32_t cx,
+	std::int32_t cy,
+	std::int32_t rx,
+	std::int32_t ry,
+	rect_t       clip_rect = DEFAULT_CLIP_RECT
+) noexcept {
 	pixel_list points;
 	if (rx < 0 || ry < 0) {
 		return points;
@@ -359,14 +399,18 @@ make_midpoint_ellipse(std::int32_t cx, std::int32_t cy, std::int32_t rx, std::in
 		return points;
 	}
 	if (rx == 0) {
-		for (std::int32_t y = -ry; y <= ry; ++y) {
-			points.emplace_back(cx, cy + y);
+		std::int32_t const y1 = std::max(clip_rect.top, cy - ry);
+		std::int32_t const y2 = std::min(clip_rect.bottom, cy + ry);
+		for (std::int32_t y = y1; y <= y2; ++y) {
+			points.emplace_back(cx, y);
 		}
 		return points;
 	}
 	if (ry == 0) {
-		for (std::int32_t x = -rx; x <= rx; ++x) {
-			points.emplace_back(cx + x, cy);
+		std::int32_t const x1 = std::max(clip_rect.left, cx - rx);
+		std::int32_t const x2 = std::min(clip_rect.right, cx + rx);
+		for (std::int32_t x = x1; x <= x2; ++x) {
+			points.emplace_back(x, cy);
 		}
 		return points;
 	}
@@ -386,7 +430,7 @@ make_midpoint_ellipse(std::int32_t cx, std::int32_t cy, std::int32_t rx, std::in
 	// Region 1
 	p = ry_sq - rx_sq * ry + (rx_sq >> 2);
 	while (px < py) {
-		details::add_ellipse_points(points, cx, cy, dx, dy);
+		details::add_ellipse_points(points, cx, cy, dx, dy, clip_rect);
 
 		++dx;
 		px += double_ry_sq;
@@ -402,7 +446,7 @@ make_midpoint_ellipse(std::int32_t cx, std::int32_t cy, std::int32_t rx, std::in
 	// Region 2
 	p = ry_sq * (dx * dx + dx) + rx_sq * (dy * dy - dy) - rx_sq * ry_sq;
 	while (dy >= 0) {
-		details::add_ellipse_points(points, cx, cy, dx, dy);
+		details::add_ellipse_points(points, cx, cy, dx, dy, clip_rect);
 
 		--dy;
 		py -= double_rx_sq;
