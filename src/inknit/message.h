@@ -52,6 +52,11 @@
 #define MSG_SX_GREATER_THAN_MAX_VALUE "ERROR: sx > 2^11 - 1"
 #define MSG_SY_GREATER_THAN_MAX_VALUE "ERROR: sy > 2^11 - 1"
 
+#define MSG_WIDTH_LESS_THAN_ZERO          "ERROR: width < 0"
+#define MSG_WIDTH_GREATER_THAN_MAX_VALUE  "ERROR: width > 2^11 - 1"
+#define MSG_HEIGHT_LESS_THAN_ZERO         "ERROR: height < 0"
+#define MSG_HEIGHT_GREATER_THAN_MAX_VALUE "ERROR: height > 2^11 - 1"
+
 #define MSG_X_LESS_THAN_MIN_VALUE     "ERROR: x < -2^11"
 #define MSG_X_LESS_THAN_ZERO          "ERROR: x < 0"
 #define MSG_X_GREATER_THAN_MAX_VALUE  "ERROR: x > 2^11 - 1"

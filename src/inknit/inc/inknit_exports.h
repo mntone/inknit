@@ -92,19 +92,19 @@ struct inknit_exports {
 
 	void (*const draw_rect)(
 		struct inknit_image *image,
-		inknit_uint_t        x,
-		inknit_uint_t        y,
-		inknit_uint_t        width,
-		inknit_uint_t        height,
+		int32_t              x,
+		int32_t              y,
+		int32_t              width,
+		int32_t              height,
 		inknit_color_t       color
 	) INKNIT_NONNULL(1);
 
-	void (*const draw_rectp)(
+	void (*const draw_rect_coord)(
 		struct inknit_image *image,
-		inknit_uint_t        x1,
-		inknit_uint_t        y1,
-		inknit_uint_t        x2,
-		inknit_uint_t        y2,
+		int32_t              x1,
+		int32_t              y1,
+		int32_t              x2,
+		int32_t              y2,
 		inknit_color_t       color
 	) INKNIT_NONNULL(1);
 

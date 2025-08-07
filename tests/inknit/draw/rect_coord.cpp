@@ -23,11 +23,11 @@ namespace inknit::tests::shared {
 
 template<typename Image>
 	requires std::convertible_to<Image, inknit::details::image_primitive>
-void subtest_draw_rectp(
+void subtest_draw_rect_coord(
 	Image& image, point_t pt1, point_t pt2, color_t color = colors::white
 ) noexcept {
 	image.clear(colors::black);
-	image.draw_rectp(pt1, pt2, color);
+	image.draw_rect_coord(pt1, pt2, color);
 	image.test(bind_is_pixel_on_rect_edge_with_point(pt1, pt2));
 }
 
@@ -37,7 +37,7 @@ using namespace inknit;
 using namespace inknit::tests;
 
 TEST_CASE_TEMPLATE(
-	"draw_rectp",
+	"draw_rect_coord",
 	Image,
 	test_image<pixel_layout::x1, pixel_format::grayscale>,
 	test_image<pixel_layout::x1lsb, pixel_format::grayscale>,
@@ -49,11 +49,11 @@ TEST_CASE_TEMPLATE(
 	Image image;
 	image.reset(4 * image.ppw, 4 * image.ppw);
 
-#define SUBCASE_INVOKE(_IX, _IY, _IW, _IH, _MSG)                       \
-	do {                                                               \
-		SUBCASE(_MSG) {                                                \
-			shared::subtest_draw_rectp(image, {_IX, _IY}, {_IW, _IH}); \
-		}                                                              \
+#define SUBCASE_INVOKE(_IX, _IY, _IW, _IH, _MSG)                            \
+	do {                                                                    \
+		SUBCASE(_MSG) {                                                     \
+			shared::subtest_draw_rect_coord(image, {_IX, _IY}, {_IW, _IH}); \
+		}                                                                   \
 	} while (false)
 
 	// 1. basic
@@ -77,11 +77,11 @@ TEST_CASE_TEMPLATE(
 
 	SUBCASE("single-column") {
 		image.reset(1, 8);
-		shared::subtest_draw_rectp(image, {0, 1}, {0, 3});
+		shared::subtest_draw_rect_coord(image, {0, 1}, {0, 3});
 	}
 
 	SUBCASE("single-row") {
 		image.reset(8, 1);
-		shared::subtest_draw_rectp(image, {3, 0}, {5, 0});
+		shared::subtest_draw_rect_coord(image, {3, 0}, {5, 0});
 	}
 }

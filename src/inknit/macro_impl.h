@@ -253,5 +253,19 @@
 	INKNIT_ASSUME_CLIP_X_RANGE((var_rect)->left, (var_rect)->right); \
 	INKNIT_ASSUME_CLIP_Y_RANGE((var_rect)->top, (var_rect)->bottom)
 
+#define INKNIT_ASSUME_WIDTH(var_width)                                                         \
+	INKNIT_ASSUME_RANGE(                                                                       \
+		var_width, 0, INKNIT_X_MAX, MSG_WIDTH_LESS_THAN_ZERO, MSG_WIDTH_GREATER_THAN_MAX_VALUE \
+	)
+#define INKNIT_ASSUME_HEIGHT(var_height)                                                          \
+	INKNIT_ASSUME_RANGE(                                                                          \
+		var_height, 0, INKNIT_Y_MAX, MSG_HEIGHT_LESS_THAN_ZERO, MSG_HEIGHT_GREATER_THAN_MAX_VALUE \
+	)
+#define INKNIT_ASSUME_SIZE(var_width, var_height) \
+	do {                                          \
+		INKNIT_ASSUME_WIDTH(var_width);           \
+		INKNIT_ASSUME_HEIGHT(var_height);         \
+	} while (0)
+
 #define INKNIT_ASSUME_COLOR(var_color)                                                       \
 	INKNIT_ASSUME((var_color) <= POW2_BITS_PER_PIXEL_NEG1, MSG_COLOR_GREATER_THAN_MAX_VALUE)

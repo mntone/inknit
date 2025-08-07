@@ -25,67 +25,73 @@
 
 void PUBLIC_FUNCNAME(draw_rect)(
 	struct inknit_image *image,
-	inknit_uint_t        x,
-	inknit_uint_t        y,
-	inknit_uint_t        width,
-	inknit_uint_t        height,
+	int32_t              x,
+	int32_t              y,
+	int32_t              width,
+	int32_t              height,
 	inknit_color_t       color
 ) {
 	INKNIT_ASSUME_IMAGE(image);
+	INKNIT_ASSUME_COORD_X(x);
+	INKNIT_ASSUME_COORD_Y(y);
+	INKNIT_ASSUME_SIZE(width, height);
+	INKNIT_ASSUME_COLOR(color);
 
-	INKNIT_ASSUME(x <= INKNIT_X_MAX, MSG_X_GREATER_THAN_MAX_VALUE);
-	INKNIT_ASSUME(y <= INKNIT_Y_MAX, MSG_Y_GREATER_THAN_MAX_VALUE);
+	uint32_t *INKNIT_RESTRICT data = image->data;
 
-	INKNIT_ASSUME(color <= POW2_BITS_PER_PIXEL_NEG1, MSG_COLOR_GREATER_THAN_MAX_VALUE);
+	const uint32_t stride = bytes_to_pixels(image->stride);
 
-	const int32_t right = (int32_t)(x + width - 1);
-	PUBLIC_FUNCNAME(draw_hline)(image, (int32_t)x, right, (int32_t)y, color);
+	struct inknit_rect clip_rect = {
+		0,
+		0,
+		image->width - 1,
+		(int16_t)(image->height - 1),
+	};
+
+	const int32_t right = x + width - 1;
+	_inknit_draw_hline_with_clip32(data, stride, x, right, y, color, &clip_rect);
 
 	if (height != 1) {
-		const int32_t bottom = (int32_t)(y + height - 1);
-		PUBLIC_FUNCNAME(draw_hline)(image, (int32_t)x, right, bottom, color);
+		const int32_t bottom = y + height - 1;
+		_inknit_draw_hline_with_clip32(data, stride, x, right, bottom, color, &clip_rect);
 
 		if (height > 2) {
-			PUBLIC_FUNCNAME(draw_vline)(
-				image, (int32_t)x, (int32_t)(y + 1), (int32_t)(bottom - 1), color
-			);
-			PUBLIC_FUNCNAME(draw_vline)(
-				image, (int32_t)right, (int32_t)(y + 1), (int32_t)(bottom - 1), color
+			_inknit_draw_vline_with_clip32(data, stride, x, y + 1, bottom - 1, color, &clip_rect);
+			_inknit_draw_vline_with_clip32(
+				data, stride, right, y + 1, bottom - 1, color, &clip_rect
 			);
 		}
 	}
 }
 
-void PUBLIC_FUNCNAME(draw_rectp)(
-	struct inknit_image *image,
-	inknit_uint_t        x1,
-	inknit_uint_t        y1,
-	inknit_uint_t        x2,
-	inknit_uint_t        y2,
-	inknit_color_t       color
+void PUBLIC_FUNCNAME(draw_rect_coord)(
+	struct inknit_image *image, int32_t x1, int32_t y1, int32_t x2, int32_t y2, inknit_color_t color
 ) {
 	INKNIT_ASSUME_IMAGE(image);
+	INKNIT_ASSUME_COORD_X_RANGE(x1, x2);
+	INKNIT_ASSUME_COORD_Y_RANGE(y1, y2);
+	INKNIT_ASSUME_COLOR(color);
 
-	INKNIT_ASSUME(x1 <= x2, MSG_X1_GREATER_THAN_X2);
-	INKNIT_ASSUME(x2 <= INKNIT_X_MAX, MSG_X2_GREATER_THAN_MAX_VALUE);
-	INKNIT_ASSUME(y1 <= y2, MSG_Y1_GREATER_THAN_Y2);
-	INKNIT_ASSUME(y2 <= INKNIT_Y_MAX, MSG_Y2_GREATER_THAN_MAX_VALUE);
+	uint32_t *INKNIT_RESTRICT data = image->data;
 
-	INKNIT_ASSUME(color <= POW2_BITS_PER_PIXEL_NEG1, MSG_COLOR_GREATER_THAN_MAX_VALUE);
+	const uint32_t stride = bytes_to_pixels(image->stride);
 
-	PUBLIC_FUNCNAME(draw_hline)(image, (int32_t)x1, (int32_t)x2, (int32_t)y1, color);
+	struct inknit_rect clip_rect = {
+		0,
+		0,
+		image->width - 1,
+		(int16_t)(image->height - 1),
+	};
+
+	_inknit_draw_hline_with_clip32(data, stride, x1, x2, y1, color, &clip_rect);
 
 	if (y1 != y2) {
-		PUBLIC_FUNCNAME(draw_hline)(image, (int32_t)x1, (int32_t)x2, (int32_t)y2, color);
+		_inknit_draw_hline_with_clip32(data, stride, x1, x2, y2, color, &clip_rect);
 
-		const inknit_uint_t height = y2 - y1 + 1;
+		const int32_t height = y2 - y1 + 1;
 		if (height > 2) {
-			PUBLIC_FUNCNAME(draw_vline)(
-				image, (int32_t)x1, (int32_t)(y1 + 1), (int32_t)(y2 - 1), color
-			);
-			PUBLIC_FUNCNAME(draw_vline)(
-				image, (int32_t)x2, (int32_t)(y1 + 1), (int32_t)(y2 - 1), color
-			);
+			_inknit_draw_vline_with_clip32(data, stride, x1, y1 + 1, y2 - 1, color, &clip_rect);
+			_inknit_draw_vline_with_clip32(data, stride, x2, y1 + 1, y2 - 1, color, &clip_rect);
 		}
 	}
 }

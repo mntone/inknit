@@ -115,27 +115,13 @@ namespace inknit { namespace details {
 		void draw_rect(point_t pt, size_t sz, color_t color) noexcept {
 			auto [x, y]          = pt;
 			auto [width, height] = sz;
-			INKNIT_X1_NAME(draw_rect)(
-				get(),
-				static_cast<uint_t>(x),
-				static_cast<uint_t>(y),
-				static_cast<uint_t>(width),
-				static_cast<uint_t>(height),
-				color
-			);
+			INKNIT_X1_NAME(draw_rect)(get(), x, y, width, height, color);
 		}
 
-		void draw_rectp(point_t pt1, point_t pt2, color_t color) noexcept {
+		void draw_rect_coord(point_t pt1, point_t pt2, color_t color) noexcept {
 			auto [x1, y1] = pt1;
 			auto [x2, y2] = pt2;
-			INKNIT_X1_NAME(draw_rectp)(
-				get(),
-				static_cast<uint_t>(x1),
-				static_cast<uint_t>(y1),
-				static_cast<uint_t>(x2),
-				static_cast<uint_t>(y2),
-				color
-			);
+			INKNIT_X1_NAME(draw_rect_coord)(get(), x1, y1, x2, y2, color);
 		}
 
 	protected:
@@ -241,27 +227,13 @@ namespace inknit { namespace details {
 		void draw_rect(point_t pt, size_t sz, color_t color) noexcept {
 			auto [x, y]          = pt;
 			auto [width, height] = sz;
-			INKNIT_X1LSB_NAME(draw_rect)(
-				get(),
-				static_cast<uint_t>(x),
-				static_cast<uint_t>(y),
-				static_cast<uint_t>(width),
-				static_cast<uint_t>(height),
-				color
-			);
+			INKNIT_X1LSB_NAME(draw_rect)(get(), x, y, width, height, color);
 		}
 
-		void draw_rectp(point_t pt1, point_t pt2, color_t color) noexcept {
+		void draw_rect_coord(point_t pt1, point_t pt2, color_t color) noexcept {
 			auto [x1, y1] = pt1;
 			auto [x2, y2] = pt2;
-			INKNIT_X1LSB_NAME(draw_rectp)(
-				get(),
-				static_cast<uint_t>(x1),
-				static_cast<uint_t>(y1),
-				static_cast<uint_t>(x2),
-				static_cast<uint_t>(y2),
-				color
-			);
+			INKNIT_X1LSB_NAME(draw_rect_coord)(get(), x1, y1, x2, y2, color);
 		}
 
 	protected:
@@ -367,27 +339,13 @@ namespace inknit { namespace details {
 		void draw_rect(point_t pt, size_t sz, color_t color) noexcept {
 			auto [x, y]          = pt;
 			auto [width, height] = sz;
-			INKNIT_X2_NAME(draw_rect)(
-				get(),
-				static_cast<uint_t>(x),
-				static_cast<uint_t>(y),
-				static_cast<uint_t>(width),
-				static_cast<uint_t>(height),
-				color
-			);
+			INKNIT_X2_NAME(draw_rect)(get(), x, y, width, height, color);
 		}
 
-		void draw_rectp(point_t pt1, point_t pt2, color_t color) noexcept {
+		void draw_rect_coord(point_t pt1, point_t pt2, color_t color) noexcept {
 			auto [x1, y1] = pt1;
 			auto [x2, y2] = pt2;
-			INKNIT_X2_NAME(draw_rectp)(
-				get(),
-				static_cast<uint_t>(x1),
-				static_cast<uint_t>(y1),
-				static_cast<uint_t>(x2),
-				static_cast<uint_t>(y2),
-				color
-			);
+			INKNIT_X2_NAME(draw_rect_coord)(get(), x1, y1, x2, y2, color);
 		}
 
 	protected:
@@ -492,27 +450,13 @@ namespace inknit { namespace details {
 		void draw_rect(point_t pt, size_t sz, color_t color) noexcept {
 			auto [x, y]          = pt;
 			auto [width, height] = sz;
-			INKNIT_X2LSB_NAME(draw_rect)(
-				get(),
-				static_cast<uint_t>(x),
-				static_cast<uint_t>(y),
-				static_cast<uint_t>(width),
-				static_cast<uint_t>(height),
-				color
-			);
+			INKNIT_X2LSB_NAME(draw_rect)(get(), x, y, width, height, color);
 		}
 
-		void draw_rectp(point_t pt1, point_t pt2, color_t color) noexcept {
+		void draw_rect_coord(point_t pt1, point_t pt2, color_t color) noexcept {
 			auto [x1, y1] = pt1;
 			auto [x2, y2] = pt2;
-			INKNIT_X2LSB_NAME(draw_rectp)(
-				get(),
-				static_cast<uint_t>(x1),
-				static_cast<uint_t>(y1),
-				static_cast<uint_t>(x2),
-				static_cast<uint_t>(y2),
-				color
-			);
+			INKNIT_X2LSB_NAME(draw_rect_coord)(get(), x1, y1, x2, y2, color);
 		}
 
 	protected:
@@ -617,27 +561,13 @@ namespace inknit { namespace details {
 		void draw_rect(point_t pt, size_t sz, color_t color) noexcept {
 			auto [x, y]          = pt;
 			auto [width, height] = sz;
-			INKNIT_X4_NAME(draw_rect)(
-				get(),
-				static_cast<uint_t>(x),
-				static_cast<uint_t>(y),
-				static_cast<uint_t>(width),
-				static_cast<uint_t>(height),
-				color
-			);
+			INKNIT_X4_NAME(draw_rect)(get(), x, y, width, height, color);
 		}
 
-		void draw_rectp(point_t pt1, point_t pt2, color_t color) noexcept {
+		void draw_rect_coord(point_t pt1, point_t pt2, color_t color) noexcept {
 			auto [x1, y1] = pt1;
 			auto [x2, y2] = pt2;
-			INKNIT_X4_NAME(draw_rectp)(
-				get(),
-				static_cast<uint_t>(x1),
-				static_cast<uint_t>(y1),
-				static_cast<uint_t>(x2),
-				static_cast<uint_t>(y2),
-				color
-			);
+			INKNIT_X4_NAME(draw_rect_coord)(get(), x1, y1, x2, y2, color);
 		}
 
 	protected:
@@ -741,27 +671,13 @@ namespace inknit { namespace details {
 		void draw_rect(point_t pt, size_t sz, color_t color) noexcept {
 			auto [x, y]          = pt;
 			auto [width, height] = sz;
-			INKNIT_X4LSB_NAME(draw_rect)(
-				get(),
-				static_cast<uint_t>(x),
-				static_cast<uint_t>(y),
-				static_cast<uint_t>(width),
-				static_cast<uint_t>(height),
-				color
-			);
+			INKNIT_X4LSB_NAME(draw_rect)(get(), x, y, width, height, color);
 		}
 
-		void draw_rectp(point_t pt1, point_t pt2, color_t color) noexcept {
+		void draw_rect_coord(point_t pt1, point_t pt2, color_t color) noexcept {
 			auto [x1, y1] = pt1;
 			auto [x2, y2] = pt2;
-			INKNIT_X4LSB_NAME(draw_rectp)(
-				get(),
-				static_cast<uint_t>(x1),
-				static_cast<uint_t>(y1),
-				static_cast<uint_t>(x2),
-				static_cast<uint_t>(y2),
-				color
-			);
+			INKNIT_X4LSB_NAME(draw_rect_coord)(get(), x1, y1, x2, y2, color);
 		}
 
 	protected:
