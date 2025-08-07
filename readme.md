@@ -10,23 +10,38 @@ for composing pixels with precision and care, especially on resource-constrained
 
 ## ✨ Features
 
-- 🧵 **Bit-depth aware rendering**: Efficient support for 1bpp, 2bpp, and 4bpp 
-  framebuffers
-- 🚀 **Performance-focused**: Optimized for speed with bitwise operations and minimal abstraction  
-- 🖼️ **Essential drawing primitives**: `point`, `hline`, `vline`, `line`, `rect`, `circle`,
-  and `blit`
-- 🔍 **Image scaling**: Includes nearest-neighbor and bilinear interpolation
-- 🧽 **Framebuffer clearing**: Fast clearing for arbitrary bit depths
-- 🔧 **No platform dependencies**: Not tied to any SDK or hardware
-- 🧪 **PC-friendly testing**: Designed to be testable in desktop environments
-- ⚖️ **GPLv3 licensed**: Free and open-source under a strong copyleft license
+This library was designed from the ground up for smooth performance in resource-constrained
+environments.
+
+- 🧵 **Multi-Bit-Depth Support**: Efficiently handles 1bpp, 2bpp, and 4bpp framebuffers, making it
+  ideal for microcontrollers with low memory and specialized displays.
+- 🚀 **Performance-First Design**: Achieves incredible drawing speeds through minimal abstraction
+  and carefully optimized bitwise operations.
+- 🎨 **Consistent Drawing API**: Comes equipped with a clear and consistent set of commands:
+  `draw_point`, `draw_hline`, `draw_vline`, `draw_line`, `draw_rect`, `draw_rect_coord`,
+  `fill_rect`, `fill_rect_coord`, `draw_circle`, `draw_ellipse`, and `blit`.
+- 🧽 **Fast Framebuffer Clearing**: Instantly clears the entire screen, regardless of the
+  framebuffer's bit depth.
+- 🔧 **Completely Platform-Agnostic**: Not tied to any specific SDK or hardware. Easily integrate
+  it into anything from bare-metal systems to desktop applications.
+- 🧪 **PC-Friendly Testing**: Designed to be easily testable in a desktop environment, helping to
+  speed up your development cycle.
+- ⚖️ **GPLv3 licensed**: Free and open-source under a strong copyleft license. Everyone is free to
+  use, modify, and distribute it.
 
 
-## 📆 Planned Features
+## 📆 Roadmap
 
-- Filled shapes (e.g. filled rectangles and circles)
-- Clipping regions and viewports
-- Font rendering helpers
+We plan to add even more features in future updates.
+
+- **More Filled Shapes**: Expanding support to include filled circles, ellipses, and other polygons.
+- **Image Scaling**: Implementation of scaling algorithms like nearest-neighbor and bilinear
+  interpolation.
+- **Clipping Regions & Viewports**: Restrict drawing to specific areas for more flexible UI
+  construction.
+- **Font Rendering**: Helpers to make rendering text simple.
+
+*Feature requests and contributions are always welcome!*
 
 
 ## 📦 Requirements
