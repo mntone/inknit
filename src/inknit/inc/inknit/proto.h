@@ -26,7 +26,7 @@
 extern "C" {
 #endif
 
-#if !NDEBUG
+#if _DEBUG
 typedef void (*inknit_assert_t)(
 	const char *INKNIT_RESTRICT __message,
 	const char *INKNIT_RESTRICT __condition,

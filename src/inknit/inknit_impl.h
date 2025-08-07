@@ -29,7 +29,7 @@
 
 typedef uint32_t inknit_unit_t;
 
-#if !NDEBUG
+#if _DEBUG
 void _inknit_assert(
 	const char *INKNIT_RESTRICT __message,
 	const char *INKNIT_RESTRICT __condition,

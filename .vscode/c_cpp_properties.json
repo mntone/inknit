@@ -12,6 +12,7 @@
 			"cStandard": "c17",
 			"cppStandard": "c++23",
 			"defines": [
+				"_DEBUG",
 				"INKNIT_ENABLE_BENCHMARKS"
 			]
 		}

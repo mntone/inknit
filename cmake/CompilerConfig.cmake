@@ -9,8 +9,9 @@ if(CMAKE_BUILD_TYPE STREQUAL "MinSizeRel")
 endif()
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release;RelWithDebInfo" CACHE STRING "" FORCE)
 
-# Add "d" suffix on debug build
+# Add "d" suffix on debug/relwithdebinfo build
 set(CMAKE_DEBUG_POSTFIX d)
+set(CMAKE_RELWITHDEBINFO_POSTFIX d)
 
 # Set C and C++ language standards to C17 and C++23
 set(CMAKE_C_STANDARD 17)
@@ -131,7 +132,7 @@ else()
 		)
 endif()
 
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
 	add_compile_definitions(
 		_DEBUG
 		)

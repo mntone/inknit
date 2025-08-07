@@ -47,7 +47,7 @@
 			}
 		},
 		{
-			"name": "debug-optimize",
+			"name": "reldebinfo",
 			"hidden": true,
 			"cacheVariables": {
 				"CMAKE_BUILD_TYPE": "RelWithDebInfo",
@@ -342,6 +342,14 @@
 			]
 		},
 		{
+			"name": "pico-rp2040-gcc-reldebinfo",
+			"displayName": "RP2040 (Cortex-M0+) [Release (include debug info)]",
+			"inherits": [
+				"reldebinfo",
+				"pico-rp2040-gcc"
+			]
+		},
+		{
 			"name": "pico-rp2040-gcc-release",
 			"displayName": "RP2040 (Cortex-M0+) [Release]",
 			"inherits": [
@@ -366,6 +374,14 @@
 			"displayName": "RP2350 (Cortex-M33) [Debug]",
 			"inherits": [
 				"debug",
+				"pico-rp2350-gcc"
+			]
+		},
+		{
+			"name": "pico-rp2350-gcc-reldebinfo",
+			"displayName": "RP2350 (Cortex-M33) [Release (include debug info)]",
+			"inherits": [
+				"reldebinfo",
 				"pico-rp2350-gcc"
 			]
 		},

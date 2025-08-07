@@ -19,14 +19,16 @@
 
 #pragma once
 
-#if NDEBUG
-#define INKNIT_ASSERT(expr, msg)
-#else
+#if _DEBUG
 #define INKNIT_ASSERT(expr, msg)                                            \
 	if (!(expr)) _inknit_assert((msg), #expr, __FILE__, __func__, __LINE__)
+#else
+#define INKNIT_ASSERT(expr, msg)
 #endif
 
-#if NDEBUG
+#if _DEBUG
+#define INKNIT_ASSUME(expr, msg) INKNIT_ASSERT(expr, msg)
+#else
 #if defined(__clang__)
 #define INKNIT_ASSUME(expr, msg) __builtin_assume(expr)
 #elif defined(__GNUC__)
@@ -37,8 +39,6 @@
 #else
 #define INKNIT_ASSUME(expr, msg) ((void)0)
 #endif
-#else
-#define INKNIT_ASSUME(expr, msg) INKNIT_ASSERT(expr, msg)
 #endif
 
 #if defined(_MSC_VER)
