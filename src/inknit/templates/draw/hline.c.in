@@ -298,29 +298,31 @@ void _inknit_draw_hline_with_clip32(
 	INKNIT_ASSUME_COLOR(color);
 	INKNIT_ASSUME_CLIP_RECT(clip_rect);
 
-	if (INKNIT_UNLIKELY(x1 == x2)) {
-		_inknit_draw_point_with_clip32(data, stride, x1, y, color, clip_rect);
-		return;
-	}
-
 	if (y < clip_rect->top || clip_rect->bottom < y) {
 		return;
 	}
+
+	if (INKNIT_UNLIKELY(x1 == x2)) {
+		if (clip_rect->left <= x1 && x1 <= clip_rect->right) {
+			_inknit_draw_point32(data, stride, (uint32_t)x1, (uint32_t)y, color);
+		}
+		return;
+	}
+
 	if (x2 < clip_rect->left || clip_rect->right < x1) {
 		return;
 	}
 
 	if (x1 < clip_rect->left) {
 		x1 = clip_rect->left;
-		if (x2 < clip_rect->left) {
-			x2 = clip_rect->left;
-		}
 	}
 	if (x2 > clip_rect->right) {
 		x2 = clip_rect->right;
-		if (x1 > clip_rect->right) {
-			x1 = clip_rect->right;
-		}
+	}
+
+	// Eliminate the case where x1 > x2 due to clipping
+	if (INKNIT_UNLIKELY(x1 > x2)) {
+		return;
 	}
 
 	_inknit_draw_hline32(data, stride, (uint32_t)x1, (uint32_t)x2, (uint32_t)y, color);

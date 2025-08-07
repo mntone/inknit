@@ -172,29 +172,31 @@ void _inknit_draw_vline_with_clip32(
 	INKNIT_ASSUME_COLOR(color);
 	INKNIT_ASSUME_CLIP_RECT(clip_rect);
 
-	if (INKNIT_UNLIKELY(y1 == y2)) {
-		_inknit_draw_point_with_clip32(data, stride, x, y1, color, clip_rect);
-		return;
-	}
-
 	if (x < clip_rect->left || clip_rect->right < x) {
 		return;
 	}
+
+	if (INKNIT_UNLIKELY(y1 == y2)) {
+		if (clip_rect->top <= y1 && y1 <= clip_rect->bottom) {
+			_inknit_draw_point32(data, stride, (uint32_t)x, (uint32_t)y1, color);
+		}
+		return;
+	}
+
 	if (y2 < clip_rect->top || clip_rect->bottom < y1) {
 		return;
 	}
 
 	if (y1 < clip_rect->top) {
 		y1 = clip_rect->top;
-		if (y2 < clip_rect->top) {
-			y2 = clip_rect->top;
-		}
 	}
 	if (y2 > clip_rect->bottom) {
 		y2 = clip_rect->bottom;
-		if (y1 > clip_rect->bottom) {
-			y1 = clip_rect->bottom;
-		}
+	}
+
+	// Eliminate the case where y1 > y2 due to clipping
+	if (INKNIT_UNLIKELY(y1 > y2)) {
+		return;
 	}
 
 	_inknit_draw_vline32(data, stride, (uint32_t)x, (uint32_t)y1, (uint32_t)y2, color);
