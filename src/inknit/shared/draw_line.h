@@ -19,8 +19,11 @@
 
 #pragma once
 
+#ifdef __INTELLISENSE__
 #include "../inc/inknit/types.h"
-#include "../macro_impl.h"
+#include "../inc/inknit/prefix.h"
+#include "../x2/base.h"
+#endif
 
 enum _inknit_line_outcode {
 	INKNIT_LINE_OUTCODE_INSIDE = 0,
@@ -30,7 +33,8 @@ enum _inknit_line_outcode {
 	INKNIT_LINE_OUTCODE_TOP    = 1 << 4,
 };
 
-static enum _inknit_line_outcode
+#define _inknit_compute_line_outcode INKNIT_CURRENT_INTERNAL_FUNC(compute_line_outcode)
+static inline enum _inknit_line_outcode
 _inknit_compute_line_outcode(int32_t x, int32_t y, const struct inknit_rect *clip_rect) {
 	enum _inknit_line_outcode code = INKNIT_LINE_OUTCODE_INSIDE;
 
@@ -67,6 +71,7 @@ _inknit_lerp(int32_t p1, int32_t p2, int32_t q1, int32_t q2, int32_t t) {
 // Clips a line segment from (x1, y1) to (x2, y2) against clip_rect.
 // Returns true if the line should be drawn, and updates the endpoint
 // coordinates (x1, y1, x2, y2) by reference.
+#define _inknit_clip_line_to_bounds INKNIT_CURRENT_INTERNAL_FUNC(clip_line_to_bounds)
 static inline bool _inknit_clip_line_to_bounds(
 	int32_t *INKNIT_RESTRICT  x1,
 	int32_t *INKNIT_RESTRICT  y1,

@@ -20,21 +20,23 @@
 #ifdef INKNIT_ENABLE_EXPORTS
 
 #include "../inc/inknit_exports.h"
+
+#define INKNIT_USE_MACRO_NAME
 #include "../inc/inknit/x1lsb.h"
 
 const struct inknit_exports x1lsb = {
-	.blit            = INKNIT_X1LSB_NAME(blit),
-	.clear           = INKNIT_X1LSB_NAME(clear),
-	.fill_rect       = INKNIT_X1LSB_NAME(fill_rect),
-	.fill_rect_coord = INKNIT_X1LSB_NAME(fill_rect_coord),
-	.draw_circle     = INKNIT_X1LSB_NAME(draw_circle),
-	.draw_ellipse    = INKNIT_X1LSB_NAME(draw_ellipse),
-	.draw_point      = INKNIT_X1LSB_NAME(draw_point),
-	.draw_hline      = INKNIT_X1LSB_NAME(draw_hline),
-	.draw_vline      = INKNIT_X1LSB_NAME(draw_vline),
-	.draw_line       = INKNIT_X1LSB_NAME(draw_line),
-	.draw_rect       = INKNIT_X1LSB_NAME(draw_rect),
-	.draw_rect_coord = INKNIT_X1LSB_NAME(draw_rect_coord),
+	.blit            = inknit_blit,
+	.clear           = inknit_clear,
+	.fill_rect       = inknit_fill_rect,
+	.fill_rect_coord = inknit_fill_rect_coord,
+	.draw_circle     = inknit_draw_circle,
+	.draw_ellipse    = inknit_draw_ellipse,
+	.draw_point      = inknit_draw_point,
+	.draw_hline      = inknit_draw_hline,
+	.draw_vline      = inknit_draw_vline,
+	.draw_line       = inknit_draw_line,
+	.draw_rect       = inknit_draw_rect,
+	.draw_rect_coord = inknit_draw_rect_coord,
 	.features        = INKNIT_FEATURE_PRIMITIVE | INKNIT_FEATURE_BLIT | INKNIT_FEATURE_DRAW,
 	.layout          = INKNIT_X1LSB,
 };

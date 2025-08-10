@@ -17,6 +17,34 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+// -- MARK: blit
+#define _INKNIT_BLIT_PROTO                              \
+	(struct inknit_image * INKNIT_RESTRICT      dst,    \
+	 inknit_uint_t                              dx,     \
+	 inknit_uint_t                              dy,     \
+	 const struct inknit_image *INKNIT_RESTRICT src,    \
+	 inknit_uint_t                              sx,     \
+	 inknit_uint_t                              sy,     \
+	 inknit_uint_t                              width,  \
+	 inknit_uint_t                              height)
+
+#ifdef INKNIT_ENABLE_BENCHMARKS
+#define _inknit_blit_pixel_old32 INKNIT_CURRENT_INTERNAL_FUNC(blit_pixel_old)
+void INKNIT_EXPORT _inknit_blit_pixel_old32 _INKNIT_BLIT_PROTO INKNIT_NONNULL(1, 4);
+
+#define _inknit_blit_pixel32 INKNIT_CURRENT_INTERNAL_FUNC(blit_pixel)
+void INKNIT_EXPORT _inknit_blit_pixel32 _INKNIT_BLIT_PROTO INKNIT_NONNULL(1, 4);
+
+#define _inknit_blit_unaligned32 INKNIT_CURRENT_INTERNAL_FUNC(blit_unaligned)
+void INKNIT_EXPORT _inknit_blit_unaligned32 _INKNIT_BLIT_PROTO INKNIT_NONNULL(1, 4);
+
+#define _inknit_blit_mask32 INKNIT_CURRENT_INTERNAL_FUNC(blit_mask)
+void INKNIT_EXPORT _inknit_blit_mask32 _INKNIT_BLIT_PROTO INKNIT_NONNULL(1, 4);
+
+#define _inknit_blit_aligned32 INKNIT_CURRENT_INTERNAL_FUNC(blit_aligned)
+void INKNIT_EXPORT _inknit_blit_aligned32 _INKNIT_BLIT_PROTO INKNIT_NONNULL(1, 4);
+#endif
+
 // -- MARK: draw_point
 #define _inknit_draw_point_with_clip32 INKNIT_CURRENT_INTERNAL_FUNC(draw_point_with_clip)
 void INKNIT_EXPORT _inknit_draw_point_with_clip32(
@@ -26,7 +54,7 @@ void INKNIT_EXPORT _inknit_draw_point_with_clip32(
 	int32_t                                   y,
 	inknit_color_t                            color,
 	const struct inknit_rect *INKNIT_RESTRICT clip_rect
-) INKNIT_NONNULL(1);
+) INKNIT_NONNULL(1, 6);
 
 // -- MARK: draw_hline
 #define _inknit_draw_hline32 INKNIT_CURRENT_INTERNAL_FUNC(draw_hline)
@@ -43,7 +71,7 @@ void INKNIT_EXPORT _inknit_draw_hline_with_clip32(
 	int32_t                                   y,
 	inknit_color_t                            color,
 	const struct inknit_rect *INKNIT_RESTRICT clip_rect
-) INKNIT_NONNULL(1);
+) INKNIT_NONNULL(1, 7);
 
 #if defined(INKNIT_ENABLE_BENCHMARKS)
 #define _inknit_draw_hline_arith32 INKNIT_CURRENT_INTERNAL_FUNC(draw_hline_arith)
@@ -73,7 +101,7 @@ void INKNIT_EXPORT _inknit_draw_vline_with_clip32(
 	int32_t                                   y2,
 	inknit_color_t                            color,
 	const struct inknit_rect *INKNIT_RESTRICT clip_rect
-) INKNIT_NONNULL(1);
+) INKNIT_NONNULL(1, 7);
 
 #if defined(INKNIT_ENABLE_BENCHMARKS)
 #define _inknit_draw_vline_scalar32 INKNIT_CURRENT_INTERNAL_FUNC(draw_vline_scalar)
@@ -110,7 +138,7 @@ void INKNIT_EXPORT _inknit_draw_line_with_clip32(
 	int32_t                                   y2,
 	inknit_color_t                            color,
 	const struct inknit_rect *INKNIT_RESTRICT clip_rect
-) INKNIT_NONNULL(1);
+) INKNIT_NONNULL(1, 8);
 
 #if defined(INKNIT_ENABLE_BENCHMARKS)
 #define _inknit_draw_line_2loop32 INKNIT_CURRENT_INTERNAL_FUNC(draw_line_2loop)
@@ -147,7 +175,7 @@ void INKNIT_EXPORT _inknit_draw_circle32(
 	int32_t                                   radius,
 	inknit_color_t                            color,
 	const struct inknit_rect *INKNIT_RESTRICT clip_rect
-) INKNIT_NONNULL(1);
+) INKNIT_NONNULL(1, 7);
 
 
 // -- MARK: draw_ellipse
@@ -161,7 +189,7 @@ void INKNIT_EXPORT _inknit_draw_ellipse32(
 	int32_t                                   ry,
 	inknit_color_t                            color,
 	const struct inknit_rect *INKNIT_RESTRICT clip_rect
-) INKNIT_NONNULL(1);
+) INKNIT_NONNULL(1, 8);
 
 
 // -- MARK: fill_rect
@@ -175,11 +203,16 @@ void INKNIT_EXPORT _inknit_fill_rect_with_clip32(
 	int32_t                                   y2,
 	inknit_color_t                            color,
 	const struct inknit_rect *INKNIT_RESTRICT clip_rect
-) INKNIT_NONNULL(1);
+) INKNIT_NONNULL(1, 8);
 
 
 // -- MARK: clean up macros
 #ifndef INKNIT_USE_MACRO_NAME
+#undef _inknit_blit_pixel_old
+#undef _inknit_blit_pixel
+#undef _inknit_blit_unaligned
+#undef _inknit_blit_mask
+#undef _inknit_blit_aligned
 #undef _inknit_draw_point_with_clip32
 #undef _inknit_draw_hline32
 #undef _inknit_draw_hline_with_clip32

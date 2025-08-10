@@ -176,7 +176,7 @@ void _inknit_draw_line_with_clip32(
 	}
 }
 
-void PUBLIC_FUNCNAME(draw_line)(
+void inknit_draw_line(
 	struct inknit_image *image, int32_t x1, int32_t y1, int32_t x2, int32_t y2, inknit_color_t color
 ) {
 	INKNIT_ASSUME_IMAGE(image);

@@ -19,15 +19,13 @@
 
 #pragma once
 
-// -- MARK: macro definitions
-#include "inknit/macro.h"
+// -- MARK: headers
+#include "inknit/assertion.h"
+#include "inknit/types.h"
 #include "inknit/prefix.h"
-#include "inknit/proto.h"
 
 
 // -- MARK: primitive type definitions
-#include "inknit/types.h"
-
 static inline bool inknit_image_is_single_channel(struct inknit_image const *image) {
 	return (image->pixel_layout & 0xC0) == 0x00;
 }
@@ -38,9 +36,40 @@ static inline bool inknit_image_is_grayscale(struct inknit_image const *image) {
 
 
 // -- MARK: function prototypes
-#include "inknit/x1.h"
-#include "inknit/x1lsb.h"
-#include "inknit/x2.h"
-#include "inknit/x2lsb.h"
-#include "inknit/x4.h"
-#include "inknit/x4lsb.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+// Pixel Layout: x1 (32-bit width/align, 1-bpp, BE)
+#define INKNIT_CURRENT_LAYOUT x1
+#include "inknit/proto.h.in"
+#undef INKNIT_CURRENT_LAYOUT
+
+// Pixel Layout: x1lsb (32-bit width/align, 1-bpp, LE)
+#define INKNIT_CURRENT_LAYOUT x1lsb
+#include "inknit/proto.h.in"
+#undef INKNIT_CURRENT_LAYOUT
+
+// Pixel Layout: x2 (32-bit width/align, 2-bpp, BE)
+#define INKNIT_CURRENT_LAYOUT x2
+#include "inknit/proto.h.in"
+#undef INKNIT_CURRENT_LAYOUT
+
+// Pixel Layout: x2lsb (32-bit width/align, 2-bpp, LE)
+#define INKNIT_CURRENT_LAYOUT x2lsb
+#include "inknit/proto.h.in"
+#undef INKNIT_CURRENT_LAYOUT
+
+// Pixel Layout: x4 (32-bit width/align, 4-bpp, BE)
+#define INKNIT_CURRENT_LAYOUT x4
+#include "inknit/proto.h.in"
+#undef INKNIT_CURRENT_LAYOUT
+
+// Pixel Layout: x4lsb (32-bit width/align, 4-bpp, LE)
+#define INKNIT_CURRENT_LAYOUT x4lsb
+#include "inknit/proto.h.in"
+#undef INKNIT_CURRENT_LAYOUT
+
+#ifdef __cplusplus
+} /* extern "C" { */
+#endif

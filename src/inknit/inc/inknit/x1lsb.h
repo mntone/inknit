@@ -19,93 +19,15 @@
 
 #pragma once
 
-#include "proto.h"  // load base proto
-#include "types.h"  // load base types
+#include "types.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-// -- MARK: macro
-#define INKNIT_X1LSB_BASE       x1lsb
-#define INKNIT_X1LSB_NAME(name) INKNIT_PUBLIC_FUNCNAME(INKNIT_X1LSB_BASE, name)
-#define PUBN(name)              INKNIT_PUBLIC_FUNCNAME(INKNIT_X1LSB_BASE, name)
-#define INTN(name)              INKNIT_INTERNAL_FUNCNAME(INKNIT_X1LSB_BASE, name)
-
-
-// -- MARK: primitive
-inknit_color_t INKNIT_EXPORT
-	PUBN(get_pixel)(const struct inknit_image *image, int32_t x, int32_t y) INKNIT_NONNULL(1);
-
-void INKNIT_EXPORT PUBN(clear)(struct inknit_image *image, inknit_color_t color) INKNIT_NONNULL(1);
-
-
-// -- MARK: fill
-void INKNIT_EXPORT PUBN(fill_rect)(
-	struct inknit_image *image,
-	int32_t              x,
-	int32_t              y,
-	int32_t              width,
-	int32_t              height,
-	inknit_color_t       color
-) INKNIT_NONNULL(1);
-
-void INKNIT_EXPORT PUBN(fill_rect_coord)(
-	struct inknit_image *image, int32_t x1, int32_t y1, int32_t x2, int32_t y2, inknit_color_t color
-) INKNIT_NONNULL(1);
-
-
-// -- MARK: draw
-void INKNIT_EXPORT PUBN(draw_circle)(
-	struct inknit_image *image, int32_t cx, int32_t cy, int32_t radius, inknit_color_t color
-) INKNIT_NONNULL(1);
-
-void INKNIT_EXPORT PUBN(draw_ellipse)(
-	struct inknit_image *image, int32_t cx, int32_t cy, int32_t rx, int32_t ry, inknit_color_t color
-) INKNIT_NONNULL(1);
-
-void INKNIT_EXPORT PUBN(draw_hline)(
-	struct inknit_image *image, int32_t x1, int32_t x2, int32_t y, inknit_color_t color
-) INKNIT_NONNULL(1);
-
-void INKNIT_EXPORT PUBN(draw_line)(
-	struct inknit_image *image, int32_t x1, int32_t y1, int32_t x2, int32_t y2, inknit_color_t color
-) INKNIT_NONNULL(1);
-
-void INKNIT_EXPORT PUBN(draw_point)(
-	struct inknit_image *image, int32_t x, int32_t y, inknit_color_t color
-) INKNIT_NONNULL(1);
-
-void INKNIT_EXPORT PUBN(draw_rect)(
-	struct inknit_image *image,
-	int32_t              x,
-	int32_t              y,
-	int32_t              width,
-	int32_t              height,
-	inknit_color_t       color
-) INKNIT_NONNULL(1);
-
-void INKNIT_EXPORT PUBN(draw_rect_coord)(
-	struct inknit_image *image, int32_t x1, int32_t y1, int32_t x2, int32_t y2, inknit_color_t color
-) INKNIT_NONNULL(1);
-
-void INKNIT_EXPORT PUBN(draw_vline)(
-	struct inknit_image *image, int32_t x, int32_t y1, int32_t y2, inknit_color_t color
-) INKNIT_NONNULL(1);
-
-
-// -- MARK: blit
-INKNIT_BMPROTO(INKNIT_PROTO_BLIT(INTN(blit_pixel_old)));
-INKNIT_BMPROTO(INKNIT_PROTO_BLIT(INTN(blit_pixel)));
-INKNIT_BMPROTO(INKNIT_PROTO_BLIT(INTN(blit_unaligned)));
-INKNIT_BMPROTO(INKNIT_PROTO_BLIT(INTN(blit_mask)));
-INKNIT_BMPROTO(INKNIT_PROTO_BLIT(INTN(blit_aligned)));
-INKNIT_PROTO(INKNIT_PROTO_BLIT(PUBN(blit)));
-
-
-// -- MARK: clean up
-#undef PUBN
-#undef INTN
+#define INKNIT_CURRENT_LAYOUT x1lsb
+#include "inknit/proto.h.in"
+#undef INKNIT_CURRENT_LAYOUT
 
 #ifdef __cplusplus
 }

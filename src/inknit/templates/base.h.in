@@ -92,26 +92,28 @@ _inknit_swap_int32(int32_t *INKNIT_RESTRICT a, int32_t *INKNIT_RESTRICT b) {
 	*b           = temp;
 }
 
-static INKNIT_ALWAYS_INLINE void INTERNAL_FUNCNAME(set_value8)(
-	uint8_t *const byteptr, const uint8_t clear_mask, const uint8_t pixel_value
-) {
+#define _inknit_set_value8 \
+	INKNIT_INTERNAL_FUNC(set_value, INKNIT_INTERNAL_GROUP(8, BITS_PER_PIXEL, INKNIT_CURRENT_ENDIAN))
+static INKNIT_ALWAYS_INLINE void
+_inknit_set_value8(uint8_t *const byteptr, const uint8_t clear_mask, const uint8_t pixel_value) {
 	uint8_t byte_value = *byteptr;
 	byte_value &= clear_mask;
 	byte_value |= pixel_value;
 	*byteptr = byte_value;
 }
 
-static INKNIT_ALWAYS_INLINE void INTERNAL_FUNCNAME(set_value32)(
-	uint32_t *const word, const uint32_t clear_mask, const uint32_t pixel_value
-) {
+#define _inknit_set_value32 INKNIT_CURRENT_INTERNAL_FUNC(set_value)
+static INKNIT_ALWAYS_INLINE void
+_inknit_set_value32(uint32_t *const word, const uint32_t clear_mask, const uint32_t pixel_value) {
 	uint32_t word_value = swap_if_required(*word);
 	word_value &= clear_mask;
 	word_value |= pixel_value;
 	*word = swap_if_required(word_value);
 }
 
+#define _inknit_set32 INKNIT_CURRENT_INTERNAL_FUNC(set)
 static INKNIT_ALWAYS_INLINE void
-INTERNAL_FUNCNAME(set)(struct inknit_image *image, uint32_t x, uint32_t y, inknit_color_t color) {
+_inknit_set32(struct inknit_image *image, uint32_t x, uint32_t y, inknit_color_t color) {
 	const uint32_t pixel   = bytes_to_pixels(image->stride) * y + x;
 	const uint32_t wordidx = pixels_to_wordidx(pixel);
 	const int32_t  bitpos  = pixels_to_bitpos(pixel);
@@ -127,10 +129,10 @@ INTERNAL_FUNCNAME(set)(struct inknit_image *image, uint32_t x, uint32_t y, inkni
 
 #define _inknit_get_pixel32 INKNIT_CURRENT_INTERNAL_FUNC(get_pixel)
 static INKNIT_ALWAYS_INLINE inknit_color_t
-_inknit_get_pixel32(const uint32_t *data, int32_t stride, int32_t x, int32_t y) {
-	const int32_t pixel   = stride * y + x;
-	const int32_t wordidx = (int32_t)pixels_to_wordidx(pixel);
-	const int32_t bitpos  = pixels_to_bitpos(x);
+_inknit_get_pixel32(const uint32_t *data, uint32_t stride, uint32_t x, uint32_t y) {
+	const uint32_t pixel   = stride * y + x;
+	const uint32_t wordidx = pixels_to_wordidx(pixel);
+	const int32_t  bitpos  = pixels_to_bitpos(x);
 
 	const uint32_t word  = swap_if_required(data[wordidx]);
 	const uint32_t value = get_pixval(word, bitpos);

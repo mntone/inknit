@@ -38,7 +38,7 @@ void _inknit_draw_hline_arith32(
 	const uint32_t start_bitoffs = pixels_to_bitoffs(start_pixel);
 	const uint32_t end_bitoffs   = pixels_to_bitoffs(end_pixel);
 
-	const uint32_t pattern = INTERNAL_FUNCNAME(fillWordWithColor)(color);
+	const uint32_t pattern = _inknit_fill_word_with_color(color);
 
 	if (start_wordidx == end_wordidx) {
 		// Single-word line
@@ -98,7 +98,8 @@ void _inknit_draw_hline_arith32(
 #if defined(INKNIT_ENABLE_BENCHMARKS) || !defined(INKNIT_DISABLE_LUT)
 #template_switch LAYOUT_NAME
 #template_case "x1"
-static const uint32_t INKNIT_ARRAY_IN_RAM(INTERNAL_VARNAME(masks_head), 32) = {
+#define __inknit_draw_hline_masks_head INKNIT_CURRENT_INTERNAL_VAR(draw_hline_masks_head)
+static const uint32_t INKNIT_ARRAY_IN_RAM(__inknit_draw_hline_masks_head, 32) = {
 #ifdef INKNIT_BYTEORDER_BIG
 	0xFFFFFFFF, 0x7FFFFFFF, 0x3FFFFFFF, 0x1FFFFFFF, 0x0FFFFFFF, 0x07FFFFFF, 0x03FFFFFF, 0x01FFFFFF,
 	0x00FFFFFF, 0x007FFFFF, 0x003FFFFF, 0x001FFFFF, 0x000FFFFF, 0x0007FFFF, 0x0003FFFF, 0x0001FFFF,
@@ -111,7 +112,8 @@ static const uint32_t INKNIT_ARRAY_IN_RAM(INTERNAL_VARNAME(masks_head), 32) = {
 	0xFF000000, 0x7F000000, 0x3F000000, 0x1F000000, 0x0F000000, 0x07000000, 0x03000000, 0x01000000,
 #endif
 };
-// static const uint32_t INKNIT_ARRAY_IN_RAM(INTERNAL_VARNAME(masks_tail), 32) = {
+// #define __inknit_draw_hline_masks_tail INKNIT_CURRENT_INTERNAL_VAR(draw_hline_masks_tail)
+// static const uint32_t INKNIT_ARRAY_IN_RAM(__inknit_draw_hline_masks_tail, 32) = {
 // #ifdef INKNIT_BYTEORDER_LITTLE
 // 	0x00000080, 0x000000C0, 0x000000E0, 0x000000F0, 0x000000F8, 0x000000FC, 0x000000FE, 0x000000FF,
 // 	0x000080FF, 0x0000C0FF, 0x0000E0FF, 0x0000F0FF, 0x0000F8FF, 0x0000FCFF, 0x0000FEFF, 0x0000FFFF,
@@ -125,7 +127,8 @@ static const uint32_t INKNIT_ARRAY_IN_RAM(INTERNAL_VARNAME(masks_head), 32) = {
 // #endif
 // };
 #template_case "x1lsb"
-static const uint32_t INKNIT_ARRAY_IN_RAM(INTERNAL_VARNAME(masks_tail), 32) = {
+#define __inknit_draw_hline_masks_tail INKNIT_CURRENT_INTERNAL_VAR(draw_hline_masks_tail)
+static const uint32_t INKNIT_ARRAY_IN_RAM(__inknit_draw_hline_masks_tail, 32) = {
 #ifdef INKNIT_BYTEORDER_BIG
 	0x01000000, 0x03000000, 0x07000000, 0x0F000000, 0x1F000000, 0x3F000000, 0x7F000000, 0xFF000000,
 	0xFF010000, 0xFF030000, 0xFF070000, 0xFF0F0000, 0xFF1F0000, 0xFF3F0000, 0xFF7F0000, 0xFFFF0000,
@@ -140,7 +143,8 @@ static const uint32_t INKNIT_ARRAY_IN_RAM(INTERNAL_VARNAME(masks_tail), 32) = {
 };
 #template_case "x2"
 // clang-format off
-static const uint32_t INKNIT_ARRAY_IN_RAM(INTERNAL_VARNAME(masks_head), 16) = {
+#define __inknit_draw_hline_masks_head INKNIT_CURRENT_INTERNAL_VAR(draw_hline_masks_head)
+static const uint32_t INKNIT_ARRAY_IN_RAM(__inknit_draw_hline_masks_head, 16) = {
 #ifdef INKNIT_BYTEORDER_BIG
 	// start_wordoffs = 0, 2, 4, ...
 	0xFFFFFFFF, 0x3FFFFFFF, 0x0FFFFFFF, 0x03FFFFFF,
@@ -158,7 +162,8 @@ static const uint32_t INKNIT_ARRAY_IN_RAM(INTERNAL_VARNAME(masks_head), 16) = {
 // clang-format on
 #template_case "x2lsb"
 // clang-format off
-static const uint32_t INKNIT_ARRAY_IN_RAM(INTERNAL_VARNAME(masks_tail), 16) = {
+#define __inknit_draw_hline_masks_tail INKNIT_CURRENT_INTERNAL_VAR(draw_hline_masks_tail)
+static const uint32_t INKNIT_ARRAY_IN_RAM(__inknit_draw_hline_masks_tail, 16) = {
 #ifdef INKNIT_BYTEORDER_BIG
 	// end_wordoffs = 0, 2, 4, ... (swapped for BE CPU)
 	0x03000000, 0x0F000000, 0x3F000000, 0xFF000000,
@@ -176,7 +181,8 @@ static const uint32_t INKNIT_ARRAY_IN_RAM(INTERNAL_VARNAME(masks_tail), 16) = {
 // clang-format on
 #template_case "x4"
 // clang-format off
-static const uint32_t INKNIT_ARRAY_IN_RAM(INTERNAL_VARNAME(masks_head), 8) = {
+#define __inknit_draw_hline_masks_head INKNIT_CURRENT_INTERNAL_VAR(draw_hline_masks_head)
+static const uint32_t INKNIT_ARRAY_IN_RAM(__inknit_draw_hline_masks_head, 8) = {
 #ifdef INKNIT_BYTEORDER_BIG
 	// start_wordoffs = 0, 4, 8, ...
 	0xFFFFFFFF, 0x0FFFFFFF, 0x00FFFFFF, 0x000FFFFF,
@@ -190,7 +196,8 @@ static const uint32_t INKNIT_ARRAY_IN_RAM(INTERNAL_VARNAME(masks_head), 8) = {
 // clang-format on
 #template_case "x4lsb"
 // clang-format off
-static const uint32_t INKNIT_ARRAY_IN_RAM(INTERNAL_VARNAME(masks_tail), 8) = {
+#define __inknit_draw_hline_masks_tail INKNIT_CURRENT_INTERNAL_VAR(draw_hline_masks_tail)
+static const uint32_t INKNIT_ARRAY_IN_RAM(__inknit_draw_hline_masks_tail, 8) = {
 #ifdef INKNIT_BYTEORDER_BIG
 	// end_wordoffs = 0, 4, 8, ... (swapped for BE CPU)
 	0x0F000000, 0xFF000000, 0xFF0F0000, 0xFFFF0000,
@@ -218,7 +225,7 @@ void _inknit_draw_hline_lut32(
 	const uint32_t start_pixoffs = pixels_to_pixoffs(start_pixel);
 	const uint32_t end_pixoffs   = pixels_to_pixoffs(end_pixel);
 
-	const uint32_t pattern = INTERNAL_FUNCNAME(fillWordWithColor)(color);
+	const uint32_t pattern = _inknit_fill_word_with_color(color);
 
 	if (start_wordidx == end_wordidx) {
 		// Single-word line
@@ -244,7 +251,7 @@ void _inknit_draw_hline_lut32(
 #if IS_LITTLE
 			const uint32_t mask = swap_if_required((~0u) << pixoffs_to_bitoffs(start_pixoffs));
 #else
-			const uint32_t mask = INTERNAL_VARNAME(masks_head)[start_pixoffs];
+			const uint32_t mask = __inknit_draw_hline_masks_head[start_pixoffs];
 #endif
 
 			const uint32_t read_word  = data[start_wordidx];
@@ -260,7 +267,7 @@ void _inknit_draw_hline_lut32(
 		// Tail word
 		{
 #if IS_LITTLE
-			const uint32_t mask = INTERNAL_VARNAME(masks_tail)[end_pixoffs];
+			const uint32_t mask = __inknit_draw_hline_masks_tail[end_pixoffs];
 #else
 			const uint32_t bit_length = pixoffs_to_bitoffs(end_pixoffs) + BITS_PER_PIXEL;
 			const uint32_t mask       = swap_if_required((~0u) << (32u - bit_length));
@@ -328,7 +335,7 @@ void _inknit_draw_hline_with_clip32(
 	_inknit_draw_hline32(data, stride, (uint32_t)x1, (uint32_t)x2, (uint32_t)y, color);
 }
 
-void PUBLIC_FUNCNAME(draw_hline)(
+void inknit_draw_hline(
 	struct inknit_image *image, int32_t x1, int32_t x2, int32_t y, inknit_color_t color
 ) {
 	INKNIT_ASSUME_IMAGE(image);

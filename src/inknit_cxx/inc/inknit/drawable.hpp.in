@@ -1,0 +1,148 @@
+/*
+ * inknit <https://github.com/mntone/inknit>
+ *
+ * Copyright (C) 2025 mntone <901816+mntone@users.noreply.github.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+#ifdef __INTELLISENSE__
+#define INKNIT_CURRENT_LAYOUT x2
+#define INKNIT_CURRENT_BPP    2
+
+#include "drawable.hpp"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include "inknit/proto.h.in"
+
+#ifdef __cplusplus
+} /* extern "C" { */
+#endif
+
+namespace inknit { namespace details {
+
+	template<>
+	struct drawable_image<pixel_layout::INKNIT_CURRENT_LAYOUT>
+		: public image_primitive
+		, public image_helpers<INKNIT_CURRENT_BPP> {
+		drawable_image(
+			pixel_format       format,
+			inknit::colorspace colorspace,
+			inknit::colorrange colorrange,
+			inknit::alignment  align,
+			std::uint16_t      width,
+			std::uint16_t      height,
+			std::uint16_t      stride,
+			void              *data
+		)
+			: image_primitive(
+				  pixel_layout::INKNIT_CURRENT_LAYOUT,
+				  format,
+				  colorspace,
+				  colorrange,
+				  align,
+				  width,
+				  height,
+				  stride,
+				  data
+			  ) {}
+
+		color_t at(std::int32_t x, std::int32_t y) const noexcept {
+			return INKNIT_CURRENT_PUBLIC_FUNC(get_pixel)(get(), x, y);
+		}
+
+		void blit(
+			std::int32_t           dx,
+			std::int32_t           dy,
+			image_primitive const& source,
+			std::int32_t           sx,
+			std::int32_t           sy,
+			std::int32_t           width,
+			std::int32_t           height
+		) noexcept {
+			INKNIT_CURRENT_PUBLIC_FUNC(blit)(
+				get(),
+				static_cast<uint_t>(dx),
+				static_cast<uint_t>(dy),
+				&source,
+				static_cast<uint_t>(sx),
+				static_cast<uint_t>(sy),
+				static_cast<uint_t>(width),
+				static_cast<uint_t>(height)
+			);
+		}
+
+		void clear(color_t color) noexcept {
+			INKNIT_CURRENT_PUBLIC_FUNC(clear)(get(), color);
+		}
+
+		void fill_rect(point_t pt, size_t sz, color_t color) noexcept {
+			auto [x, y]          = pt;
+			auto [width, height] = sz;
+			INKNIT_CURRENT_PUBLIC_FUNC(fill_rect)(get(), x, y, width, height, color);
+		}
+
+		void fill_rect_coord(point_t pt1, point_t pt2, color_t color) noexcept {
+			auto [x1, y1] = pt1;
+			auto [x2, y2] = pt2;
+			INKNIT_CURRENT_PUBLIC_FUNC(fill_rect_coord)(get(), x1, y1, x2, y2, color);
+		}
+
+		void draw_circle(point_t ct, std::int32_t radius, color_t color) noexcept {
+			auto [x, y] = ct;
+			INKNIT_CURRENT_PUBLIC_FUNC(draw_circle)(get(), x, y, radius, color);
+		}
+
+		void draw_ellipse(point_t ct, size_t radius, color_t color) noexcept {
+			auto [x, y]   = ct;
+			auto [rx, ry] = radius;
+			INKNIT_CURRENT_PUBLIC_FUNC(draw_ellipse)(get(), x, y, rx, ry, color);
+		}
+
+		void draw_point(std::int32_t x, std::int32_t y, color_t color) noexcept {
+			INKNIT_CURRENT_PUBLIC_FUNC(draw_point)(get(), x, y, color);
+		}
+
+		void draw_hline(std::int32_t x1, std::int32_t x2, std::int32_t y, color_t color) noexcept {
+			INKNIT_CURRENT_PUBLIC_FUNC(draw_hline)(get(), x1, x2, y, color);
+		}
+
+		void draw_vline(std::int32_t x, std::int32_t y1, std::int32_t y2, color_t color) noexcept {
+			INKNIT_CURRENT_PUBLIC_FUNC(draw_vline)(get(), x, y1, y2, color);
+		}
+
+		void draw_line(point_t pt1, point_t pt2, color_t color) noexcept {
+			auto [x1, y1] = pt1;
+			auto [x2, y2] = pt2;
+			INKNIT_CURRENT_PUBLIC_FUNC(draw_line)(get(), x1, y1, x2, y2, color);
+		}
+
+		void draw_rect(point_t pt, size_t sz, color_t color) noexcept {
+			auto [x, y]          = pt;
+			auto [width, height] = sz;
+			INKNIT_CURRENT_PUBLIC_FUNC(draw_rect)(get(), x, y, width, height, color);
+		}
+
+		void draw_rect_coord(point_t pt1, point_t pt2, color_t color) noexcept {
+			auto [x1, y1] = pt1;
+			auto [x2, y2] = pt2;
+			INKNIT_CURRENT_PUBLIC_FUNC(draw_rect_coord)(get(), x1, y1, x2, y2, color);
+		}
+	};
+
+}}  // namespace inknit::details

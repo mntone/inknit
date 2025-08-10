@@ -135,7 +135,7 @@ void _inknit_draw_circle32(
 	} while (dx <= dy);
 }
 
-void PUBLIC_FUNCNAME(draw_circle)(
+void inknit_draw_circle(
 	struct inknit_image *image, int32_t cx, int32_t cy, int32_t radius, inknit_color_t color
 ) {
 	INKNIT_ASSUME_IMAGE(image);

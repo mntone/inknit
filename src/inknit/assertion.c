@@ -17,7 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "inc/inknit/proto.h"
+#include "inc/inknit/assertion.h"
 
 #include <stdio.h>
 #include <stdlib.h>

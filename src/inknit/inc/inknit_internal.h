@@ -19,9 +19,8 @@
 
 #pragma once
 
-#include "inknit/macro.h"
-#include "inknit/prefix.h"
 #include "inknit/types.h"
+#include "inknit/prefix.h"
 
 #ifdef __cplusplus
 extern "C" {

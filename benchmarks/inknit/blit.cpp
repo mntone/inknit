@@ -18,19 +18,18 @@
  */
 
 #include "inknit.hpp"
+#include "inknit_internal.h"
 #include "utils/inkbm.hpp"
 #include "constants.hpp"
 
 using namespace inknit;
 using namespace inkbm;
 
-#define TYPES      std::tuple<uint_t, uint_t, uint_t, uint_t, uint_t, uint_t>
-#define ITERATIONS 100
+#define CURRENT_GROUP INKNIT_INTERNAL_GROUP(32, 1, le)
+#define TYPES         std::tuple<uint_t, uint_t, uint_t, uint_t, uint_t, uint_t>
+#define ITERATIONS    100
 
-#define GROUP_NAME  blit
 #define APPLY(name) INKBM_FIXTURE_APPLY(name, blit, f_blit)
-#define FUNC_NAME(name)                                                               \
-	INKNIT_INTERNAL_FUNCNAME(INKNIT_X1LSB_BASE, _INKNIT_CONCAT3(GROUP_NAME, _, name))
 
 class f_blit: public fixture {
 public:
@@ -135,24 +134,32 @@ INKBM_ARGS(
 
 APPLY(pixel_old) {
 	for (int i = 0; i < ITERATIONS; ++i) {
-		FUNC_NAME(pixel_old)(&dst_, dx_, dy_, &src_, sx_, sy_, width_, height_);
+		INKNIT_INTERNAL_FUNC(blit_pixel_old, CURRENT_GROUP)(
+			&dst_, dx_, dy_, &src_, sx_, sy_, width_, height_
+		);
 	}
 }
 
 APPLY(pixel) {
 	for (int i = 0; i < ITERATIONS; ++i) {
-		FUNC_NAME(pixel)(&dst_, dx_, dy_, &src_, sx_, sy_, width_, height_);
+		INKNIT_INTERNAL_FUNC(blit_pixel, CURRENT_GROUP)(
+			&dst_, dx_, dy_, &src_, sx_, sy_, width_, height_
+		);
 	}
 }
 
 APPLY(unaligned) {
 	for (int i = 0; i < ITERATIONS; ++i) {
-		FUNC_NAME(unaligned)(&dst_, dx_, dy_, &src_, sx_, sy_, width_, height_);
+		INKNIT_INTERNAL_FUNC(blit_unaligned, CURRENT_GROUP)(
+			&dst_, dx_, dy_, &src_, sx_, sy_, width_, height_
+		);
 	}
 }
 
 APPLY(mask) {
 	for (int i = 0; i < ITERATIONS; ++i) {
-		FUNC_NAME(mask)(&dst_, dx_, dy_, &src_, sx_, sy_, width_, height_);
+		INKNIT_INTERNAL_FUNC(blit_mask, CURRENT_GROUP)(
+			&dst_, dx_, dy_, &src_, sx_, sy_, width_, height_
+		);
 	}
 }

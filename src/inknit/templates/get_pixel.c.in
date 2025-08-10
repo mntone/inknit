@@ -23,12 +23,12 @@
 #include "base.h"
 #endif
 
-inknit_color_t PUBLIC_FUNCNAME(get_pixel)(const struct inknit_image *image, int32_t x, int32_t y) {
+inknit_color_t inknit_get_pixel(const struct inknit_image *image, int32_t x, int32_t y) {
 	INKNIT_ASSUME_IMAGE(image);
 	INKNIT_ASSUME_COORD_X(x);
 	INKNIT_ASSUME_COORD_X(y);
 
-	const int32_t        stride = (int32_t)bytes_to_pixels(image->stride);
-	const inknit_color_t color  = _inknit_get_pixel32(image->data, stride, x, y);
+	const uint32_t       stride = bytes_to_pixels(image->stride);
+	const inknit_color_t color = _inknit_get_pixel32(image->data, stride, (uint32_t)x, (uint32_t)y);
 	return color;
 }

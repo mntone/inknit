@@ -177,9 +177,9 @@
 		INKNIT_ASSUME((image)->width <= _width, #image MSG_ERROR_IMAGE_WIDTH);                 \
 		INKNIT_ASSUME((image)->height <= _height, #image MSG_ERROR_IMAGE_HEIGHT);              \
 	} while (0)
-#define INKNIT_ASSUME_IMAGE(image)                                                  \
-	_INKNIT_ASSUME_IMAGE_BASE(                                                      \
-		image, TARGET_LAYOUT, TARGET_ALIGNMENT, INKNIT_WIDTH_MAX, INKNIT_HEIGHT_MAX \
+#define INKNIT_ASSUME_IMAGE(image)                                                 \
+	_INKNIT_ASSUME_IMAGE_BASE(                                                     \
+		image, PIXEL_LAYOUT, TARGET_ALIGNMENT, INKNIT_WIDTH_MAX, INKNIT_HEIGHT_MAX \
 	)
 
 #define INKNIT_ASSUME_COORD_X(var_x)                                                               \

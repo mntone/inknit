@@ -23,7 +23,7 @@
 #include <type_traits>
 #include <utility>  // pair
 
-#include "inknit.h"
+#include "inknit/types.h"
 
 namespace inknit {
 

@@ -61,9 +61,7 @@ void _inknit_draw_point_with_clip32(
 	_inknit_draw_point32(data, stride, (uint32_t)x, (uint32_t)y, color);
 }
 
-void PUBLIC_FUNCNAME(draw_point)(
-	struct inknit_image *image, int32_t x, int32_t y, inknit_color_t color
-) {
+void inknit_draw_point(struct inknit_image *image, int32_t x, int32_t y, inknit_color_t color) {
 	INKNIT_ASSUME_IMAGE(image);
 
 	const uint32_t stride = bytes_to_pixels(image->stride);

@@ -152,7 +152,7 @@ void _inknit_draw_ellipse32(
 	}
 }
 
-void PUBLIC_FUNCNAME(draw_ellipse)(
+void inknit_draw_ellipse(
 	struct inknit_image *image, int32_t cx, int32_t cy, int32_t rx, int32_t ry, inknit_color_t color
 ) {
 	INKNIT_ASSUME_IMAGE(image);

@@ -21,7 +21,7 @@
 
 #ifdef INKNIT_ENABLE_EXPORTS
 
-#include "inknit.h"
+#include "inknit/types.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -84,19 +84,7 @@ struct inknit_exports {
 	) INKNIT_NONNULL(1);
 
 	void (*const draw_hline)(
-		struct inknit_image *image,
-		inknit_uint_t        x1,
-		inknit_uint_t        x2,
-		inknit_uint_t        y,
-		inknit_color_t       color
-	) INKNIT_NONNULL(1);
-
-	void (*const draw_vline)(
-		struct inknit_image *image,
-		inknit_uint_t        x,
-		inknit_uint_t        y1,
-		inknit_uint_t        y2,
-		inknit_color_t       color
+		struct inknit_image *image, int32_t x1, int32_t x2, int32_t y, inknit_color_t color
 	) INKNIT_NONNULL(1);
 
 	void (*const draw_line)(
@@ -124,6 +112,10 @@ struct inknit_exports {
 		int32_t              x2,
 		int32_t              y2,
 		inknit_color_t       color
+	) INKNIT_NONNULL(1);
+
+	void (*const draw_vline)(
+		struct inknit_image *image, int32_t x, int32_t y1, int32_t y2, inknit_color_t color
 	) INKNIT_NONNULL(1);
 
 	const enum inknit_features    features;

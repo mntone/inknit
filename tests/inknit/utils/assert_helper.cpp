@@ -19,7 +19,7 @@
 
 #include "assert_helper.hpp"
 
-#include "inknit/proto.h"
+#include "inknit/assertion.h"
 
 using namespace inknit::tests;
 

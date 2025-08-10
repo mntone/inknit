@@ -22,7 +22,6 @@
 #include <stddef.h>  // NULL, size_t
 
 #include "inc/inknit/macro.h"  // load base macro
-#include "inc/inknit/proto.h"  // load base proto
 #include "inc/inknit/types.h"  // load base types
 
 #include "macro_impl.h"  // load internal macro

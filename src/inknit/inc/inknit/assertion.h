@@ -19,8 +19,7 @@
 
 #pragma once
 
-#include "macro.h"   // INKNIT_EXPORT, INKNIT_NONNULL, INKNIT_RESTRICT
-#include "prefix.h"  // __INKNIT_{access}_{type}NAME_BASE
+#include "macro.h"  // INKNIT_EXPORT, INKNIT_NONNULL, INKNIT_RESTRICT
 
 #ifdef __cplusplus
 extern "C" {
@@ -45,28 +44,6 @@ struct inknit_assert_info INKNIT_EXPORT
 inknit_hook_assert(inknit_assert_t handler, void *INKNIT_RESTRICT data) INKNIT_NONNULL(1, 2);
 #endif
 
-#define INKNIT_PROTO(prototype) INKNIT_EXPORT prototype
-
-#ifdef INKNIT_ENABLE_BENCHMARKS
-#define INKNIT_BMPROTO(prototype) INKNIT_EXPORT prototype
-#else
-#define INKNIT_BMPROTO(prototype)
-#endif
-
-
-// -- MARK: blit
-#define INKNIT_DEFPROTO_BLIT(name)                        \
-	void name(                                            \
-		struct inknit_image *INKNIT_RESTRICT       dst,   \
-		inknit_uint_t                              dx,    \
-		inknit_uint_t                              dy,    \
-		const struct inknit_image *INKNIT_RESTRICT src,   \
-		inknit_uint_t                              sx,    \
-		inknit_uint_t                              sy,    \
-		inknit_uint_t                              width, \
-		inknit_uint_t                              height \
-	)
-#define INKNIT_PROTO_BLIT(name) INKNIT_DEFPROTO_BLIT(name) INKNIT_NONNULL(1, 4)
 
 #ifdef __cplusplus
 } /* extern "C" { */

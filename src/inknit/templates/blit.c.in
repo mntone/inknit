@@ -25,7 +25,7 @@
 
 #ifdef INKNIT_ENABLE_BENCHMARKS
 INKNIT_BMPREFIX
-INKNIT_DEFPROTO_BLIT(INTERNAL_FUNCNAME(blit_pixel_old)) {
+void _inknit_blit_pixel_old32 _INKNIT_BLIT_PROTO {
 	uint32_t *INKNIT_RESTRICT const       dst_data = (inknit_color_t *)dst->data;
 	const uint32_t *INKNIT_RESTRICT const src_data = (const inknit_color_t *)src->data;
 
@@ -59,7 +59,7 @@ INKNIT_DEFPROTO_BLIT(INTERNAL_FUNCNAME(blit_pixel_old)) {
 
 #ifdef INKNIT_ENABLE_BENCHMARKS
 INKNIT_BMPREFIX
-INKNIT_DEFPROTO_BLIT(INTERNAL_FUNCNAME(blit_pixel)) {
+void _inknit_blit_pixel32 _INKNIT_BLIT_PROTO {
 	uint32_t *INKNIT_RESTRICT const       dst_data = (uint32_t *)dst->data;
 	const uint32_t *INKNIT_RESTRICT const src_data = (const uint32_t *)src->data;
 
@@ -98,7 +98,7 @@ INKNIT_DEFPROTO_BLIT(INTERNAL_FUNCNAME(blit_pixel)) {
 
 #ifdef INKNIT_ENABLE_BENCHMARKS
 INKNIT_BMPREFIX
-INKNIT_DEFPROTO_BLIT(INTERNAL_FUNCNAME(blit_unaligned)) {
+void _inknit_blit_unaligned32 _INKNIT_BLIT_PROTO {
 	uint32_t *INKNIT_RESTRICT const       dst_data = (uint32_t *)dst->data;
 	const uint32_t *INKNIT_RESTRICT const src_data = (const uint32_t *)src->data;
 
@@ -148,7 +148,8 @@ INKNIT_DEFPROTO_BLIT(INTERNAL_FUNCNAME(blit_unaligned)) {
 }
 #endif
 
-static INKNIT_ALWAYS_INLINE uint32_t INTERNAL_FUNCNAME(extract_aligned_bits)(
+#define _inknit_blit_extract_aligned_bits32 INKNIT_CURRENT_INTERNAL_FUNC(blit_extract_aligned_bits)
+static INKNIT_ALWAYS_INLINE uint32_t _inknit_blit_extract_aligned_bits32(
 	const uint32_t *data, uint32_t wordidx, uint32_t bitoffs, uint32_t bitsize_to_read
 ) {
 #if IS_LITTLE
@@ -173,7 +174,7 @@ static INKNIT_ALWAYS_INLINE uint32_t INTERNAL_FUNCNAME(extract_aligned_bits)(
 }
 
 INKNIT_BMPREFIX
-INKNIT_DEFPROTO_BLIT(INTERNAL_FUNCNAME(blit_mask)) {
+void _inknit_blit_mask32 _INKNIT_BLIT_PROTO {
 	uint32_t *INKNIT_RESTRICT const       dst_data = (uint32_t *)dst->data;
 	const uint32_t *INKNIT_RESTRICT const src_data = (const uint32_t *)src->data;
 
@@ -199,12 +200,12 @@ INKNIT_DEFPROTO_BLIT(INTERNAL_FUNCNAME(blit_mask)) {
 			}
 
 #if IS_LITTLE
-			const uint32_t src_wordval = INTERNAL_FUNCNAME(extract_aligned_bits)(
+			const uint32_t src_wordval = _inknit_blit_extract_aligned_bits32(
 											 src_data, src_wordidx, src_bitoffs, head_bitsize
 										 )
 									  << dst_bitoffs;
 #else
-			const uint32_t src_wordval = INTERNAL_FUNCNAME(extract_aligned_bits)(
+			const uint32_t src_wordval = _inknit_blit_extract_aligned_bits32(
 											 src_data, src_wordidx, src_bitoffs, head_bitsize
 										 )
 									  >> dst_bitoffs;
@@ -254,7 +255,7 @@ INKNIT_DEFPROTO_BLIT(INTERNAL_FUNCNAME(blit_mask)) {
 
 		// Tail (remaining bits)
 		if (copy_bitsize > 0) {
-			const uint32_t src_wordval = INTERNAL_FUNCNAME(extract_aligned_bits)(
+			const uint32_t src_wordval = _inknit_blit_extract_aligned_bits32(
 				src_data, src_wordidx, src_bitoffs, copy_bitsize
 			);
 
@@ -270,7 +271,7 @@ INKNIT_DEFPROTO_BLIT(INTERNAL_FUNCNAME(blit_mask)) {
 }
 
 INKNIT_BMPREFIX
-INKNIT_DEFPROTO_BLIT(INTERNAL_FUNCNAME(blit_aligned)) {
+void _inknit_blit_aligned32 _INKNIT_BLIT_PROTO {
 	INKNIT_ASSUME(((sx | dx | width) & PIXELS_PER_WORD_NEG1) == 0, "Fast path only");
 
 	uint32_t *const       dst_data = (uint32_t *)dst->data;
@@ -312,7 +313,7 @@ INKNIT_DEFPROTO_BLIT(INTERNAL_FUNCNAME(blit_aligned)) {
 #endif
 }
 
-INKNIT_DEFPROTO_BLIT(PUBLIC_FUNCNAME(blit)) {
+void inknit_blit _INKNIT_BLIT_PROTO {
 	INKNIT_ASSUME_IMAGE(dst);
 
 	INKNIT_ASSUME(sx <= INKNIT_X_MAX, MSG_SX_GREATER_THAN_MAX_VALUE);
@@ -325,8 +326,8 @@ INKNIT_DEFPROTO_BLIT(PUBLIC_FUNCNAME(blit)) {
 
 	const bool fast_path = ((sx | dx | width) & PIXELS_PER_WORD_NEG1) == 0;
 	if (fast_path) {
-		INTERNAL_FUNCNAME(blit_aligned)(dst, dx, dy, src, sx, sy, width, height);
+		_inknit_blit_aligned32(dst, dx, dy, src, sx, sy, width, height);
 	} else {
-		INTERNAL_FUNCNAME(blit_mask)(dst, dx, dy, src, sx, sy, width, height);
+		_inknit_blit_mask32(dst, dx, dy, src, sx, sy, width, height);
 	}
 }

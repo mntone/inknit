@@ -1,4 +1,12 @@
 {
+	"files.associations": {
+		"*.c.in": "c",
+		"*.cpp.in": "cpp",
+		"*.h": "c",
+		"*.h.in": "c",
+		"*.hpp": "cpp",
+		"*.hpp.in": "cpp"
+	},
 	"remote.autoForwardPorts": false,
 	"remote.restoreForwardedPorts": false,
 	"remote.portsAttributes": {

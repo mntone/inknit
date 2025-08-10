@@ -20,11 +20,10 @@
 #pragma once
 
 #include "../inknit_impl.h"
+#include "config.h"
 
-#include "config.h"               // load config
-#include "../inc/inknit/x4lsb.h"  // load prototype
-
-static INKNIT_ALWAYS_INLINE uint32_t INTERNAL_FUNCNAME(fillByteWithColor)(inknit_color_t color) {
+#define _inknit_fill_byte_with_color INKNIT_CURRENT_INTERNAL_FUNC(fill_byte_with_color)
+static INKNIT_ALWAYS_INLINE uint32_t _inknit_fill_byte_with_color(inknit_color_t color) {
 	uint32_t pattern = color;
 #ifdef INKNIT_SLOW_MULTIPLY
 	// Cortex-M0+: construct pattern via bitwise operations
@@ -36,7 +35,8 @@ static INKNIT_ALWAYS_INLINE uint32_t INTERNAL_FUNCNAME(fillByteWithColor)(inknit
 	return pattern;
 }
 
-static INKNIT_ALWAYS_INLINE uint32_t INTERNAL_FUNCNAME(fillWordWithColor)(inknit_color_t color) {
+#define _inknit_fill_word_with_color INKNIT_CURRENT_INTERNAL_FUNC(fill_word_with_color)
+static INKNIT_ALWAYS_INLINE uint32_t _inknit_fill_word_with_color(inknit_color_t color) {
 	uint32_t pattern = color;
 #ifdef INKNIT_SLOW_MULTIPLY
 	// Cortex-M0+: construct pattern via bitwise operations

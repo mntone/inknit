@@ -78,7 +78,7 @@ void _inknit_fill_rect_with_clip32(
 	}
 }
 
-void PUBLIC_FUNCNAME(fill_rect)(
+void inknit_fill_rect(
 	struct inknit_image *image,
 	int32_t              x,
 	int32_t              y,
@@ -106,7 +106,7 @@ void PUBLIC_FUNCNAME(fill_rect)(
 	_inknit_fill_rect_with_clip32(image->data, stride, x, y, right, bottom, color, &clip_rect);
 }
 
-void PUBLIC_FUNCNAME(fill_rect_coord)(
+void inknit_fill_rect_coord(
 	struct inknit_image *image, int32_t x1, int32_t y1, int32_t x2, int32_t y2, inknit_color_t color
 ) {
 	INKNIT_ASSUME_IMAGE(image);

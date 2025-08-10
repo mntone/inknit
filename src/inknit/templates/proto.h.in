@@ -21,9 +21,11 @@
 
 #ifdef __INTELLISENSE__
 #include "../x2/base.h"
+#include "../inc/inknit/proto.h.in"
 #include "../inc/inknit/proto_internal.h.in"
 #else
 #include "${LAYOUT_NAME}/base.h"
+#include "inc/inknit/proto.h.in"
 #include "inc/inknit/proto_internal.h.in"
 #endif
 

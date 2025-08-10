@@ -43,7 +43,7 @@ void _inknit_draw_vline_scalar32(
 	while (row <= end_row) {
 		uint8_t *byte = row + byteoffs;
 
-		INTERNAL_FUNCNAME(set_value8)(byte, clear_mask, pixel_value);
+		_inknit_set_value8(byte, clear_mask, pixel_value);
 
 		row += stride_in_byte;
 	}
@@ -104,7 +104,7 @@ void _inknit_draw_vline_scalar32(
  * | 32px        |     3838 |          3355 | **PointerUnroll** |
  *
  */
-#define SETVAL8(byteptr) INTERNAL_FUNCNAME(set_value8)((byteptr), clear_mask, pixel_value);
+#define SETVAL8(byteptr) _inknit_set_value8((byteptr), clear_mask, pixel_value);
 
 INKNIT_BMPREFIX
 void _inknit_draw_vline_unroll32(
@@ -202,7 +202,7 @@ void _inknit_draw_vline_with_clip32(
 	_inknit_draw_vline32(data, stride, (uint32_t)x, (uint32_t)y1, (uint32_t)y2, color);
 }
 
-void PUBLIC_FUNCNAME(draw_vline)(
+void inknit_draw_vline(
 	struct inknit_image *image, int32_t x, int32_t y1, int32_t y2, inknit_color_t color
 ) {
 	INKNIT_ASSUME_IMAGE(image);

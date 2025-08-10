@@ -24,12 +24,11 @@
 using namespace inknit;
 using namespace inkbm;
 
-#define TYPES      std::tuple<std::int32_t, std::int32_t, std::int32_t>
-#define ITERATIONS DEFAULT_ITERATIONS
+#define CURRENT_LAYOUT x1lsb
+#define TYPES          std::tuple<std::int32_t, std::int32_t, std::int32_t>
+#define ITERATIONS     DEFAULT_ITERATIONS
 
-#define GROUP_NAME  draw_circle
 #define APPLY(name) INKBM_FIXTURE_APPLY(name, draw_circle, d_circle)
-#define FUNC_NAME() INKNIT_PUBLIC_FUNCNAME(INKNIT_X1LSB_BASE, GROUP_NAME)
 
 class d_circle: public fixture {
 public:
@@ -88,6 +87,6 @@ INKBM_ARGS(
 
 APPLY(midpoint) {
 	for (int i = 0; i < ITERATIONS; ++i) {
-		FUNC_NAME()(&image_, cx_, cy_, radius_, COLOR_WHITE);
+		INKNIT_PUBLIC_FUNC(draw_circle, CURRENT_LAYOUT)(&image_, cx_, cy_, radius_, COLOR_WHITE);
 	}
 }

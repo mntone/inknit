@@ -1,0 +1,122 @@
+/*
+ * inknit <https://github.com/mntone/inknit>
+ *
+ * Copyright (C) 2025 mntone <901816+mntone@users.noreply.github.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+// -- MARK: primitive
+#define inknit_get_pixel INKNIT_CURRENT_PUBLIC_FUNC(get_pixel)
+inknit_color_t INKNIT_EXPORT
+inknit_get_pixel(const struct inknit_image *image, int32_t x, int32_t y) INKNIT_NONNULL(1);
+
+#define inknit_clear INKNIT_CURRENT_PUBLIC_FUNC(clear)
+void INKNIT_EXPORT inknit_clear(struct inknit_image *image, inknit_color_t color) INKNIT_NONNULL(1);
+
+
+// -- MARK: fill
+#define inknit_fill_rect INKNIT_CURRENT_PUBLIC_FUNC(fill_rect)
+void INKNIT_EXPORT inknit_fill_rect(
+	struct inknit_image *image,
+	int32_t              x,
+	int32_t              y,
+	int32_t              width,
+	int32_t              height,
+	inknit_color_t       color
+) INKNIT_NONNULL(1);
+
+#define inknit_fill_rect_coord INKNIT_CURRENT_PUBLIC_FUNC(fill_rect_coord)
+void INKNIT_EXPORT inknit_fill_rect_coord(
+	struct inknit_image *image, int32_t x1, int32_t y1, int32_t x2, int32_t y2, inknit_color_t color
+) INKNIT_NONNULL(1);
+
+
+// -- MARK: draw
+#define inknit_draw_circle INKNIT_CURRENT_PUBLIC_FUNC(draw_circle)
+void INKNIT_EXPORT inknit_draw_circle(
+	struct inknit_image *image, int32_t cx, int32_t cy, int32_t radius, inknit_color_t color
+) INKNIT_NONNULL(1);
+
+#define inknit_draw_ellipse INKNIT_CURRENT_PUBLIC_FUNC(draw_ellipse)
+void INKNIT_EXPORT inknit_draw_ellipse(
+	struct inknit_image *image, int32_t cx, int32_t cy, int32_t rx, int32_t ry, inknit_color_t color
+) INKNIT_NONNULL(1);
+
+#define inknit_draw_hline INKNIT_CURRENT_PUBLIC_FUNC(draw_hline)
+void INKNIT_EXPORT inknit_draw_hline(
+	struct inknit_image *image, int32_t x1, int32_t x2, int32_t y, inknit_color_t color
+) INKNIT_NONNULL(1);
+
+#define inknit_draw_line INKNIT_CURRENT_PUBLIC_FUNC(draw_line)
+void INKNIT_EXPORT inknit_draw_line(
+	struct inknit_image *image, int32_t x1, int32_t y1, int32_t x2, int32_t y2, inknit_color_t color
+) INKNIT_NONNULL(1);
+
+#define inknit_draw_point INKNIT_CURRENT_PUBLIC_FUNC(draw_point)
+void INKNIT_EXPORT inknit_draw_point(
+	struct inknit_image *image, int32_t x, int32_t y, inknit_color_t color
+) INKNIT_NONNULL(1);
+
+#define inknit_draw_rect INKNIT_CURRENT_PUBLIC_FUNC(draw_rect)
+void INKNIT_EXPORT inknit_draw_rect(
+	struct inknit_image *image,
+	int32_t              x,
+	int32_t              y,
+	int32_t              width,
+	int32_t              height,
+	inknit_color_t       color
+) INKNIT_NONNULL(1);
+
+#define inknit_draw_rect_coord INKNIT_CURRENT_PUBLIC_FUNC(draw_rect_coord)
+void INKNIT_EXPORT inknit_draw_rect_coord(
+	struct inknit_image *image, int32_t x1, int32_t y1, int32_t x2, int32_t y2, inknit_color_t color
+) INKNIT_NONNULL(1);
+
+#define inknit_draw_vline INKNIT_CURRENT_PUBLIC_FUNC(draw_vline)
+void INKNIT_EXPORT inknit_draw_vline(
+	struct inknit_image *image, int32_t x, int32_t y1, int32_t y2, inknit_color_t color
+) INKNIT_NONNULL(1);
+
+
+// -- MARK: blit
+#define inknit_blit INKNIT_CURRENT_PUBLIC_FUNC(blit)
+void INKNIT_EXPORT inknit_blit(
+	struct inknit_image *INKNIT_RESTRICT       dst,
+	inknit_uint_t                              dx,
+	inknit_uint_t                              dy,
+	const struct inknit_image *INKNIT_RESTRICT src,
+	inknit_uint_t                              sx,
+	inknit_uint_t                              sy,
+	inknit_uint_t                              width,
+	inknit_uint_t                              height
+) INKNIT_NONNULL(1, 4);
+
+
+// -- MARK: clean up macros
+#ifndef INKNIT_USE_MACRO_NAME
+#undef inknit_get_pixel
+#undef inknit_clear
+#undef inknit_fill_rect
+#undef inknit_fill_rect_coord
+#undef inknit_draw_circle
+#undef inknit_draw_ellipse
+#undef inknit_draw_hline
+#undef inknit_draw_line
+#undef inknit_draw_point
+#undef inknit_draw_rect
+#undef inknit_draw_rect_coord
+#undef inknit_draw_vline
+#undef inknit_blit
+#endif

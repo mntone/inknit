@@ -23,7 +23,7 @@
 #include "../base.h"
 #endif
 
-void PUBLIC_FUNCNAME(draw_rect)(
+void inknit_draw_rect(
 	struct inknit_image *image,
 	int32_t              x,
 	int32_t              y,
@@ -64,7 +64,7 @@ void PUBLIC_FUNCNAME(draw_rect)(
 	}
 }
 
-void PUBLIC_FUNCNAME(draw_rect_coord)(
+void inknit_draw_rect_coord(
 	struct inknit_image *image, int32_t x1, int32_t y1, int32_t x2, int32_t y2, inknit_color_t color
 ) {
 	INKNIT_ASSUME_IMAGE(image);
