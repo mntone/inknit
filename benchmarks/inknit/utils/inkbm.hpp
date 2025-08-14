@@ -94,7 +94,7 @@ class group final {
 public:
 	using item_type = std::unique_ptr<executor>;
 
-	constexpr void add(item_type executor) noexcept {
+	void add(item_type executor) noexcept {
 		cases_.emplace_back(std::move(executor));
 	}
 
@@ -123,7 +123,7 @@ public:
 		return instance;
 	}
 
-	constexpr void add(std::unique_ptr<executor> executor) noexcept {
+	void add(std::unique_ptr<executor> executor) noexcept {
 		cases_.emplace_back(std::move(executor));
 	}
 

@@ -143,7 +143,7 @@ namespace details {
 	};
 
 	struct image_primitive {
-		image_primitive(
+		constexpr image_primitive(
 			pixel_layout       layout,
 			pixel_format       format,
 			inknit::colorspace colorspace,

@@ -13,13 +13,10 @@ add_executable(${PROJECT_NAME}_tests
 	draw/rect_coord.cpp
 	draw/vline.cpp
 	$<$<NOT:$<STREQUAL:${CMAKE_BUILD_TYPE},Release>>:utils/assert_helper.cpp>
+	utils/test_image.cpp
 	blit.cpp
 	clear.cpp
 	test_main.cpp
-	)
-
-target_compile_definitions(${PROJECT_NAME}_tests PRIVATE
-	ENABLED_COLOR_DUMP
 	)
 
 target_include_directories(${PROJECT_NAME}_tests PRIVATE

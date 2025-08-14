@@ -17,10 +17,34 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#define DOCTEST_CONFIG_NO_EXCEPTIONS
-#define DOCTEST_CONFIG_NO_POSIX_SIGNALS
-#define DOCTEST_CONFIG_NO_MULTITHREADING
-#include <doctest/doctest.h>
+#include "test_image.hpp"
 
-#include "utils/assert_helper.hpp"
-#include "utils/test_image.hpp"
+#include <cinttypes>  // PRId32
+#include <sstream>    // ostringstream
+
+using namespace inknit;
+using namespace inknit::tests;
+using namespace inknit::tests::details;
+
+std::optional<std::string> test_image_base::test(
+	inknit_image const& image, std::int32_t x, std::int32_t y, color_t actual, color_t expected
+) const noexcept {
+	if (actual == expected) {
+		return std::nullopt;
+	}
+
+	char buffer[128];
+	snprintf(
+		buffer,
+		sizeof(buffer) / sizeof(buffer[0]),
+		"Unexpected value at (%" PRId32 ", %" PRId32 "): got %s, expected %s\n",
+		x,
+		y,
+		formatter_->name(actual).data(),
+		formatter_->name(expected).data()
+	);
+
+	std::ostringstream oss;
+	oss << buffer << str(image);
+	return oss.str();
+}

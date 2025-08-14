@@ -324,7 +324,7 @@ void boxplot_chart::render(std::ostream& os) const {
 	os
 		<< label_padding
 		<< COLOR_DARKGRAY
-		<< string_view(value_content)
+		<< string_view(value_content.data(), value_content.size())
 		<< " ["
 		<< unit
 		<< ']'
@@ -461,7 +461,10 @@ void boxplot_chart::render(std::ostream& os) const {
 		build_value_label(value_content, label_format(base_scale(data.max)), max_pos);
 		build_value_label(value_content, label_format(base_scale(data.lfence)), lfence_pos);
 		build_value_label(value_content, label_format(base_scale(data.min)), min_pos);
-		os << string_view(value_content) << STRING_VLINE_WITH_COLOR << endl;
+		os
+			<< string_view(value_content.data(), value_content.size())
+			<< STRING_VLINE_WITH_COLOR
+			<< endl;
 
 		// (b) box row
 		os << space_header << STRING_VLINE_WITH_COLOR;
