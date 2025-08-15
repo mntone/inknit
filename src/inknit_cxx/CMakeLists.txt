@@ -14,4 +14,5 @@ target_sources(${PROJECT_NAME}_cxx PRIVATE
 	$<$<BOOL:${UNIX}>:format/auto-posix.cpp>
 	format/block.cpp
 	format/character.cpp
+	format/sixel.cpp
 	)

@@ -40,7 +40,7 @@ namespace inknit { namespace format {
 	template<pixel_layout PIXEL_LAYOUT, pixel_format PIXEL_FORMAT>
 	class character_formatter final: public image_formatter {
 	public:
-		character_formatter() noexcept = default;
+		constexpr character_formatter() noexcept = default;
 
 		std::string_view name(color_t color) const noexcept override;
 		std::string      format(inknit_image const& image) const noexcept override;
@@ -50,12 +50,23 @@ namespace inknit { namespace format {
 	// -- MARK: block_formatter
 
 	template<pixel_layout PIXEL_LAYOUT, pixel_format PIXEL_FORMAT>
-	class block_formatter final: public image_formatter {
+	class block_formatter: public image_formatter {
 	public:
-		block_formatter() noexcept = default;
+		constexpr block_formatter() noexcept = default;
 
-		std::string_view name(color_t color) const noexcept override;
+		std::string_view name(color_t color) const noexcept override final;
 		std::string      format(inknit_image const& image) const noexcept override;
+	};
+
+
+	// -- MARK: sixel_formatter
+
+	template<pixel_layout PIXEL_LAYOUT, pixel_format PIXEL_FORMAT>
+	class sixel_formatter final: public block_formatter<PIXEL_LAYOUT, PIXEL_FORMAT> {
+	public:
+		constexpr sixel_formatter() noexcept = default;
+
+		std::string format(inknit_image const& image) const noexcept;
 	};
 
 

@@ -19,6 +19,7 @@
 		".git/": true,
 		"build/": true,
 	},
+	"terminal.integrated.enableImages": true,
 	"workbench.editor.customLabels.patterns": {
 		"*/{benchmarks,src,sources,tests}/**/*": "[${dirname(-2)}] ${filename}.${extname}"
 	}
