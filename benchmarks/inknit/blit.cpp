@@ -26,8 +26,15 @@ using namespace inknit;
 using namespace inkbm;
 
 #define CURRENT_GROUP INKNIT_INTERNAL_GROUP(32, 1, le)
-#define TYPES         std::tuple<uint_t, uint_t, uint_t, uint_t, uint_t, uint_t>
-#define ITERATIONS    100
+#define TYPES          \
+	std::tuple<        \
+		inknit_uint_t, \
+		inknit_uint_t, \
+		inknit_uint_t, \
+		inknit_uint_t, \
+		inknit_uint_t, \
+		inknit_uint_t>
+#define ITERATIONS 100
 
 #define APPLY(name) INKBM_FIXTURE_APPLY(name, blit, f_blit)
 
@@ -70,7 +77,7 @@ protected:
 	fixed_image<96, 96, pixel_layout::x1lsb, pixel_format::grayscale> src_;
 	fixed_image<96, 96, pixel_layout::x1lsb, pixel_format::grayscale> dst_;
 
-	uint_t dx_, dy_, sx_, sy_, width_, height_;
+	inknit_uint_t dx_, dy_, sx_, sy_, width_, height_;
 };
 
 INKBM_ARGS(

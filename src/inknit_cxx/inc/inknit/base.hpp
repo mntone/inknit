@@ -28,7 +28,6 @@
 namespace inknit {
 
 using color_t = inknit_color_t;
-using uint_t  = inknit_uint_t;
 using point_t = std::pair<std::int32_t, std::int32_t>;
 using size_t  = std::pair<std::int32_t, std::int32_t>;
 

@@ -77,13 +77,13 @@ namespace inknit { namespace details {
 		) noexcept {
 			INKNIT_CURRENT_PUBLIC_FUNC(blit)(
 				get(),
-				static_cast<uint_t>(dx),
-				static_cast<uint_t>(dy),
+				static_cast<inknit_uint_t>(dx),
+				static_cast<inknit_uint_t>(dy),
 				&source,
-				static_cast<uint_t>(sx),
-				static_cast<uint_t>(sy),
-				static_cast<uint_t>(width),
-				static_cast<uint_t>(height)
+				static_cast<inknit_uint_t>(sx),
+				static_cast<inknit_uint_t>(sy),
+				static_cast<inknit_uint_t>(width),
+				static_cast<inknit_uint_t>(height)
 			);
 		}
 

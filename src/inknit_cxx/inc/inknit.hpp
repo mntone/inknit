@@ -32,7 +32,7 @@ namespace inknit {
 template<
 	pixel_layout PIXEL_LAYOUT,
 	pixel_format PIXEL_FORMAT,
-	std::int32_t BITS_PER_PIXEL = ((static_cast<uint_t>(PIXEL_LAYOUT) & 0x3C) >> 2) + 1>
+	std::int32_t BITS_PER_PIXEL = ((static_cast<std::int32_t>(PIXEL_LAYOUT) & 0x3C) >> 2) + 1>
 struct image
 	: public details::image_traits<image<PIXEL_LAYOUT, PIXEL_FORMAT, BITS_PER_PIXEL>>
 	, public details::drawable_image<PIXEL_LAYOUT> {
@@ -112,7 +112,7 @@ template<
 	std::uint16_t HEIGHT,
 	pixel_layout  PIXEL_LAYOUT,
 	pixel_format  PIXEL_FORMAT,
-	std::int32_t  BITS_PER_PIXEL = ((static_cast<uint_t>(PIXEL_LAYOUT) & 0x3C) >> 2) + 1>
+	std::int32_t  BITS_PER_PIXEL = ((static_cast<std::int32_t>(PIXEL_LAYOUT) & 0x3C) >> 2) + 1>
 struct fixed_image
 	: public details::image_traits<
 		  fixed_image<WIDTH, HEIGHT, PIXEL_LAYOUT, PIXEL_FORMAT, BITS_PER_PIXEL>>
