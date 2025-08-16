@@ -181,7 +181,8 @@ void inknit_draw_line(
 ) {
 	INKNIT_ASSUME_IMAGE(image);
 
-	const uint32_t stride = bytes_to_pixels(image->stride);
+	uint32_t *INKNIT_RESTRICT const data   = (uint32_t *)image->data;
+	const uint32_t                  stride = image->stride;
 
 	struct inknit_rect clip_rect = {
 		0,
@@ -189,5 +190,5 @@ void inknit_draw_line(
 		image->width - 1,
 		(int16_t)(image->height - 1),
 	};
-	_inknit_draw_line_with_clip32(image->data, stride, x1, y1, x2, y2, color, &clip_rect);
+	_inknit_draw_line_with_clip32(data, stride, x1, y1, x2, y2, color, &clip_rect);
 }

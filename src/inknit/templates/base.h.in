@@ -114,7 +114,7 @@ _inknit_set_value32(uint32_t *const word, const uint32_t clear_mask, const uint3
 #define _inknit_set32 INKNIT_CURRENT_INTERNAL_FUNC(set)
 static INKNIT_ALWAYS_INLINE void
 _inknit_set32(struct inknit_image *image, uint32_t x, uint32_t y, inknit_color_t color) {
-	const uint32_t pixel   = bytes_to_pixels(image->stride) * y + x;
+	const uint32_t pixel   = image->stride * y + x;
 	const uint32_t wordidx = pixels_to_wordidx(pixel);
 	const int32_t  bitpos  = pixels_to_bitpos(pixel);
 

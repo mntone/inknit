@@ -207,7 +207,8 @@ void inknit_draw_vline(
 ) {
 	INKNIT_ASSUME_IMAGE(image);
 
-	const uint32_t stride = bytes_to_pixels(image->stride);
+	uint32_t *INKNIT_RESTRICT const data   = (uint32_t *)image->data;
+	const uint32_t                  stride = image->stride;
 
 	struct inknit_rect clip_rect = {
 		0,
@@ -220,5 +221,5 @@ void inknit_draw_vline(
 		_inknit_swap_int32(&y1, &y2);
 	}
 
-	_inknit_draw_vline_with_clip32(image->data, stride, x, y1, y2, color, &clip_rect);
+	_inknit_draw_vline_with_clip32(data, stride, x, y1, y2, color, &clip_rect);
 }

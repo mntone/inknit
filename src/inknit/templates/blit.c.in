@@ -30,8 +30,8 @@ void _inknit_blit_pixel_old32 _INKNIT_BLIT_PROTO {
 	const uint32_t *INKNIT_RESTRICT const src_data = (const inknit_color_t *)src->data;
 
 	for (uint32_t y = 0; y < height; ++y) {
-		const uint32_t dst_start_pixel = bytes_to_pixels(dst->stride) * (dy + y) + dx;
-		const uint32_t src_start_pixel = bytes_to_pixels(src->stride) * (sy + y) + sx;
+		const uint32_t dst_start_pixel = dst->stride * (dy + y) + dx;
+		const uint32_t src_start_pixel = src->stride * (sy + y) + sx;
 
 		for (uint32_t x = 0; x < width; ++x) {
 			const uint32_t dst_pixel = dst_start_pixel + x;
@@ -63,8 +63,8 @@ void _inknit_blit_pixel32 _INKNIT_BLIT_PROTO {
 	uint32_t *INKNIT_RESTRICT const       dst_data = (uint32_t *)dst->data;
 	const uint32_t *INKNIT_RESTRICT const src_data = (const uint32_t *)src->data;
 
-	const uint32_t dst_width = bytes_to_pixels(dst->stride);
-	const uint32_t src_width = bytes_to_pixels(src->stride);
+	const uint32_t dst_width = dst->stride;
+	const uint32_t src_width = src->stride;
 
 	const uint32_t dst_padding = dst_width - width;
 	const uint32_t src_padding = src_width - width;
@@ -102,8 +102,8 @@ void _inknit_blit_unaligned32 _INKNIT_BLIT_PROTO {
 	uint32_t *INKNIT_RESTRICT const       dst_data = (uint32_t *)dst->data;
 	const uint32_t *INKNIT_RESTRICT const src_data = (const uint32_t *)src->data;
 
-	const uint32_t dst_stride = bytes_to_pixels(dst->stride);
-	const uint32_t src_stride = bytes_to_pixels(src->stride);
+	const uint32_t dst_stride = dst->stride;
+	const uint32_t src_stride = src->stride;
 
 	uint32_t dst_pixel = dst_stride * dy + dx;
 	uint32_t src_pixel = src_stride * sy + sx;
@@ -178,8 +178,8 @@ void _inknit_blit_mask32 _INKNIT_BLIT_PROTO {
 	uint32_t *INKNIT_RESTRICT const       dst_data = (uint32_t *)dst->data;
 	const uint32_t *INKNIT_RESTRICT const src_data = (const uint32_t *)src->data;
 
-	const uint32_t dst_stride = bytes_to_pixels(dst->stride);
-	const uint32_t src_stride = bytes_to_pixels(src->stride);
+	const uint32_t dst_stride = dst->stride;
+	const uint32_t src_stride = src->stride;
 
 	uint32_t dst_pixel = dst_stride * dy + dx;
 	uint32_t src_pixel = src_stride * sy + sx;
@@ -280,8 +280,8 @@ void _inknit_blit_aligned32 _INKNIT_BLIT_PROTO {
 #ifdef INKNIT_USE_MEMORY_H
 	const size_t width_bytes = (size_t)pixels_to_bytes(width);
 
-	const uint32_t dst_stride_wordidx = bytes_to_wordidx(dst->stride);
-	const uint32_t src_stride_wordidx = bytes_to_wordidx(src->stride);
+	const uint32_t dst_stride_wordidx = pixels_to_wordidx(dst->stride);
+	const uint32_t src_stride_wordidx = pixels_to_wordidx(src->stride);
 
 	uint32_t dst_wordidx = dst_stride_wordidx * dy + pixels_to_wordidx(dx);
 	uint32_t src_wordidx = src_stride_wordidx * sy + pixels_to_wordidx(sx);
@@ -294,8 +294,8 @@ void _inknit_blit_aligned32 _INKNIT_BLIT_PROTO {
 #else
 	const uint32_t width_wordidx = pixels_to_wordidx(width);
 
-	const uint32_t dst_stride_wordidx = bytes_to_wordidx(dst->stride);
-	const uint32_t src_stride_wordidx = bytes_to_wordidx(src->stride);
+	const uint32_t dst_stride_wordidx = pixels_to_wordidx(dst->stride);
+	const uint32_t src_stride_wordidx = pixels_to_wordidx(src->stride);
 
 	const uint32_t dst_padding_wordidx = dst_stride_wordidx - width_wordidx;
 	const uint32_t src_padding_wordidx = src_stride_wordidx - width_wordidx;

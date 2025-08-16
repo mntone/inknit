@@ -114,8 +114,10 @@ namespace details {
 	}
 
 	template<std::integral I>
-	constexpr I stride(I width, I bitsPerPixels, I align) noexcept {
-		return ((width * bitsPerPixels + (align - 1)) & ~(align - 1)) / (align >> 3);
+	constexpr I stride(I width, I bits_per_pixels, I align_bits) noexcept {
+		I const row_bits         = width * bits_per_pixels;
+		I const aligned_row_bits = (row_bits + (align_bits - 1)) & ~(align_bits - 1);
+		return (aligned_row_bits + bits_per_pixels - 1) / bits_per_pixels;
 	}
 
 	template<typename ImageType>
