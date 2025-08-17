@@ -131,6 +131,7 @@ Note: This is not required for native or x86 (32-bit on AMD64) builds.
 |----------------------------|----------|--------------|----------------------------------------------------------------------------------------------------------------------------|
 | `INKNIT_DISABLE_LUT`       | `BOOL`   | `OFF`        | Disable internal lookup tables for drawing operations. Disabling may reduce binary size but lower performance.             |
 | `INKNIT_ENABLE_BENCHMARKS` | `BOOL`   | `ON`         | Enable benchmarking utilities. Exposes internal functions and builds a benchmark suite (requires C++20).                   |
+| `INKNIT_ENABLE_FOLD`       | `BOOL`   | `OFF`        | Use symmetry-based circle/ellipse drawing to reduce binary size. Default versions may be faster.                           |
 | `INKNIT_ENABLE_UNROLL`     | `BOOL`   | `OFF`        | Enable loop unrolling in selected rendering routines for better performance on some targets.                               |
 | `INKNIT_USE_MEMORY_H`      | `BOOL`   | `ON`         | Use `memory.h` instead of primitive operations for `memcpy`/`memset` in certain embedded environments.                     |
 | `INKNIT_TARGET`            | `STRING` | `""` (empty) | Target platform hint. Set to `"pico"` when building for RP2040 / RP2350 via `CMakePresets.json`. Defaults to empty string. |

@@ -20,6 +20,10 @@
 					"type": "BOOL",
 					"value": false
 				},
+				"INKNIT_ENABLE_FOLD": {
+					"type": "BOOL",
+					"value": false
+				},
 				"INKNIT_ENABLE_OBJDUMP": {
 					"type": "BOOL",
 					"value": false
@@ -59,6 +63,7 @@
 			"hidden": true,
 			"cacheVariables": {
 				"CMAKE_BUILD_TYPE": "Release",
+				"INKNIT_ENABLE_BENCHMARKS": false,
 				"INKNIT_ENABLE_OBJDUMP": true
 			}
 		},

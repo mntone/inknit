@@ -24,6 +24,30 @@
 #endif
 
 #define _inknit_draw_ellipse_points32 INKNIT_CURRENT_INTERNAL_FUNC(draw_ellipse_points)
+#ifdef INKNIT_ENABLE_FOLD
+static inline void _inknit_draw_ellipse_points32(
+	uint32_t *INKNIT_RESTRICT                 data,
+	uint32_t                                  stride,
+	int32_t                                   cx,
+	int32_t                                   cy,
+	int32_t                                   dx,
+	int32_t                                   dy,
+	inknit_color_t                            color,
+	const struct inknit_rect *INKNIT_RESTRICT clip_rect
+) {
+	const int32_t xs[4] = {cx + dx, cx - dx, cx + dx, cx - dx};
+	const int32_t ys[4] = {cy + dy, cy + dy, cy - dy, cy - dy};
+
+	for (int32_t i = 0; i < 4; ++i) {
+		const int32_t x = xs[i];
+		const int32_t y = ys[i];
+		if ((uint32_t)(x - clip_rect->left) <= (uint32_t)(clip_rect->right - clip_rect->left)
+			&& (uint32_t)(y - clip_rect->top) <= (uint32_t)(clip_rect->bottom - clip_rect->top)) {
+			_inknit_draw_point32(data, stride, (uint32_t)x, (uint32_t)y, color);
+		}
+	}
+}
+#else
 static inline void _inknit_draw_ellipse_points32(
 	uint32_t *INKNIT_RESTRICT                 data,
 	uint32_t                                  stride,
@@ -66,6 +90,7 @@ static inline void _inknit_draw_ellipse_points32(
 		}
 	}
 }
+#endif
 
 void _inknit_draw_ellipse32(
 	uint32_t *INKNIT_RESTRICT                 data,
