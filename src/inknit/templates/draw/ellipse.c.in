@@ -92,7 +92,7 @@ static inline void _inknit_draw_ellipse_points32(
 }
 #endif
 
-void _inknit_draw_ellipse32(
+void _inknit_draw_ellipse_with_clip32(
 	uint32_t *INKNIT_RESTRICT                 data,
 	uint32_t                                  stride,
 	int32_t                                   cx,
@@ -191,5 +191,5 @@ void inknit_draw_ellipse(
 		image->width - 1,
 		(int16_t)(image->height - 1),
 	};
-	_inknit_draw_ellipse32(data, stride, cx, cy, rx, ry, color, &clip_rect);
+	_inknit_draw_ellipse_with_clip32(data, stride, cx, cy, rx, ry, color, &clip_rect);
 }

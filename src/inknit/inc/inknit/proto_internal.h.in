@@ -166,8 +166,8 @@ void INKNIT_EXPORT _inknit_draw_line_1loop32(
 
 
 // -- MARK: draw_circle
-#define _inknit_draw_circle32 INKNIT_CURRENT_INTERNAL_FUNC(draw_circle)
-void INKNIT_EXPORT _inknit_draw_circle32(
+#define _inknit_draw_circle_with_clip32 INKNIT_CURRENT_INTERNAL_FUNC(draw_circle_with_clip)
+void INKNIT_EXPORT _inknit_draw_circle_with_clip32(
 	uint32_t *INKNIT_RESTRICT                 data,
 	uint32_t                                  stride,
 	int32_t                                   cx,
@@ -179,8 +179,8 @@ void INKNIT_EXPORT _inknit_draw_circle32(
 
 
 // -- MARK: draw_ellipse
-#define _inknit_draw_ellipse32 INKNIT_CURRENT_INTERNAL_FUNC(draw_ellipse)
-void INKNIT_EXPORT _inknit_draw_ellipse32(
+#define _inknit_draw_ellipse_with_clip32 INKNIT_CURRENT_INTERNAL_FUNC(draw_ellipse_with_clip)
+void INKNIT_EXPORT _inknit_draw_ellipse_with_clip32(
 	uint32_t *INKNIT_RESTRICT                 data,
 	uint32_t                                  stride,
 	int32_t                                   cx,

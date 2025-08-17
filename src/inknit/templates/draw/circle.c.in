@@ -126,7 +126,7 @@ static inline void _inknit_draw_circle_points32(
 }
 #endif
 
-void _inknit_draw_circle32(
+void _inknit_draw_circle_with_clip32(
 	uint32_t *INKNIT_RESTRICT                 data,
 	uint32_t                                  stride,
 	int32_t                                   cx,
@@ -174,5 +174,5 @@ void inknit_draw_circle(
 		image->width - 1,
 		(int16_t)(image->height - 1),
 	};
-	_inknit_draw_circle32(data, stride, cx, cy, radius, color, &clip_rect);
+	_inknit_draw_circle_with_clip32(data, stride, cx, cy, radius, color, &clip_rect);
 }
