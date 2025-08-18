@@ -103,18 +103,6 @@ void INKNIT_EXPORT _inknit_draw_vline_with_clip32(
 	const struct inknit_rect *INKNIT_RESTRICT clip_rect
 ) INKNIT_NONNULL(1, 7);
 
-#if defined(INKNIT_ENABLE_BENCHMARKS)
-#define _inknit_draw_vline_scalar32 INKNIT_CURRENT_INTERNAL_FUNC(draw_vline_scalar)
-void INKNIT_EXPORT _inknit_draw_vline_scalar32(
-	uint32_t *data, uint32_t stride, uint32_t x, uint32_t y1, uint32_t y2, inknit_color_t color
-) INKNIT_NONNULL(1);
-
-#define _inknit_draw_vline_unroll32 INKNIT_CURRENT_INTERNAL_FUNC(draw_vline_unroll)
-void INKNIT_EXPORT _inknit_draw_vline_unroll32(
-	uint32_t *data, uint32_t stride, uint32_t x, uint32_t y1, uint32_t y2, inknit_color_t color
-) INKNIT_NONNULL(1);
-#endif
-
 
 // -- MARK: draw_line
 #define _inknit_draw_line32 INKNIT_CURRENT_INTERNAL_FUNC(draw_line)

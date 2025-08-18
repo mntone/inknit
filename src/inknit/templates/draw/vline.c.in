@@ -23,35 +23,8 @@
 #include "../base.h"
 #endif
 
-#if defined(INKNIT_ENABLE_BENCHMARKS) \
-	|| !defined(INKNIT_ENABLE_UNROLL) \
-	|| defined(INKNIT_TARGET_IS_PICO)
-INKNIT_BMPREFIX
-void _inknit_draw_vline_scalar32(
-	uint32_t *data, uint32_t stride, uint32_t x, uint32_t y1, uint32_t y2, inknit_color_t color
-) {
-	const uint32_t stride_in_byte = pixels_to_bytes(stride);
-	const uint32_t length         = y1 * stride_in_byte;
+#define SETVAL8(byteptr) *(byteptr) = (*(byteptr) & clear_mask) | pixel_value
 
-	const uint32_t byteoffs    = pixels_to_bytes(x);
-	const int32_t  bitoffs     = pixels_to_bitpos_byte(x);
-	const uint8_t  clear_mask  = (uint8_t)clear_mask(bitoffs);
-	const uint8_t  pixel_value = (uint8_t)(pixel_value(color, bitoffs) & 0xFF);
-
-	uint8_t       *row     = (uint8_t *)data + length;
-	const uint8_t *end_row = row + (y2 - y1) * stride_in_byte;
-	while (row <= end_row) {
-		uint8_t *byte = row + byteoffs;
-
-		_inknit_set_value8(byte, clear_mask, pixel_value);
-
-		row += stride_in_byte;
-	}
-}
-#endif
-
-#if defined(INKNIT_ENABLE_BENCHMARKS)                                   \
-	|| defined(INKNIT_ENABLE_UNROLL) && !defined(INKNIT_TARGET_IS_PICO)
 /*
  * A Note on the Loop Unrolling Optimization (`PointerUnroll` version)
  *
@@ -83,31 +56,31 @@ void _inknit_draw_vline_scalar32(
  *
  * ### AMD Ryzen 9 5900X (Time per draw in nanoseconds) ###
  *
- * | Line Length |  Pointer | PointerUnroll | Winner            |
- * |:------------|---------:|--------------:|:------------------|
- * | 1px         |     3.35 |          3.34 | **PointerUnroll** |
- * | 2px         |     3.62 |          3.33 | **PointerUnroll** |
- * | 8px         |     5.70 |          4.32 | **PointerUnroll** |
- * | 16px        |     8.92 |          5.65 | **PointerUnroll** |
- * | 32px        |    14.07 |          9.15 | **PointerUnroll** |
+ * | Line Length |  Pointer | PointerUnroll | Winner      |
+ * |:------------|---------:|--------------:|:------------|
+ * | 1px         |     2.77 |          3.04 | **default** |
+ * | 2px         |     3.35 |          3.07 | **default** |
+ * | 3px         |     3.89 |          3.34 | **unroll**  |
+ * | 4px         |     5.26 |          4.47 | **unroll**  |
+ * | 8px         |     7.60 |          5.35 | **unroll**  |
+ * | 16px        |     8.32 |          9.42 | **default** |
+ * | 32px        |    16.38 |         20.31 | **default** |
  *
  *
  * ### Raspberry Pi Pico (RP2040) (Time per draw in nanoseconds) ###
  *
- * | Line Length |  Pointer | PointerUnroll | Winner            |
- * |:------------|---------:|--------------:|:------------------|
- * | 1px         |      614 |           811 | **Pointer**       |
- * | 8px         |     1342 |          1387 | **Pointer**       |
- * | 9px         |     1446 |          1467 | **Pointer**       |
- * | 10px        |     1550 |          1491 | **PointerUnroll** |
- * | 16px        |     2174 |          2043 | **PointerUnroll** |
- * | 32px        |     3838 |          3355 | **PointerUnroll** |
+ * | Line Length |  Pointer | PointerUnroll | Winner      |
+ * |:------------|---------:|--------------:|:------------|
+ * | 1px         |      604 |           711 | **default** |
+ * | 2px         |      699 |           735 | **default** |
+ * | 3px         |      795 |           807 | **default** |
+ * | 4px         |      987 |           959 | **unroll**  |
+ * | 8px         |     1275 |          1127 | **unroll**  |
+ * | 16px        |     2044 |          1623 | **unroll**  |
+ * | 32px        |     3579 |          2613 | **unroll**  |
  *
  */
-#define SETVAL8(byteptr) _inknit_set_value8((byteptr), clear_mask, pixel_value);
-
-INKNIT_BMPREFIX
-void _inknit_draw_vline_unroll32(
+void _inknit_draw_vline32(
 	uint32_t *data, uint32_t stride, uint32_t x, uint32_t y1, uint32_t y2, inknit_color_t color
 ) {
 	const uint32_t stride_in_byte = pixels_to_bytes(stride);
@@ -120,7 +93,8 @@ void _inknit_draw_vline_unroll32(
 
 	uint8_t *ptr = (uint8_t *)data + length + byteoffs;
 
-	uint32_t       height    = y2 - y1 + 1;
+	uint32_t height = y2 - y1 + 1;
+#ifdef INKNIT_ENABLE_UNROLL
 	const uint32_t remainder = height % 4;
 	switch (remainder) {
 	case 3:
@@ -145,16 +119,11 @@ void _inknit_draw_vline_unroll32(
 		SETVAL8(ptr + stride_in_byte * 3);
 		ptr += stride_in_byte * 4;
 	}
-}
-#endif
-
-void _inknit_draw_vline32(
-	uint32_t *data, uint32_t stride, uint32_t x, uint32_t y1, uint32_t y2, inknit_color_t color
-) {
-#if defined(INKNIT_ENABLE_UNROLL) && !defined(INKNIT_TARGET_IS_PICO)
-	_inknit_draw_vline_unroll32(data, stride, x, y1, y2, color);
 #else
-	_inknit_draw_vline_scalar32(data, stride, x, y1, y2, color);
+	while (height-- > 0) {
+		SETVAL8(ptr);
+		ptr += stride_in_byte;
+	}
 #endif
 }
 

@@ -92,16 +92,6 @@ _inknit_swap_int32(int32_t *INKNIT_RESTRICT a, int32_t *INKNIT_RESTRICT b) {
 	*b           = temp;
 }
 
-#define _inknit_set_value8 \
-	INKNIT_INTERNAL_FUNC(set_value, INKNIT_INTERNAL_GROUP(8, BITS_PER_PIXEL, INKNIT_CURRENT_ENDIAN))
-static INKNIT_ALWAYS_INLINE void
-_inknit_set_value8(uint8_t *const byteptr, const uint8_t clear_mask, const uint8_t pixel_value) {
-	uint8_t byte_value = *byteptr;
-	byte_value &= clear_mask;
-	byte_value |= pixel_value;
-	*byteptr = byte_value;
-}
-
 #define _inknit_set_value32 INKNIT_CURRENT_INTERNAL_FUNC(set_value)
 static INKNIT_ALWAYS_INLINE void
 _inknit_set_value32(uint32_t *const word, const uint32_t clear_mask, const uint32_t pixel_value) {

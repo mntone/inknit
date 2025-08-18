@@ -80,15 +80,7 @@ INKBM_ARGS(
 
 APPLY(pointer) {
 	for (int i = 0; i < ITERATIONS; ++i) {
-		INKNIT_INTERNAL_FUNC(draw_vline_scalar, CURRENT_GROUP)(
-			static_cast<uint32_t *>(image_.data()), image_.stride(), x_, y1_, y2_, COLOR_WHITE
-		);
-	}
-}
-
-APPLY(pointer_unroll) {
-	for (int i = 0; i < ITERATIONS; ++i) {
-		INKNIT_INTERNAL_FUNC(draw_vline_unroll, CURRENT_GROUP)(
+		INKNIT_INTERNAL_FUNC(draw_vline, CURRENT_GROUP)(
 			static_cast<uint32_t *>(image_.data()), image_.stride(), x_, y1_, y2_, COLOR_WHITE
 		);
 	}
