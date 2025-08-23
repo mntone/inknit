@@ -80,6 +80,7 @@
  * | 32px        |     3579 |          2613 | **unroll**  |
  *
  */
+#ifndef INKNIT_ENABLE_DRAW_VLINE_ASM
 void _inknit_draw_vline32(
 	uint32_t *data, uint32_t stride, uint32_t x, uint32_t y1, uint32_t y2, inknit_color_t color
 ) {
@@ -126,6 +127,7 @@ void _inknit_draw_vline32(
 	}
 #endif
 }
+#endif
 
 void _inknit_draw_vline_with_clip32(
 	uint32_t *INKNIT_RESTRICT                 data,

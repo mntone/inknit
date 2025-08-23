@@ -65,6 +65,7 @@ if(INKNIT_PROCESSOR STREQUAL "x86")
 elseif(INKNIT_PROCESSOR STREQUAL "armv6m")
 	target_compile_definitions(${PROJECT_NAME} PRIVATE
 		INKNIT_ENABLE_DRAW_POINT_ASM
+		INKNIT_ENABLE_DRAW_VLINE_ASM
 		)
 	target_sources(${PROJECT_NAME} PRIVATE
 		x1/draw_point_armv6m.s
@@ -73,10 +74,18 @@ elseif(INKNIT_PROCESSOR STREQUAL "armv6m")
 		x2lsb/draw_point_armv6m.s
 		x4/draw_point_armv6m.s
 		x4lsb/draw_point_armv6m.s
+
+		x1/draw_vline_armv6m.s
+		x1lsb/draw_vline_armv6m.s
+		x2/draw_vline_armv6m.s
+		x2lsb/draw_vline_armv6m.s
+		x4/draw_vline_armv6m.s
+		x4lsb/draw_vline_armv6m.s
 		)
 elseif(INKNIT_PROCESSOR STREQUAL "armv8m")
 	target_compile_definitions(${PROJECT_NAME} PRIVATE
 		INKNIT_ENABLE_DRAW_POINT_ASM
+		INKNIT_ENABLE_DRAW_VLINE_ASM
 		)
 	target_sources(${PROJECT_NAME} PRIVATE
 		x1/draw_point_armv8m.s
@@ -85,6 +94,13 @@ elseif(INKNIT_PROCESSOR STREQUAL "armv8m")
 		x2lsb/draw_point_armv8m.s
 		x4/draw_point_armv8m.s
 		x4lsb/draw_point_armv8m.s
+
+		x1/draw_vline_armv8m.s
+		x1lsb/draw_vline_armv8m.s
+		x2/draw_vline_armv8m.s
+		x2lsb/draw_vline_armv8m.s
+		x4/draw_vline_armv8m.s
+		x4lsb/draw_vline_armv8m.s
 		)
 endif()
 
