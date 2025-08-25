@@ -53,6 +53,7 @@ target_sources(${PROJECT_NAME} PRIVATE
 if(INKNIT_PROCESSOR STREQUAL "x86")
 	target_compile_definitions(${PROJECT_NAME} PRIVATE
 		INKNIT_ENABLE_DRAW_POINT_ASM
+		INKNIT_ENABLE_DRAW_VLINE_ASM
 		)
 	target_sources(${PROJECT_NAME} PRIVATE
 		x1/draw_point_x86.s
@@ -61,6 +62,13 @@ if(INKNIT_PROCESSOR STREQUAL "x86")
 		x2lsb/draw_point_x86.s
 		x4/draw_point_x86.s
 		x4lsb/draw_point_x86.s
+
+		x1/draw_vline_x86.s
+		x1lsb/draw_vline_x86.s
+		x2/draw_vline_x86.s
+		x2lsb/draw_vline_x86.s
+		x4/draw_vline_x86.s
+		x4lsb/draw_vline_x86.s
 		)
 elseif(INKNIT_PROCESSOR STREQUAL "armv6m")
 	target_compile_definitions(${PROJECT_NAME} PRIVATE
