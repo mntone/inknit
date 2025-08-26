@@ -19,7 +19,7 @@ environments.
   and carefully optimized bitwise operations.
 - 🎨 **Consistent Drawing API**: Comes equipped with a clear and consistent set of commands:
   `draw_point`, `draw_hline`, `draw_vline`, `draw_line`, `draw_rect`, `draw_rect_coord`,
-  `fill_rect`, `fill_rect_coord`, `draw_circle`, `draw_ellipse`, and `blit`.
+  `fill_circle`, `fill_rect`, `fill_rect_coord`, `draw_circle`, `draw_ellipse`, and `blit`.
 - 🧽 **Fast Framebuffer Clearing**: Instantly clears the entire screen, regardless of the
   framebuffer's bit depth.
 - 🔧 **Completely Platform-Agnostic**: Not tied to any specific SDK or hardware. Easily integrate

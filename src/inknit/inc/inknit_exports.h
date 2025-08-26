@@ -48,6 +48,10 @@ struct inknit_exports {
 
 	void (*const clear)(struct inknit_image *image, inknit_color_t color) INKNIT_NONNULL(1);
 
+	void (*const fill_circle)(
+		struct inknit_image *image, int32_t cx, int32_t cy, int32_t radius, inknit_color_t color
+	) INKNIT_NONNULL(1);
+
 	void (*const fill_rect)(
 		struct inknit_image *image,
 		int32_t              x,

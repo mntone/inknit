@@ -91,6 +91,11 @@ namespace inknit { namespace details {
 			INKNIT_CURRENT_PUBLIC_FUNC(clear)(get(), color);
 		}
 
+		void fill_circle(point_t ct, std::int32_t radius, color_t color) noexcept {
+			auto [x, y] = ct;
+			INKNIT_CURRENT_PUBLIC_FUNC(fill_circle)(get(), x, y, radius, color);
+		}
+
 		void fill_rect(point_t pt, size_t sz, color_t color) noexcept {
 			auto [x, y]          = pt;
 			auto [width, height] = sz;

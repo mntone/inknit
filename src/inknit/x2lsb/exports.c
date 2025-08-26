@@ -27,6 +27,7 @@
 const struct inknit_exports x2lsb = {
 	.blit            = inknit_blit,
 	.clear           = inknit_clear,
+	.fill_circle     = inknit_fill_circle,
 	.fill_rect       = inknit_fill_rect,
 	.fill_rect_coord = inknit_fill_rect_coord,
 	.draw_circle     = inknit_draw_circle,

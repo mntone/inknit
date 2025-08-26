@@ -266,6 +266,30 @@ namespace details {
 		}
 	}
 
+	constexpr void add_hline_points(
+		pixel_list&   points,
+		std::int32_t  x1,
+		std::int32_t  x2,
+		std::int32_t  y,
+		rect_t const& clip_rect
+	) noexcept {
+		if (y < clip_rect.top || y > clip_rect.bottom) {
+			return;
+		}
+		if (x1 > x2) {
+			std::swap(x1, x2);
+		}
+		if (x2 < clip_rect.left || x1 > clip_rect.right) {
+			return;
+		}
+
+		x1 = std::max(x1, clip_rect.left);
+		x2 = std::min(x2, clip_rect.right);
+		for (std::int32_t x = x1; x <= x2; ++x) {
+			points.emplace_back(x, y);
+		}
+	}
+
 }  // namespace details
 
 INKNIT_NODISCARD
@@ -407,11 +431,7 @@ INKNIT_NODISCARD constexpr pixel_list make_midpoint_ellipse(
 		return points;
 	}
 	if (ry == 0) {
-		std::int32_t const x1 = std::max(clip_rect.left, cx - rx);
-		std::int32_t const x2 = std::min(clip_rect.right, cx + rx);
-		for (std::int32_t x = x1; x <= x2; ++x) {
-			points.emplace_back(x, cy);
-		}
+		details::add_hline_points(points, cx - rx, cx + rx, cy, clip_rect);
 		return points;
 	}
 
@@ -458,6 +478,46 @@ INKNIT_NODISCARD constexpr pixel_list make_midpoint_ellipse(
 			p += px - py + rx_sq;
 		}
 	}
+	return points;
+}
+
+INKNIT_NODISCARD constexpr pixel_list make_midpoint_filled_circle(
+	std::int32_t cx, std::int32_t cy, std::int32_t radius, rect_t clip_rect = DEFAULT_CLIP_RECT
+) noexcept {
+	pixel_list points;
+	if (radius < 0) {
+		return points;
+	}
+	if (radius == 0) {
+		points.emplace_back(cx, cy);
+		return points;
+	}
+
+	std::int32_t dx = 0;
+	std::int32_t dy = radius;
+	std::int32_t d  = 1 - radius;
+
+	do {
+		details::add_hline_points(points, cx - dx, cx + dx, cy - dy, clip_rect);
+		if (dy != 0) {
+			details::add_hline_points(points, cx - dx, cx + dx, cy + dy, clip_rect);
+		}
+
+		if (dx != dy) {
+			details::add_hline_points(points, cx - dy, cx + dy, cy - dx, clip_rect);
+			if (dx != 0) {
+				details::add_hline_points(points, cx - dy, cx + dy, cy + dx, clip_rect);
+			}
+		}
+
+		++dx;
+		if (d < 0) {
+			d += 2 * dx + 1;
+		} else {
+			--dy;
+			d += 2 * (dx - dy) + 1;
+		}
+	} while (dx <= dy);
 	return points;
 }
 
