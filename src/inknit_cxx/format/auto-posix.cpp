@@ -19,11 +19,13 @@
 
 #include "../inc/inknit/format.hpp"
 
+#ifndef INKNIT_TARGET_IS_PICO
 #include "../utils/termmode_guard.hpp"
 
 #include <cstdlib>    // getenv
 #include <termios.h>  // tcsetattr
 #include <unistd.h>   // isatty
+#endif
 
 
 // -- MARK: use namespaces
@@ -32,6 +34,7 @@ using namespace inknit::format;
 
 
 // -- MARK: utils
+#ifndef INKNIT_TARGET_IS_PICO
 static bool supports_256color() noexcept {
 	std::string_view term = getenv("TERM");
 	return term.ends_with("256color");
@@ -84,12 +87,16 @@ static bool supports_sixel() noexcept {
 	// Check if the response contains ";4".
 	return response.find(";4") != std::string::npos;
 }
+#endif
 
 template<pixel_layout PIXEL_LAYOUT, pixel_format PIXEL_FORMAT>
 static std::shared_ptr<format::image_formatter> make_formatter() noexcept {
 	static std::shared_ptr<format::image_formatter> formatter;
 
 	if (!formatter) {
+#ifdef INKNIT_TARGET_IS_PICO
+		formatter = std::make_unique<format::character_formatter<PIXEL_LAYOUT, PIXEL_FORMAT>>();
+#else
 		if (supports_sixel()) {
 			formatter = std::make_unique<format::sixel_formatter<PIXEL_LAYOUT, PIXEL_FORMAT>>();
 		} else if (supports_256color()) {
@@ -97,6 +104,7 @@ static std::shared_ptr<format::image_formatter> make_formatter() noexcept {
 		} else {
 			formatter = std::make_unique<format::character_formatter<PIXEL_LAYOUT, PIXEL_FORMAT>>();
 		}
+#endif
 	}
 	return formatter;
 }

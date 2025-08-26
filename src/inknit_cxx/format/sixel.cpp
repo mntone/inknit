@@ -69,7 +69,7 @@ append_number(std::vector<char>::iterator& iter, std::size_t num) noexcept {
 	std::size_t       digits = count_digits(num);
 	std::vector<char> text(digits);
 	do {
-		text[--digits] = '0' + (num % 10);
+		text[--digits] = '0' + static_cast<char>(num % 10);
 		num /= 10;
 	} while (num > 0);
 
@@ -152,7 +152,7 @@ static std::string _inknit_sixel_format(
 				if (sixel > 0) {
 					color_found = true;
 				}
-				row[static_cast<std::size_t>(x)] = '?' + sixel;
+				row[static_cast<std::size_t>(x)] = '?' + static_cast<char>(sixel);
 			}
 
 			if (color_found) {

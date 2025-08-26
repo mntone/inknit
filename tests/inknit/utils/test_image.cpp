@@ -17,7 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "test_image.hpp"
+#include "inknit_test.hpp"
 
 #include <cinttypes>  // PRId32
 #include <sstream>    // ostringstream
