@@ -37,10 +37,9 @@ _inknit_draw_vline32_4bpp_be:
 
 	ldr		r5, [sp, #20]	// r5 = color
 
-	movs	r4, #1			// r4 = 0x01
+	movs	r4, r2			// r4 = x
 	movs	r6, #1			// r6 = 1
-	ands	r4, r2			// r4 = x & 0x01
-	subs	r6, r6, r4		// r6 = 1 - (x & 0x01)
+	bics	r6, r4			// r6 = 1 - (x & 0x01)
 	lsls	r6, r6, #2		// r6 = bitpos = (1 - (x & 0x01)) << 2
 
 	movs	r4, #15			// r4 = 0b1111

@@ -36,21 +36,18 @@ _inknit_draw_point32_1bpp_be:
 	adds	r3, r3, r2		// r3 = pixel = stride * y + x
 
 	movs	r1, #1			// r1 = 0b1
-	movs	r2, #31			// r2 = 0x1F
-	bics	r2, r3			// r2 = bitpos = (~pixel) & 0x1F = 31 - (pixel & 0x1F)
+	movs	r2, #7			// r2 = 7
+	bics	r2, r3			// r2 = bitpos = 7 - (pixel & 0x07)
 	lsls	r1, r2			// r1 = mask = 0b1 << bitpos
 
-	lsrs	r3, r3, #5		// r3 = wordidx = pixel >> 5
-	lsls	r3, r3, #2		// r3 = byteidx = wordidx << 2
+	lsrs	r3, r3, #3		// r3 = byteidx = pixel >> 3
 	adds	r0, r0, r3		// r0 = ptr0 = data + byteidx
 
-	ldr		r3, [r0]		// r3 = *ptr0
-	rev		r3, r3			// r3 = read_wordval = swap(*ptr0)
-	bics	r3, r1			// r3 = read_wordval & ~mask
+	ldrb	r3, [r0]		// r3 = read_byteval = *ptr0
+	bics	r3, r1			// r3 = read_byteval & ~mask
 
-	lsls	r4, r2			// r4 = color_wordval = color << bitpos
-	orrs	r3, r4			// r3 = (read_wordval & ~mask) | color_wordval
-	rev		r3, r3			// r3 = write_wordval = swap(r3)
-	str		r3, [r0]		// *ptr0 = write_wordval
+	lsls	r4, r2			// r4 = color_byteval = color << bitpos
+	orrs	r3, r4			// r3 = (read_byteval & ~mask) | color_byteval
+	strb	r3, [r0]		// *ptr0 = r3
 
 	bx		lr

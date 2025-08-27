@@ -38,7 +38,7 @@ _inknit_draw_vline32_1bpp_be:
 	ldr		r5, [sp, #20]		// r5 = color
 
 	and.w	r6, r2, #7			// r6 = x & 0x07
-	rsb		r6, r6, #7			// r6 = bitpos = 7 - (x & 0x07)
+	rsb.w	r6, r6, #7			// r6 = bitpos = 7 - (x & 0x07)
 
 	movs	r4, #1				// r4 = 0b1
 	lsls	r4, r6				// r4 = mask = 0b1 << bitpos

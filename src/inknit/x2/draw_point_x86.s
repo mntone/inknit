@@ -34,21 +34,19 @@ _inknit_draw_point32_2bpp_be:
 	add		edx, ecx				# edx = pixel = stride * y + x
 
 	lea		ecx, [edx + edx]		# ecx = pixel << 1
-	shr		edx, 0x4				# edx = wordidx = pixel >> 4
-	lea		edx, [ebx + 4 * edx]	# edx = ptr0 = data + (wordidx << 2)
-	mov		eax, DWORD PTR [edx]	# eax = *ptr0
+	shr		edx, 0x02				# edx = byteidx = pixel >> 2
+	add		edx, ebx				# edx = ptr0 = data + byteidx
+	movzx	eax, BYTE PTR [edx]		# eax = *ptr0
 
-	not		cl						# cl  = pixoff = ~(pixel << 1)
-	and		cl, 0x1e				# cl  = bitpos = pixoff & 0x1E
+	and		ecx, 0x06				# ecx = (x << 1) & 0x06
+	xor		ecx, 0x06				# ecx = bitpos = ((x << 1) & 0x06) ^ 0x06
 	mov		ebx, 0x3				# ebx = 0b11
 	shl		ebx, cl					# ebx = mask = 0b11 << bitpos
 	not		ebx						# ebx = ~mask
 
-	bswap	eax						# eax   = read_wordval = swap(*ptr0)
-	and		eax, ebx				# eax   = read_wordval & ~mask
-	shl		esi, cl					# esi   = color_wordval = color << bitpos
-	or		eax, esi				# eax   = (read_wordval & ~mask) | color_wordval
-	bswap	eax						# eax   = write_wordval
-	mov		DWORD PTR [edx], eax	# *ptr0 = write_wordval
+	and		eax, ebx				# eax   = read_byteval & ~mask
+	shl		esi, cl					# esi   = color_byteval = color << bitpos
+	or		eax, esi				# eax   = (read_byteval & ~mask) | color_byteval
+	mov		BYTE PTR [edx], al		# *ptr0 = eax
 
 	ret

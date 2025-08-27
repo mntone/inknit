@@ -34,22 +34,19 @@ _inknit_draw_point32_2bpp_be:
 	adds	r3, r3, r2		// r3 = pixel = stride * y + x
 
 	movs	r1, #3			// r1 = 0b11
-	movs	r2, #15			// r2 = 0x0F
-	bics	r2, r3			// r2 = pixpos = (~pixel) & 0x0F = 15 - (pixel & 0x0F)
-	lsls	r2, r2, #1		// r2 = bitpos = pixpos << 1
+	movs	r2, #3			// r2 = 3
+	bics	r2, r3			// r2 = 3 - (x & 0x03)
+	lsls	r2, r2, #1		// r2 = bitpos = (3 - (x & 0x03)) << 1
 	lsls	r1, r2			// r1 = mask = 0b11 << bitpos
 
-	lsrs	r3, r3, #4		// r3 = wordidx = pixel >> 4
-	lsls	r3, r3, #2		// r3 = byteidx = wordidx << 2
+	lsrs	r3, r3, #2		// r3 = byteidx = pixel >> 2
 	adds	r0, r0, r3		// r0 = ptr0 = data + byteidx
 
-	ldr		r3, [r0]		// r3 = *r0 = *ptr0
-	rev		r3, r3			// r3 = read_wordval = swap(*ptr0)
-	bics	r3, r1			// r3 = read_wordval & ~mask
+	ldrb	r3, [r0]		// r3 = read_byteval = *ptr0
+	bics	r3, r1			// r3 = read_byteval & ~mask
 
-	lsls	r4, r2			// r4 = color_wordval = color << bitpos
-	orrs	r3, r4			// r3 = (read_wordval & ~mask) | color_wordval
-	rev		r3, r3			// r3 = write_wordval = swap(r3)
-	str		r3, [r0]		// *r0 = write_wordval
+	lsls	r4, r2			// r4 = color_byteval = color << bitpos
+	orrs	r3, r4			// r3 = (read_byteval & ~mask) | color_byteval
+	strb	r3, [r0]		// *r0 = r3
 
 	bx		lr

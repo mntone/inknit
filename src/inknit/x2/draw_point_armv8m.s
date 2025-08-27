@@ -32,21 +32,18 @@
 _inknit_draw_point32_2bpp_be:
 	mla		r3, r3, r1, r2	// r3 = pixel = stride * y + x
 
-	lsrs	r1, r3, #4		// r1 = wordidx = pixel >> 4
-	lsls	r1, r1, #2		// r1 = byteidx = wordidx << 2
+	lsrs	r1, r3, #2		// r1 = byteidx = pixel >> 2
 	adds	r0, r0, r1		// r0 = ptr0 = data + byteidx
-	ldr		r1, [r0]		// r1 = *r0 = *ptr0
+	ldrb	r1, [r0]		// r1 = *ptr0
 
-	movs	r2, #3			// r2 = 0b11
 	mvn.w	r3, r3, lsl #1	// r3 = pixoff = ~(pixel << 1)
-	and.w	r3, r3, #30		// r3 = bitpos = pixoff & 0x1E
+	and.w	r3, r3, #6		// r3 = bitpos = pixoff & 0x06
+	movs	r2, #3			// r2 = 0b11
 	lsls	r2, r3			// r2 = mask = 0b11 << bitpos
 
-	rev		r1, r1			// r1  = read_wordval = swap(*ptr0)
-	bics	r1, r2			// r1  = read_wordval & ~mask
-	lsls	r4, r3			// r4  = color_wordval = color << bitpos
-	orrs	r1, r4			// r1  = (read_wordval & ~mask) | color_wordval
-	rev		r1, r1			// r1  = write_wordval = swap(r1)
-	str		r1, [r0]		// *r0 = write_wordval
+	bics	r1, r2			// r1  = read_byteval & ~mask
+	lsls	r4, r3			// r4  = color_byteval = color << bitpos
+	orrs	r1, r4			// r1  = (read_byteval & ~mask) | color_byteval
+	strb	r1, [r0]		// *r0 = r1
 
 	bx		lr

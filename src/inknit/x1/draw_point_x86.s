@@ -33,16 +33,17 @@ _inknit_draw_point32_1bpp_be:
 	imul	edx, eax				# edx = stride * y
 	add		edx, ecx				# edx = pixel = stride * y + x
 
-	mov		ecx, edx				# ecx   = pixel
-	shr		edx, 0x5				# edx   = wordidx = pixel >> 5
-	lea		edx, [ebx + 4 * edx]	# edx   = ptr0 = data + (wordidx << 2)
-	mov		eax, DWORD PTR [edx]	# eax   = *ptr0
-	not		cl						# cl    = bitpos = ~pixel[7:0]
-	shl		esi, cl					# esi   = color_wordval = color << bitpos[4:0]
-	bswap	eax						# eax   = read_wordval = swap(*ptr0)
-	btr		eax, ecx				# eax   = base_wordval = read_wordval & ~(0b1 << bitpos[4:0])
-	or		eax, esi				# eax   = base_wordval | color_wordval
-	bswap	eax						# eax   = write_wordval
-	mov		DWORD PTR [edx], eax	# *ptr0 = write_wordval
+	mov		ecx, edx				# ecx = pixel
+	shr		edx, 0x3				# edx = byteidx = pixel >> 3
+	add		edx, ebx				# edx = ptr0 = data + byteidx
+	movzx	eax, BYTE PTR [edx]		# eax = *ptr0
+
+	and		ecx, 0x07				# ecx = x & 0x07
+	xor		ecx, 0x07				# ecx = bitpos = (x & 0x07) ^ 0x07
+	shl		esi, cl					# esi = color_byteval = color << bitpos
+
+	btr		eax, ecx				# eax   = base_wordval = read_byteval & ~(0b1 << bitpos)
+	or		eax, esi				# eax   = base_wordval | color_byteval
+	mov		BYTE PTR [edx], al		# *ptr0 = write_wordval
 
 	ret
