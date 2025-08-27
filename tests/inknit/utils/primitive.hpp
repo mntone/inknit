@@ -521,4 +521,90 @@ INKNIT_NODISCARD constexpr pixel_list make_midpoint_filled_circle(
 	return points;
 }
 
+INKNIT_NODISCARD constexpr pixel_list make_midpoint_filled_ellipse(
+	std::int32_t cx,
+	std::int32_t cy,
+	std::int32_t rx,
+	std::int32_t ry,
+	rect_t       clip_rect = DEFAULT_CLIP_RECT
+) noexcept {
+	pixel_list points;
+	if (rx < 0 || ry < 0) {
+		return points;
+	}
+
+	if (rx == 0 && ry == 0) {
+		points.emplace_back(cx, cy);
+		return points;
+	}
+	if (rx == 0) {
+		std::int32_t const y1 = std::max(clip_rect.top, cy - ry);
+		std::int32_t const y2 = std::min(clip_rect.bottom, cy + ry);
+		for (std::int32_t y = y1; y <= y2; ++y) {
+			points.emplace_back(cx, y);
+		}
+		return points;
+	}
+	if (ry == 0) {
+		details::add_hline_points(points, cx - rx, cx + rx, cy, clip_rect);
+		return points;
+	}
+
+	std::int64_t const rx_sq        = static_cast<std::int64_t>(rx) * rx;
+	std::int64_t const ry_sq        = static_cast<std::int64_t>(ry) * ry;
+	std::int64_t const double_rx_sq = rx_sq << 1;
+	std::int64_t const double_ry_sq = ry_sq << 1;
+
+	std::int32_t dx = 0;
+	std::int32_t dy = ry;
+	std::int64_t px = 0;
+	std::int64_t py = double_rx_sq * dy;
+
+	std::int64_t p;
+
+	// Region 1
+	p = ry_sq - rx_sq * ry + (rx_sq >> 2);
+	while (px < py) {
+		if (dy != 0) {
+			details::add_hline_points(points, cx - dx, cx + dx, cy - dy, clip_rect);
+			details::add_hline_points(points, cx - dx, cx + dx, cy + dy, clip_rect);
+		} else {
+			details::add_hline_points(points, cx - dx, cx + dx, cy, clip_rect);
+		}
+
+		++dx;
+		px += double_ry_sq;
+		if (p < 0) {
+			p += px + ry_sq;
+		} else {
+			--dy;
+			py -= double_rx_sq;
+			p += px - py + ry_sq;
+		}
+	}
+
+	// Region 2
+	p = ry_sq * (dx * dx + dx) + rx_sq * (dy * dy - dy) - rx_sq * ry_sq;
+	while (dy >= 0) {
+		if (dy != 0) {
+			details::add_hline_points(points, cx - dx, cx + dx, cy - dy, clip_rect);
+			details::add_hline_points(points, cx - dx, cx + dx, cy + dy, clip_rect);
+		} else {
+			details::add_hline_points(points, cx - dx, cx + dx, cy, clip_rect);
+		}
+
+		--dy;
+		py -= double_rx_sq;
+		if (p > 0) {
+			p += rx_sq - py;
+		} else {
+			++dx;
+			px += double_ry_sq;
+			p += px - py + rx_sq;
+		}
+	}
+
+	return points;
+}
+
 }  // namespace inknit::tests

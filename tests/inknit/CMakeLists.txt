@@ -3,6 +3,7 @@ include(FindDoctest)
 
 add_executable(${PROJECT_NAME}_tests
 	fill/circle.cpp
+	fill/ellipse.cpp
 	fill/rect.cpp
 	fill/rect_coord.cpp
 	draw/circle.cpp

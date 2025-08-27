@@ -193,6 +193,20 @@ void INKNIT_EXPORT _inknit_fill_circle_with_clip32(
 ) INKNIT_NONNULL(1, 7);
 
 
+// -- MARK: fill_ellipse
+#define _inknit_fill_ellipse_with_clip32 INKNIT_CURRENT_INTERNAL_FUNC(fill_ellipse_with_clip)
+void INKNIT_EXPORT _inknit_fill_ellipse_with_clip32(
+	uint32_t *INKNIT_RESTRICT                 data,
+	uint32_t                                  stride,
+	int32_t                                   cx,
+	int32_t                                   cy,
+	int32_t                                   rx,
+	int32_t                                   ry,
+	inknit_color_t                            color,
+	const struct inknit_rect *INKNIT_RESTRICT clip_rect
+) INKNIT_NONNULL(1, 8);
+
+
 // -- MARK: fill_rect
 #define _inknit_fill_rect_with_clip32 INKNIT_CURRENT_INTERNAL_FUNC(fill_rect_with_clip)
 void INKNIT_EXPORT _inknit_fill_rect_with_clip32(

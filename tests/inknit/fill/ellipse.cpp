@@ -23,7 +23,7 @@ namespace inknit::tests::shared {
 
 template<typename Image>
 	requires std::convertible_to<Image, inknit::details::image_primitive>
-void subtest_draw_ellipse(
+void subtest_fill_ellipse(
 	Image&       image,
 	std::int32_t cx,
 	std::int32_t cy,
@@ -33,10 +33,10 @@ void subtest_draw_ellipse(
 	color_t      color     = colors::white
 ) noexcept {
 	image.clear(colors::black);
-	image.draw_ellipse({cx, cy}, {rx, ry}, color);
+	image.fill_ellipse({cx, cy}, {rx, ry}, color);
 
 	if (!skip_test) {
-		pixel_list const& list = make_midpoint_ellipse(cx, cy, rx, ry, image.rect());
+		pixel_list const& list = make_midpoint_filled_ellipse(cx, cy, rx, ry, image.rect());
 		image.test(bind_is_pixel_on_list(list));
 	}
 }
@@ -47,7 +47,7 @@ using namespace inknit;
 using namespace inknit::tests;
 
 TEST_CASE_TEMPLATE(
-	"draw_ellipse",
+	"fill_ellipse",
 	Image,
 	test_image<pixel_layout::x1, pixel_format::grayscale>,
 	test_image<pixel_layout::x1lsb, pixel_format::grayscale>,
@@ -60,11 +60,11 @@ TEST_CASE_TEMPLATE(
 	image.reset(4 * image.ppw, 4 * image.ppw);
 
 #define SUBCASE_INVOKE(_ICX, _ICY, _IRX, _IRY, _MSG)                                         \
-	INKNIT_SUBCASE_INVOKE(shared::subtest_draw_ellipse(image, _ICX, _ICY, _IRX, _IRY), _MSG)
+	INKNIT_SUBCASE_INVOKE(shared::subtest_fill_ellipse(image, _ICX, _ICY, _IRX, _IRY), _MSG)
 
 #define SUBCASE_EXPECT_ASSERT(_ICX, _ICY, _IRX, _IRY, _MSG, _EXPECTED_MESSAGE)                     \
 	INKNIT_SUBCASE_EXPECT_ASSERT(                                                                  \
-		shared::subtest_draw_ellipse(image, _ICX, _ICY, _IRX, _IRY, true), _MSG, _EXPECTED_MESSAGE \
+		shared::subtest_fill_ellipse(image, _ICX, _ICY, _IRX, _IRY, true), _MSG, _EXPECTED_MESSAGE \
 	)
 
 	std::int32_t const width  = image.width();

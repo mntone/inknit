@@ -96,6 +96,12 @@ namespace inknit { namespace details {
 			INKNIT_CURRENT_PUBLIC_FUNC(fill_circle)(get(), x, y, radius, color);
 		}
 
+		void fill_ellipse(point_t ct, size_t radius, color_t color) noexcept {
+			auto [x, y]   = ct;
+			auto [rx, ry] = radius;
+			INKNIT_CURRENT_PUBLIC_FUNC(fill_ellipse)(get(), x, y, rx, ry, color);
+		}
+
 		void fill_rect(point_t pt, size_t sz, color_t color) noexcept {
 			auto [x, y]          = pt;
 			auto [width, height] = sz;

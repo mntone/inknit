@@ -32,6 +32,11 @@ void INKNIT_EXPORT inknit_fill_circle(
 	struct inknit_image *image, int32_t cx, int32_t cy, int32_t radius, inknit_color_t color
 ) INKNIT_NONNULL(1);
 
+#define inknit_fill_ellipse INKNIT_CURRENT_PUBLIC_FUNC(fill_ellipse)
+void INKNIT_EXPORT inknit_fill_ellipse(
+	struct inknit_image *image, int32_t cx, int32_t cy, int32_t rx, int32_t ry, inknit_color_t color
+) INKNIT_NONNULL(1);
+
 #define inknit_fill_rect INKNIT_CURRENT_PUBLIC_FUNC(fill_rect)
 void INKNIT_EXPORT inknit_fill_rect(
 	struct inknit_image *image,

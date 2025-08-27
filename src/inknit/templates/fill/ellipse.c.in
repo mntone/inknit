@@ -1,0 +1,150 @@
+/*
+ * inknit <https://github.com/mntone/inknit>
+ *
+ * Copyright (C) 2025 mntone <901816+mntone@users.noreply.github.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+#ifdef __INTELLISENSE__
+#include "../base.h.in"
+#else
+#include "../base.h"
+#endif
+
+#define _inknit_fill_ellipse_hlines32 INKNIT_CURRENT_INTERNAL_FUNC(fill_ellipse_hlines)
+static inline void _inknit_fill_ellipse_hlines32(
+	uint32_t *INKNIT_RESTRICT                 data,
+	uint32_t                                  stride,
+	int32_t                                   cx,
+	int32_t                                   cy,
+	int32_t                                   dx,
+	int32_t                                   dy,
+	inknit_color_t                            color,
+	const struct inknit_rect *INKNIT_RESTRICT clip_rect
+) {
+	const int32_t x1 = cx - dx;
+	const int32_t x2 = cx + dx;
+
+	if (dy != 0) {
+		const int32_t y1 = cy - dy;
+		const int32_t y2 = cy + dy;
+		_inknit_draw_hline_with_clip32(data, stride, x1, x2, y1, color, clip_rect);
+		_inknit_draw_hline_with_clip32(data, stride, x1, x2, y2, color, clip_rect);
+	} else {
+		_inknit_draw_hline_with_clip32(data, stride, x1, x2, cy, color, clip_rect);
+	}
+}
+
+void _inknit_fill_ellipse_with_clip32(
+	uint32_t *INKNIT_RESTRICT                 data,
+	uint32_t                                  stride,
+	int32_t                                   cx,
+	int32_t                                   cy,
+	int32_t                                   rx,
+	int32_t                                   ry,
+	inknit_color_t                            color,
+	const struct inknit_rect *INKNIT_RESTRICT clip_rect
+) {
+	INKNIT_ASSUME_CENTER_X(cx);
+	INKNIT_ASSUME_CENTER_Y(cy);
+	INKNIT_ASSUME_RANGE(
+		rx, 0, INKNIT_ELLIPSE_MAX, MSG_RX_LESS_THAN_ZERO, MSG_RX_GREATER_THAN_MAX_VALUE
+	);
+	INKNIT_ASSUME_RANGE(
+		ry, 0, INKNIT_ELLIPSE_MAX, MSG_RY_LESS_THAN_ZERO, MSG_RY_GREATER_THAN_MAX_VALUE
+	);
+	INKNIT_ASSUME_COLOR(color);
+	INKNIT_ASSUME_CLIP_RECT(clip_rect);
+
+	if (rx == 0) {
+		if (ry == 0) {
+			_inknit_draw_point_with_clip32(data, stride, cx, cy, color, clip_rect);
+		} else {
+			const int32_t y1 = cy - ry;
+			const int32_t y2 = cy + ry;
+			_inknit_draw_vline_with_clip32(data, stride, cx, y1, y2, color, clip_rect);
+		}
+		return;
+	}
+
+	if (ry == 0) {
+		const int32_t x1 = cx - rx;
+		const int32_t x2 = cx + rx;
+		_inknit_draw_hline_with_clip32(data, stride, x1, x2, cy, color, clip_rect);
+		return;
+	}
+
+	const int32_t rx_sq = rx * rx;
+	const int32_t ry_sq = ry * ry;
+
+	const int32_t double_rx_sq = rx_sq << 1;
+	const int32_t double_ry_sq = ry_sq << 1;
+
+	int32_t dx = 0;
+	int32_t dy = ry;
+	int32_t px = 0;
+	int32_t py = double_rx_sq * dy;
+
+	int32_t p;
+
+	// Region 1
+	p = ry_sq - rx_sq * ry + (rx_sq >> 2);
+	while (px < py) {
+		_inknit_fill_ellipse_hlines32(data, stride, cx, cy, dx, dy, color, clip_rect);
+
+		++dx;
+		px += double_ry_sq;
+		if (p < 0) {
+			p += px + ry_sq;
+		} else {
+			--dy;
+			py -= double_rx_sq;
+			p += px - py + ry_sq;
+		}
+	}
+
+	// Region 2
+	p = ry_sq * (dx * dx + dx) + rx_sq * (dy * dy - dy) - rx_sq * ry_sq;
+	while (dy >= 0) {
+		_inknit_fill_ellipse_hlines32(data, stride, cx, cy, dx, dy, color, clip_rect);
+
+		--dy;
+		py -= double_rx_sq;
+		if (p > 0) {
+			p += rx_sq - py;
+		} else {
+			++dx;
+			px += double_ry_sq;
+			p += px - py + rx_sq;
+		}
+	}
+}
+
+void inknit_fill_ellipse(
+	struct inknit_image *image, int32_t cx, int32_t cy, int32_t rx, int32_t ry, inknit_color_t color
+) {
+	INKNIT_ASSUME_IMAGE(image);
+
+	uint32_t *INKNIT_RESTRICT const data   = (uint32_t *)image->data;
+	const uint32_t                  stride = image->stride;
+
+	struct inknit_rect clip_rect = {
+		0,
+		0,
+		image->width - 1,
+		(int16_t)(image->height - 1),
+	};
+	_inknit_fill_ellipse_with_clip32(data, stride, cx, cy, rx, ry, color, &clip_rect);
+}
