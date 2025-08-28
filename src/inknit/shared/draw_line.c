@@ -27,13 +27,13 @@ _inknit_compute_line_outcode(int32_t x, int32_t y, const struct inknit_rect *cli
 
 	if (x < clip_rect->left) {
 		code |= INKNIT_LINE_OUTCODE_LEFT;
-	} else if (clip_rect->right < x) {
+	} else if (clip_rect->right <= x) {
 		code |= INKNIT_LINE_OUTCODE_RIGHT;
 	}
 
 	if (y < clip_rect->top) {
 		code |= INKNIT_LINE_OUTCODE_TOP;
-	} else if (clip_rect->bottom < y) {
+	} else if (clip_rect->bottom <= y) {
 		code |= INKNIT_LINE_OUTCODE_BOTTOM;
 	}
 
@@ -89,9 +89,9 @@ bool _inknit_clip_line_to_bounds(
 				y = clip_rect->top;
 			} else if (outcode & INKNIT_LINE_OUTCODE_BOTTOM) {
 				x = _inknit_lerp(*x1, *x2, *y1, *y2, clip_rect->bottom);
-				y = clip_rect->bottom;
+				y = clip_rect->bottom - 1;
 			} else if (outcode & INKNIT_LINE_OUTCODE_RIGHT) {
-				x = clip_rect->right;
+				x = clip_rect->right - 1;
 				y = _inknit_lerp(*y1, *y2, *x1, *x2, clip_rect->right);
 			} else if (outcode & INKNIT_LINE_OUTCODE_LEFT) {
 				x = clip_rect->left;

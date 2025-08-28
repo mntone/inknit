@@ -143,8 +143,9 @@ void inknit_fill_ellipse(
 	struct inknit_rect clip_rect = {
 		0,
 		0,
-		image->width - 1,
-		(int16_t)(image->height - 1),
+		image->width,
+		(int16_t)image->height,
 	};
+
 	_inknit_fill_ellipse_with_clip32(data, stride, cx, cy, rx, ry, color, &clip_rect);
 }

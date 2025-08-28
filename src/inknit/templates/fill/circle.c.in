@@ -98,8 +98,9 @@ void inknit_fill_circle(
 	struct inknit_rect clip_rect = {
 		0,
 		0,
-		image->width - 1,
-		(int16_t)(image->height - 1),
+		image->width,
+		(int16_t)image->height,
 	};
+
 	_inknit_fill_circle_with_clip32(data, stride, cx, cy, radius, color, &clip_rect);
 }

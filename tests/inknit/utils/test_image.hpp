@@ -86,8 +86,8 @@ struct test_image
 		rect_t rect {
 			0,
 			0,
-			this->width_ - 1,
-			this->height_ - 1,
+			static_cast<std::int32_t>(this->width_),
+			static_cast<std::int32_t>(this->height_),
 		};
 		return rect;
 	}
@@ -143,8 +143,8 @@ struct fixed_test_image
 		rect_t rect {
 			0,
 			0,
-			WIDTH - 1,
-			HEIGHT - 1,
+			WIDTH,
+			HEIGHT,
 		};
 		return rect;
 	}

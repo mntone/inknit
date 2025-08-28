@@ -41,8 +41,8 @@ static inline void _inknit_draw_circle_points32(
 	for (int32_t i = 0; i < 8; ++i) {
 		const int32_t x = xs[i];
 		const int32_t y = ys[i];
-		if ((uint32_t)(x - clip_rect->left) <= (uint32_t)(clip_rect->right - clip_rect->left)
-			&& (uint32_t)(y - clip_rect->top) <= (uint32_t)(clip_rect->bottom - clip_rect->top)) {
+		if ((uint32_t)(x - clip_rect->left) < (uint32_t)(clip_rect->right - clip_rect->left)
+			&& (uint32_t)(y - clip_rect->top) < (uint32_t)(clip_rect->bottom - clip_rect->top)) {
 			_inknit_draw_point32(data, stride, (uint32_t)x, (uint32_t)y, color);
 		}
 	}
@@ -59,15 +59,15 @@ static inline void _inknit_draw_circle_points32(
 	const struct inknit_rect *INKNIT_RESTRICT clip_rect
 ) {
 	const int32_t y1a = cy - dy;
-	if (clip_rect->top <= y1a && y1a <= clip_rect->bottom) {
+	if (clip_rect->top <= y1a && y1a < clip_rect->bottom) {
 		const int32_t x1 = cx - dx;
-		if (clip_rect->left <= x1 && x1 <= clip_rect->right) {
+		if (clip_rect->left <= x1 && x1 < clip_rect->right) {
 			_inknit_draw_point32(data, stride, (uint32_t)x1, (uint32_t)y1a, color);
 		}
 
 		if (dx != 0) {
 			const int32_t x2 = cx + dx;
-			if (clip_rect->left <= x2 && x2 <= clip_rect->right) {
+			if (clip_rect->left <= x2 && x2 < clip_rect->right) {
 				_inknit_draw_point32(data, stride, (uint32_t)x2, (uint32_t)y1a, color);
 			}
 		}
@@ -75,15 +75,15 @@ static inline void _inknit_draw_circle_points32(
 
 	if (dy != 0) {
 		const int32_t y2a = cy + dy;
-		if (clip_rect->top <= y2a && y2a <= clip_rect->bottom) {
+		if (clip_rect->top <= y2a && y2a < clip_rect->bottom) {
 			const int32_t x1 = cx - dx;
-			if (clip_rect->left <= x1 && x1 <= clip_rect->right) {
+			if (clip_rect->left <= x1 && x1 < clip_rect->right) {
 				_inknit_draw_point32(data, stride, (uint32_t)x1, (uint32_t)y2a, color);
 			}
 
 			if (dx != 0) {
 				const int32_t x2 = cx + dx;
-				if (clip_rect->left <= x2 && x2 <= clip_rect->right) {
+				if (clip_rect->left <= x2 && x2 < clip_rect->right) {
 					_inknit_draw_point32(data, stride, (uint32_t)x2, (uint32_t)y2a, color);
 				}
 			}
@@ -92,15 +92,15 @@ static inline void _inknit_draw_circle_points32(
 
 	if (dx != dy) {
 		const int32_t y1b = cy - dx;
-		if (clip_rect->top <= y1b && y1b <= clip_rect->bottom) {
+		if (clip_rect->top <= y1b && y1b < clip_rect->bottom) {
 			const int32_t x1 = cx - dy;
-			if (clip_rect->left <= x1 && x1 <= clip_rect->right) {
+			if (clip_rect->left <= x1 && x1 < clip_rect->right) {
 				_inknit_draw_point32(data, stride, (uint32_t)x1, (uint32_t)y1b, color);
 			}
 
 			if (dy != 0) {
 				const int32_t x2 = cx + dy;
-				if (clip_rect->left <= x2 && x2 <= clip_rect->right) {
+				if (clip_rect->left <= x2 && x2 < clip_rect->right) {
 					_inknit_draw_point32(data, stride, (uint32_t)x2, (uint32_t)y1b, color);
 				}
 			}
@@ -108,15 +108,15 @@ static inline void _inknit_draw_circle_points32(
 
 		if (dy != 0) {
 			const int32_t y2b = cy + dx;
-			if (clip_rect->top <= y2b && y2b <= clip_rect->bottom) {
+			if (clip_rect->top <= y2b && y2b < clip_rect->bottom) {
 				const int32_t x1 = cx - dy;
-				if (clip_rect->left <= x1 && x1 <= clip_rect->right) {
+				if (clip_rect->left <= x1 && x1 < clip_rect->right) {
 					_inknit_draw_point32(data, stride, (uint32_t)x1, (uint32_t)y2b, color);
 				}
 
 				if (dy != 0) {
 					const int32_t x2 = cx + dy;
-					if (clip_rect->left <= x2 && x2 <= clip_rect->right) {
+					if (clip_rect->left <= x2 && x2 < clip_rect->right) {
 						_inknit_draw_point32(data, stride, (uint32_t)x2, (uint32_t)y2b, color);
 					}
 				}
@@ -171,8 +171,9 @@ void inknit_draw_circle(
 	struct inknit_rect clip_rect = {
 		0,
 		0,
-		image->width - 1,
-		(int16_t)(image->height - 1),
+		image->width,
+		(int16_t)image->height,
 	};
+
 	_inknit_draw_circle_with_clip32(data, stride, cx, cy, radius, color, &clip_rect);
 }

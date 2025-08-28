@@ -259,9 +259,9 @@ namespace details {
 		pixel_list& points, std::int32_t x, std::int32_t y, rect_t const& clip_rect
 	) noexcept {
 		if (clip_rect.top <= y
-			&& y <= clip_rect.bottom
+			&& y < clip_rect.bottom
 			&& clip_rect.left <= x
-			&& x <= clip_rect.right) {
+			&& x < clip_rect.right) {
 			points.emplace_back(x, y);
 		}
 	}
@@ -273,18 +273,18 @@ namespace details {
 		std::int32_t  y,
 		rect_t const& clip_rect
 	) noexcept {
-		if (y < clip_rect.top || y > clip_rect.bottom) {
+		if (y < clip_rect.top || y >= clip_rect.bottom) {
 			return;
 		}
 		if (x1 > x2) {
 			std::swap(x1, x2);
 		}
-		if (x2 < clip_rect.left || x1 > clip_rect.right) {
+		if (x2 < clip_rect.left || x1 >= clip_rect.right) {
 			return;
 		}
 
 		x1 = std::max(x1, clip_rect.left);
-		x2 = std::min(x2, clip_rect.right);
+		x2 = std::min(x2, clip_rect.right - 1);
 		for (std::int32_t x = x1; x <= x2; ++x) {
 			points.emplace_back(x, y);
 		}
@@ -424,7 +424,7 @@ INKNIT_NODISCARD constexpr pixel_list make_midpoint_ellipse(
 	}
 	if (rx == 0) {
 		std::int32_t const y1 = std::max(clip_rect.top, cy - ry);
-		std::int32_t const y2 = std::min(clip_rect.bottom, cy + ry);
+		std::int32_t const y2 = std::min(clip_rect.bottom - 1, cy + ry);
 		for (std::int32_t y = y1; y <= y2; ++y) {
 			points.emplace_back(cx, y);
 		}
@@ -539,7 +539,7 @@ INKNIT_NODISCARD constexpr pixel_list make_midpoint_filled_ellipse(
 	}
 	if (rx == 0) {
 		std::int32_t const y1 = std::max(clip_rect.top, cy - ry);
-		std::int32_t const y2 = std::min(clip_rect.bottom, cy + ry);
+		std::int32_t const y2 = std::min(clip_rect.bottom - 1, cy + ry);
 		for (std::int32_t y = y1; y <= y2; ++y) {
 			points.emplace_back(cx, y);
 		}
