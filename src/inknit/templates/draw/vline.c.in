@@ -19,8 +19,10 @@
 
 #ifdef __INTELLISENSE__
 #include "../base.h.in"
+#include "../shared/helpers.h"
 #else
 #include "../base.h"
+#include "shared/helpers.h"
 #endif
 
 #define SETVAL8(byteptr) *(byteptr) = (*(byteptr) & clear_mask) | pixel_value
@@ -154,15 +156,8 @@ void _inknit_draw_vline_with_clip32(
 		return;
 	}
 
-	if (y2 < clip_rect->top || clip_rect->bottom <= y1) {
+	if (!clip_range_y_exclusive(&y1, &y2, clip_rect)) {
 		return;
-	}
-
-	if (y1 < clip_rect->top) {
-		y1 = clip_rect->top;
-	}
-	if (y2 >= clip_rect->bottom) {
-		y2 = clip_rect->bottom - 1;
 	}
 
 	// Eliminate the case where y1 > y2 due to clipping

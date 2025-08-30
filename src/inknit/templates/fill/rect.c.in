@@ -19,8 +19,10 @@
 
 #ifdef __INTELLISENSE__
 #include "../base.h.in"
+#include "../shared/helpers.h"
 #else
 #include "../base.h"
+#include "shared/helpers.h"
 #endif
 
 void _inknit_fill_rect_with_clip32(
@@ -38,24 +40,11 @@ void _inknit_fill_rect_with_clip32(
 	INKNIT_ASSUME_COLOR(color);
 	INKNIT_ASSUME_CLIP_RECT(clip_rect);
 
-	if (y2 < clip_rect->top || clip_rect->bottom <= y1) {
+	if (!clip_range_y_exclusive(&y1, &y2, clip_rect)) {
 		return;
 	}
-	if (y1 < clip_rect->top) {
-		y1 = clip_rect->top;
-	}
-	if (y2 >= clip_rect->bottom) {
-		y2 = clip_rect->bottom - 1;
-	}
-
-	if (x2 < clip_rect->left || clip_rect->right <= x1) {
+	if (!clip_range_x_exclusive(&x1, &x2, clip_rect)) {
 		return;
-	}
-	if (x1 < clip_rect->left) {
-		x1 = clip_rect->left;
-	}
-	if (x2 >= clip_rect->right) {
-		x2 = clip_rect->right - 1;
 	}
 
 	// Eliminate the case where x1 > x2 or y1 > y2 due to clipping

@@ -19,8 +19,10 @@
 
 #ifdef __INTELLISENSE__
 #include "../base.h.in"
+#include "../shared/helpers.h"
 #else
 #include "../base.h"
+#include "shared/helpers.h"
 #endif
 
 #if defined(INKNIT_ENABLE_BENCHMARKS) || defined(INKNIT_DISABLE_LUT)
@@ -316,15 +318,8 @@ void _inknit_draw_hline_with_clip32(
 		return;
 	}
 
-	if (x2 < clip_rect->left || clip_rect->right <= x1) {
+	if (!clip_range_x_exclusive(&x1, &x2, clip_rect)) {
 		return;
-	}
-
-	if (x1 < clip_rect->left) {
-		x1 = clip_rect->left;
-	}
-	if (x2 >= clip_rect->right) {
-		x2 = clip_rect->right - 1;
 	}
 
 	// Eliminate the case where x1 > x2 due to clipping
