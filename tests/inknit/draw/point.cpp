@@ -24,11 +24,18 @@ namespace inknit::tests::shared {
 template<typename Image>
 	requires std::convertible_to<Image, inknit::details::image_primitive>
 void subtest_draw_point(
-	Image& image, std::int32_t ix, std::int32_t iy, color_t color = colors::white
+	Image&       image,
+	std::int32_t ix,
+	std::int32_t iy,
+	bool         skip_test = false,
+	color_t      color     = colors::white
 ) noexcept {
 	image.clear(colors::black);
 	image.draw_point(ix, iy, color);
-	image.test(bind_is_pixel_on_point(ix, iy));
+
+	if (!skip_test) {
+		image.test(bind_is_pixel_on_point(ix, iy));
+	}
 }
 
 }  // namespace inknit::tests::shared
@@ -49,12 +56,13 @@ TEST_CASE_TEMPLATE(
 	Image image;
 	image.reset(4 * image.ppw, 4);
 
-#define SUBCASE_INVOKE(_IX, _IY, _MSG)                   \
-	do {                                                 \
-		SUBCASE(_MSG) {                                  \
-			shared::subtest_draw_point(image, _IX, _IY); \
-		}                                                \
-	} while (false)
+#define SUBCASE_INVOKE(_IX, _IY, _MSG)                                       \
+	INKNIT_SUBCASE_INVOKE(shared::subtest_draw_point(image, _IX, _IY), _MSG)
+
+#define SUBCASE_EXPECT_ASSERT(_IX, _IY, _MSG, _EXPECTED_MESSAGE)             \
+	INKNIT_SUBCASE_EXPECT_ASSERT(                                            \
+		shared::subtest_draw_point(image, _IX, _IY), _MSG, _EXPECTED_MESSAGE \
+	)
 
 	// 1. bit offset
 	SUBCASE_INVOKE(0, 0, "bit offset: word-start (bit offset 0)");
@@ -86,6 +94,18 @@ TEST_CASE_TEMPLATE(
 	// 3. edge (boundary)
 	SUBCASE_INVOKE(image.ppw, 0, "edge: first pixel in second word");
 	SUBCASE_INVOKE(image.width() - 1, 0, "edge: last column");
+
+	// 4. invalid_input
+	SUBCASE_EXPECT_ASSERT(-2049, 1, "invalid: negative x exceeds limit", "ERROR: x < -2^11");
+	SUBCASE_EXPECT_ASSERT(1, -2049, "invalid: negative y exceeds limit", "ERROR: y < -2^11");
+	SUBCASE_EXPECT_ASSERT(
+		-2049, -2049, "invalid: both coord negative exceeds limit", "ERROR: x < -2^11"
+	);
+	SUBCASE_EXPECT_ASSERT(2048, 1, "invalid: positive x exceeds limit", "ERROR: x > 2^11 - 1");
+	SUBCASE_EXPECT_ASSERT(1, 2048, "invalid: positive y exceeds limit", "ERROR: y > 2^11 - 1");
+	SUBCASE_EXPECT_ASSERT(
+		2048, 2048, "invalid: both coord positive exceed limit", "ERROR: x > 2^11 - 1"
+	);
 
 #undef SUBCASE_INVOKE
 }

@@ -104,22 +104,24 @@ TEST_CASE_TEMPLATE(
 	// 7. circle-like
 	SUBCASE_INVOKE(15, 15, 10, 10, "circle-like: rx == ry");
 
-	// 8. robustness (or invalid_input)
-	SUBCASE_EXPECT_ASSERT(15, 15, -1, 10, "robustness: negative rx", "ERROR: rx < 0");
-	SUBCASE_EXPECT_ASSERT(15, 15, 10, -1, "robustness: negative ry", "ERROR: ry < 0");
-	SUBCASE_EXPECT_ASSERT(15, 15, -5, -10, "robustness: both radii negative", "ERROR: rx < 0");
+	// 8. robust
+	SUBCASE_EXPECT_ASSERT(15, 15, -1, 10, "robust: negative rx", "ERROR: rx < 0");
+	SUBCASE_EXPECT_ASSERT(15, 15, 10, -1, "robust: negative ry", "ERROR: ry < 0");
+	SUBCASE_EXPECT_ASSERT(15, 15, -5, -10, "robust: both radii negative", "ERROR: rx < 0");
+
+	// 9. invalid_input
 	SUBCASE_EXPECT_ASSERT(
-		15, 15, 1024, 100, "robustness: rx exceeds implementation limit", "ERROR: rx > 2^10 - 1"
+		15, 15, 1024, 100, "invalid: rx exceeds implementation limit", "ERROR: rx > 2^10 - 1"
 	);
 	SUBCASE_EXPECT_ASSERT(
-		15, 15, 100, 1024, "robustness: ry exceeds implementation limit", "ERROR: ry > 2^10 - 1"
+		15, 15, 100, 1024, "invalid: ry exceeds implementation limit", "ERROR: ry > 2^10 - 1"
 	);
 	SUBCASE_EXPECT_ASSERT(
 		15,
 		15,
 		1024,
 		1024,
-		"robustness: both radii exceed implementation limit",
+		"invalid: both radii exceed implementation limit",
 		"ERROR: rx > 2^10 - 1"
 	);
 

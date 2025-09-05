@@ -49,12 +49,13 @@ TEST_CASE_TEMPLATE(
 	Image image;
 	image.reset(4 * image.ppw, 4 * image.ppw);
 
-#define SUBCASE_INVOKE(_IX1, _IX2, _IY, _MSG)                   \
-	do {                                                        \
-		SUBCASE(_MSG) {                                         \
-			shared::subtest_draw_hline(image, _IX1, _IX2, _IY); \
-		}                                                       \
-	} while (false)
+#define SUBCASE_INVOKE(_IX1, _IX2, _IY, _MSG)                                       \
+	INKNIT_SUBCASE_INVOKE(shared::subtest_draw_hline(image, _IX1, _IX2, _IY), _MSG)
+
+#define SUBCASE_EXPECT_ASSERT(_IX1, _IX2, _IY, _MSG, _EXPECTED_MESSAGE)                   \
+	INKNIT_SUBCASE_EXPECT_ASSERT(                                                         \
+		shared::subtest_draw_hline(image, _IX1, _IX2, _IY, true), _MSG, _EXPECTED_MESSAGE \
+	)
 
 	std::int32_t const width  = image.width();
 	std::int32_t const right  = width - 1;
@@ -95,6 +96,12 @@ TEST_CASE_TEMPLATE(
 
 	// 8. robust
 	SUBCASE_INVOKE(width - 10, width + 10, 5, "robust: partially out of bounds");
+
+	// 9. invalid_input
+	SUBCASE_EXPECT_ASSERT(-2049, 10, 1, "invalid: negative x exceeds limit", "ERROR: x1 < -2^11");
+	SUBCASE_EXPECT_ASSERT(10, 2048, 1, "invalid: positive x exceeds limit", "ERROR: x2 > 2^11 - 1");
+	SUBCASE_EXPECT_ASSERT(0, 10, -2049, "invalid: negative y exceeds limit", "ERROR: y < -2^11");
+	SUBCASE_EXPECT_ASSERT(0, 10, 2048, "invalid: positive y exceeds limit", "ERROR: y > 2^11 - 1");
 
 #undef SUBCASE_INVOKE
 

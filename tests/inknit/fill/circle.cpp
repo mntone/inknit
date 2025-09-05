@@ -94,9 +94,14 @@ TEST_CASE_TEMPLATE(
 	// 6. full coverage
 	SUBCASE_INVOKE(width / 2, height / 2, maxlen, "full coverage: fills entire image");
 
-	// 7. robustness (or invalid_input)
-	SUBCASE_EXPECT_ASSERT(15, 15, -1, "robustness: negative radius", "ERROR: radius < 0");
-	SUBCASE_EXPECT_ASSERT(15, 15, -10, "robustness: large negative radius", "ERROR: radius < 0");
+	// 7. robust
+	SUBCASE_EXPECT_ASSERT(15, 15, -1, "robust: negative radius", "ERROR: radius < 0");
+	SUBCASE_EXPECT_ASSERT(15, 15, -10, "robust: large negative radius", "ERROR: radius < 0");
+
+	// 8. invalid_input
+	SUBCASE_EXPECT_ASSERT(
+		15, 15, 4096, "invalid: radius exceeds implementation limit", "ERROR: radius > 2^12 - 1"
+	);
 
 #undef SUBCASE_INVOKE
 #undef SUBCASE_EXPECT_ASSERT
