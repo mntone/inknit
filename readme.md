@@ -117,7 +117,7 @@ Note: This is not required for native or x86 (32-bit on AMD64) builds.
 - On **Ubuntu**, use:
 
   ```bash
-  sudo apt install g++-arm-none-eabi libstdc++-arm-none-eabi-newlib
+  sudo apt install gcc-arm-none-eabi libstdc++-arm-none-eabi-newlib
   ```
 
 - On **Debian**, the default `g++-arm-none-eabi` is often **too old** to support the Pico C SDK.

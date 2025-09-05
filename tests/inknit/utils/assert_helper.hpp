@@ -19,7 +19,7 @@
 
 #pragma once
 
-#if !NDEBUG
+#if _DEBUG
 
 #include <string>
 
